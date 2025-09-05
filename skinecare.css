@@ -1,0 +1,174 @@
+  .skincare-product-container {
+    height: 100%;
+    width: 100%;
+    margin-top: 30px;
+    padding: 30px;
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .skincare-product {
+    height: auto;
+    width: auto;
+    border: 2px solid black;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .skincare-product-image {
+    height: 200px;
+    width: 200px;
+    border-radius: 10px;
+  }
+
+  .product-details-box {
+    height: auto;
+    width: 400px;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+  }
+
+  #skincare-name {
+    font-size: 22px;
+    color: brown;
+    font-weight: 550;
+  }
+
+  #price {
+    font-size: 18px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .price-detail {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  #actual-price {
+    text-decoration: line-through;
+    color: grey;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  #discount {
+    height: 25px;
+    width:auto;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(0, 128, 0);
+    font-size: 13px;
+    padding: 5px;
+    color: white;
+  }
+
+  #alert {
+    font-size: 10px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .skincare-atc {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+
+  }
+
+  .add-to-cart {
+    height: 40px;
+    width: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: white;
+    color: #b28c42;
+    font-family: 'Poppins', sans-serif;
+    border: 2px solid #b28c42;
+    font-size: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .buy-now {
+    height: 40px;
+    width: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: brown;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    border: none;
+    font-size: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skincare-atc button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75px;
+    width: 50px;
+    height: 100%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+    transform: skewX(-25deg);
+    animation: shine 2.5s infinite;
+  }
+
+  .skin-rating {
+    height: 25px;
+    width: 100px;
+    border: 2px solid gray;
+    border-radius: 10px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: brown;
+  }
+
+  #note {
+    font-size: 10px;
+  }
+
+  @media screen and (max-width:1024px) {
+    .skincare-product-container {
+      flex-direction: column;
+      gap: 50px;
+      align-items: center;
+    }
+  }
+
+  @media screen and (max-width:440px) {
+    .skincare-product {
+      flex-direction: column;
+      padding: 0px;
+    }
+
+    .skincare-product-container {
+      padding: 20px;
+      margin-top: 70px;
+    }
+
+    .skincare-product {
+      height: auto;
+      width: auto;
+    }
+
+    .product-details-box {
+      height: auto;
+      width: auto;
+      gap: 10px;
+    }
+  }

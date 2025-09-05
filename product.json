@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Neem Facewash for Men & Women",
+    "price":250,
+    "original":299,
+    "discount": "₹49", 
+    "image": ""
+  },
+  {
+    "id": 2,
+    "name": "Ubtan Fashwash for Men & Women",
+    "price":250,
+    "original":299,
+    "discount": "₹49",
+    "image": ""
+  }
+]
