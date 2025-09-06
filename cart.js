@@ -132,7 +132,7 @@ window.onload = () => {
 // ===== Send Cart to Server (Checkout API) =====
 async function sendCartToServer() {
   try {
-    const res = await fetch("https://indalnova-41xqk2khn-indalnovas-projects.vercel.app/api/checkout", {
+    const res = await fetch(" https://indalnova-gh8dlug31-indalnovas-projects.vercel.app /api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ cart }),
@@ -187,6 +187,7 @@ async function checkout() {
     btn.innerText = "Proceed to Checkout";
   }
 }
+
 
 
 
