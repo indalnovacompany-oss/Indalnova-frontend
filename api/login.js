@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import User from "../../models/User.js";
+
 
 const CONNECTION_STRING = "mongodb+srv://indalnova:1LpW2CMG1MHEpuca@cluster0.05abfqy.mongodb.net/?retryWrites=true&w=majority";
 
@@ -42,3 +42,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: "Server error" });
   }
 }
+
