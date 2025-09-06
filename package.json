@@ -1,18 +1,20 @@
 {
-  "name": "indalnova-new",
+  "name": "indalnova-login",
   "version": "1.0.0",
-  "description": "Indalnova e-commerce project",
-  "main": "cart.js",
-  "type": "module",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "vercel dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Shivam",
+  "author": "",
   "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
-    "node-fetch": "^2.7.0",
-    "razorpay": "^2.9.0"
+    "bcryptjs": "^3.0.2",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.0"
   }
 }
