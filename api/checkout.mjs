@@ -3,6 +3,10 @@ import fetch from "node-fetch";
 
 export default async function handler(req, res) {
   // ---- Allowed origins ----
+
+  console.log("RAZORPAY_KEY_ID:", process.env.RAZORPAY_KEY_ID ? "SET" : "NOT SET");
+console.log("RAZORPAY_KEY_SECRET:", process.env.RAZORPAY_KEY_SECRET ? "SET" : "NOT SET");
+
   const allowedOrigins = [
     "https://www.indalnova.in",
     "https://indalnova.in",
@@ -95,3 +99,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: err.message });
   }
 }
+
