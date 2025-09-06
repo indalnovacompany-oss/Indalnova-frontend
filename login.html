@@ -6,49 +6,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Indalnova | Login & Signup</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background-image: url(Assets/bg.png); font-family: 'Poppins', sans-serif; }
-        .container { display: flex; width: 90%; max-width: 950px; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); }
-        .image-section { flex: 1; background: url("your-image.jpg") center/cover no-repeat; min-height: 400px; }
-        .form-section { flex: 1; padding: 2rem; display: flex; flex-direction: column; justify-content: center; }
-        .form-section h2 { font-size: 1.8rem; color: #333; margin-bottom: 0.5rem; }
-        .form-section p { margin-bottom: 1.5rem; color: #555; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group input { width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; outline: none; transition: border 0.3s; }
-        .form-group input:focus { border-color: #d4a055; }
-        .forgot { text-align: right; margin-bottom: 1rem; font-size: 0.9rem; }
-        .forgot a { text-decoration: none; color: #6e57e0; }
-        .btn { width: 100%; padding: 0.9rem; background: brown; color: #fff; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: bold; transition: background 0.3s; }
-        .btn:hover { background: darkred; }
-        .toggle-text { text-align: center; margin-top: 1.2rem; font-size: 0.95rem; }
-        .toggle-text span { color: brown; cursor: pointer; font-weight: bold; }
-        .info-row { display: flex; justify-content: space-around; margin-top: 1.8rem; font-size: 0.85rem; color: #444; font-weight: bold; font-family: 'Poppins', sans-serif; }
-        @media (max-width: 768px) { .container { flex-direction: column; } .image-section { height: 250px; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url(Assets/bg.png);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 950px;
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .image-section {
+            flex: 1;
+            background: url("your-image.jpg") center/cover no-repeat;
+            min-height: 400px;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-section h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-section p {
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #d4a055;
+        }
+
+        .forgot {
+            text-align: right;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .forgot a {
+            text-decoration: none;
+            color: #6e57e0;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: brown;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: darkred;
+        }
+
+        .toggle-text {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.95rem;
+        }
+
+        .toggle-text span {
+            color: brown;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1.8rem;
+            font-size: 0.85rem;
+            color: #444;
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .image-section {
+                height: 250px;
+            }
+        }
 
         /* Loader styles */
         #loadingOverlay {
-            display: none;
+            display: none; /* FIXED: only hidden by default */
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255,255,255,0.7);
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(2px);
             z-index: 9999;
-            display: flex;
             justify-content: center;
             align-items: center;
         }
+
         #loadingOverlay div {
-            border:6px solid #f3f3f3;
-            border-top:6px solid brown;
-            border-radius:50%;
-            width:50px;
-            height:50px;
-            animation:spin 1s linear infinite;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid brown;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
