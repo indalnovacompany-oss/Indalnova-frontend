@@ -2,9 +2,6 @@
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let appliedCoupon = null;
 
-// Check if user is logged in (simple localStorage check)
-let loggedUser = JSON.parse(localStorage.getItem("user")) || null;
-
 // ===== Render Cart =====
 function renderCart() {
   const container = document.querySelector(".cart-container");
@@ -140,65 +137,18 @@ window.onload = () => {
 // ===== Delivery Modal =====
 const modal = document.getElementById("deliveryModal");
 const closeBtn = modal.querySelector(".close");
-const passwordGroup = document.getElementById("passwordGroup");
-
-document.querySelector(".checkout-btn").addEventListener("click", () => {
-  // pre-fill if user logged in
-  if (loggedUser) {
-    const form = document.getElementById("deliveryForm");
-    form.name.value = loggedUser.name || "";
-    form.email.value = loggedUser.email || "";
-    form.phone.value = loggedUser.phone || "";
-    form.address.value = loggedUser.address?.address || "";
-    form.landmark.value = loggedUser.address?.landmark || "";
-    form.city.value = loggedUser.address?.city || "";
-    form.state.value = loggedUser.address?.state || "";
-    form.pincode.value = loggedUser.address?.pincode || "";
-    passwordGroup.style.display = "none"; // hide password for existing user
-  } else {
-    passwordGroup.style.display = "block"; // show password for new user
-  }
-
-  modal.style.display = "flex";
-});
 
 closeBtn.onclick = () => modal.style.display = "none";
 window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
 
-// ===== Handle Delivery Form & Razorpay Checkout =====
-document.getElementById("deliveryForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
-  showLoader();
-
-  const form = e.target;
-  const userData = {
-    name: form.name.value,
-    email: form.email.value,
-    phone: form.phone.value,
-    address: form.address.value,
-    landmark: form.landmark.value,
-    city: form.city.value,
-    state: form.state.value,
-    pincode: form.pincode.value,
-    password: form.password.value || null
-  };
-
-  try {
-    const res = await fetch("/api/checkout-guest", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cart, ...userData })
-    });
-
-    const data = await res.json();
-    hideLoader();
-
-    if (res.ok && data.orderId) {
-      // store logged in user
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      modal.style.display = "none";
-
+// ===== Helper: Proceed to Payment =====
+function proceedToPayment(user) {
+  fetch("/api/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cart, user })
+  }).then(res => res.json()).then(data => {
+    if(data.success) {
       const options = {
         key: data.key,
         amount: data.amount,
@@ -216,15 +166,61 @@ document.getElementById("deliveryForm").addEventListener("submit", async functio
       const rzp = new Razorpay(options);
       rzp.open();
     } else {
-      alert(data.message || "Failed to create order");
+      alert(data.message || "Payment failed");
     }
+  }).catch(err => {
+    console.error(err);
+    alert("Something went wrong during payment");
+  });
+}
+
+// ===== Checkout Button =====
+document.querySelector(".checkout-btn").addEventListener("click", () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (user && user.address && user.address.address) {
+    // Already logged in with address → skip modal
+    proceedToPayment(user);
+  } else {
+    // Show delivery modal
+    modal.style.display = "flex";
+  }
+});
+
+// ===== Delivery Form Submission =====
+document.getElementById("deliveryForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const form = e.target;
+
+  const userData = {
+    name: form.name.value,
+    email: form.email.value,
+    phone: form.phone.value,
+    address: form.address.value,
+    landmark: form.landmark.value,
+    city: form.city.value,
+    state: form.state.value,
+    pincode: form.pincode.value
+  };
+
+  try {
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cart, user: userData })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      localStorage.setItem("user", JSON.stringify(userData)); // Save user info
+      modal.style.display = "none";
+      proceedToPayment(userData);
+    } else {
+      alert(data.message || "Failed to save address");
+    }
+
   } catch (err) {
-    hideLoader();
     console.error(err);
     alert("Something went wrong!");
   }
 });
-
-// ===== Loader Functions =====
-function showLoader() { document.getElementById("loadingOverlay").style.display = "flex"; }
-function hideLoader() { document.getElementById("loadingOverlay").style.display = "none"; }
