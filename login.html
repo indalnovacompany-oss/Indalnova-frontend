@@ -221,9 +221,7 @@
                     <div class="form-group">
                         <input type="password" placeholder="Create Password" required />
                     </div>
-                    <div class="form-group">
-                        <input type="text" placeholder="Address" required />
-                    </div>
+                  
                     <button type="submit" class="btn"> Sign Up</button>
                 </form>
 
@@ -310,13 +308,12 @@
             const email = form.querySelector('input[placeholder="Email"]').value;
             const phone = form.querySelector('input[placeholder="Phone Number"]').value;
             const password = form.querySelector('input[placeholder="Create Password"]').value;
-            const address = form.querySelector('input[placeholder="Address"]').value;
-
+           
             try {
                 const response = await fetch("/api/signup", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, email, phone, password, address }),
+                    body: JSON.stringify({ name, email, phone, password}),
                 });
 
                 const data = await response.json();
