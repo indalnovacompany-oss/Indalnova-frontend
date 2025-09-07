@@ -1,8 +1,8 @@
 // backend/api/saveOrder.js
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = "YOUR_SUPABASE_URL";
-const supabaseServiceKey = "YOUR_SERVICE_ROLE_KEY"; // keep secret
+const supabaseUrl = "https://bkvwgcqgkfzynmsfqyds.supabase.co";
+const supabaseServiceKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrdndnY3Fna2Z6eW5tc2ZxeWRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyNTQzMTEsImV4cCI6MjA3MjgzMDMxMX0.1oLV7T-RoaYD1VcgKH-xNPvgHJWPKgMa6FDJViSA0eE"; // keep secret
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export default async function handler(req, res) {
@@ -37,3 +37,4 @@ export default async function handler(req, res) {
 
   res.status(405).send("Method not allowed");
 }
+
