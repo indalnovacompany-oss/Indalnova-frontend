@@ -6,12 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Indalnova | Login & Signup</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       display: flex;
       justify-content: center;
@@ -20,153 +15,55 @@
       background-image: url(Assets/bg.png);
       font-family: 'Poppins', sans-serif;
     }
-
     .container {
       display: flex;
-      width: 90%;
-      max-width: 950px;
-      background: #fff;
-      border-radius: 16px;
+      width: 90%; max-width: 950px;
+      background: #fff; border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     }
-
-    .image-section {
-      flex: 1;
-      background: url("your-image.jpg") center/cover no-repeat;
-      min-height: 400px;
-    }
-
-    .form-section {
-      flex: 1;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .form-section h2 {
-      font-size: 1.8rem;
-      color: #333;
-      margin-bottom: 0.5rem;
-    }
-
-    .form-section p {
-      margin-bottom: 1.5rem;
-      color: #555;
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
+    .image-section { flex: 1; background: url("your-image.jpg") center/cover no-repeat; min-height: 400px; }
+    .form-section { flex: 1; padding: 2rem; display: flex; flex-direction: column; justify-content: center; }
+    .form-section h2 { font-size: 1.8rem; color: #333; margin-bottom: 0.5rem; }
+    .form-section p { margin-bottom: 1.5rem; color: #555; }
+    .form-group { margin-bottom: 1rem; }
     .form-group input {
-      width: 100%;
-      padding: 0.8rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
-      outline: none;
-      transition: border 0.3s;
+      width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;
+      font-size: 1rem; outline: none; transition: border 0.3s;
     }
-
-    .form-group input:focus {
-      border-color: #d4a055;
-    }
-
-    .forgot {
-      text-align: right;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-    }
-
-    .forgot a {
-      text-decoration: none;
-      color: #6e57e0;
-    }
-
+    .form-group input:focus { border-color: #d4a055; }
+    .forgot { text-align: right; margin-bottom: 1rem; font-size: 0.9rem; }
+    .forgot a { text-decoration: none; color: #6e57e0; }
     .btn {
-      width: 100%;
-      padding: 0.9rem;
-      background: brown;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s;
+      width: 100%; padding: 0.9rem; background: brown; color: #fff;
+      border: none; border-radius: 8px; font-size: 1rem;
+      cursor: pointer; font-weight: bold; transition: background 0.3s;
     }
-
-    .btn:hover {
-      background: darkred;
-    }
-
-    .toggle-text {
-      text-align: center;
-      margin-top: 1.2rem;
-      font-size: 0.95rem;
-    }
-
-    .toggle-text span {
-      color: brown;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
+    .btn:hover { background: darkred; }
+    .toggle-text { text-align: center; margin-top: 1.2rem; font-size: 0.95rem; }
+    .toggle-text span { color: brown; cursor: pointer; font-weight: bold; }
     .info-row {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 1.8rem;
-      font-size: 0.85rem;
-      color: #444;
-      font-weight: bold;
-      font-family: 'Poppins', sans-serif;
+      display: flex; justify-content: space-around;
+      margin-top: 1.8rem; font-size: 0.85rem;
+      color: #444; font-weight: bold; font-family: 'Poppins', sans-serif;
     }
-
     @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-
-      .image-section {
-        height: 250px;
-      }
+      .container { flex-direction: column; }
+      .image-section { height: 250px; }
     }
-
-    /* Loader styles */
+    /* Loader */
     #loadingOverlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(2px);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
+      display: none; position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(2px);
+      z-index: 9999; justify-content: center; align-items: center;
     }
-
     #loadingOverlay div {
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid brown;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      border: 6px solid #f3f3f3; border-top: 6px solid brown;
+      border-radius: 50%; width: 50px; height: 50px;
       animation: spin 1s linear infinite;
     }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
   </style>
 </head>
 
@@ -196,8 +93,7 @@
         <p class="toggle-text">New here? <span onclick="toggleForms()">Create Account</span></p>
         <div class="info-row">
           <span style="display: inline-flex; align-items: center; gap: 10px;">
-            <img src="Assets/flag india.png" height="20px" alt="India Flag">
-            Made in India
+            <img src="Assets/flag india.png" height="20px" alt="India Flag"> Made in India
           </span>
           <span style="margin-left: 15px;">📦 Fast Shipping</span>
         </div>
@@ -209,27 +105,17 @@
         <p>Join us and enjoy exclusive skincare & perfume offers.</p>
 
         <form id="signupForm">
-          <div class="form-group">
-            <input type="text" id="signup-name" placeholder="Full Name" required />
-          </div>
-          <div class="form-group">
-            <input type="email" id="signup-email" placeholder="Email" required />
-          </div>
-          <div class="form-group">
-            <input type="text" id="signup-phone" placeholder="Phone Number" required />
-          </div>
-          <div class="form-group">
-            <input type="password" id="signup-password" placeholder="Create Password" required />
-          </div>
+          <div class="form-group"><input type="text" id="signup-name" placeholder="Full Name" required /></div>
+          <div class="form-group"><input type="email" id="signup-email" placeholder="Email" required /></div>
+          <div class="form-group"><input type="text" id="signup-phone" placeholder="Phone Number" required /></div>
+          <div class="form-group"><input type="password" id="signup-password" placeholder="Create Password" required /></div>
           <button type="submit" class="btn">Sign Up</button>
         </form>
 
         <p class="toggle-text">Already have an account? <span onclick="toggleForms()">Login</span></p>
-
         <div class="info-row">
           <span style="display: inline-flex; align-items: center; gap: 10px;">
-            <img src="Assets/flag india.png" height="20px" alt="India Flag">
-            Made in India
+            <img src="Assets/flag india.png" height="20px" alt="India Flag"> Made in India
           </span>
           <span style="margin-left: 15px;">📦 Fast Shipping</span>
         </div>
@@ -238,9 +124,7 @@
   </div>
 
   <!-- Loader Overlay -->
-  <div id="loadingOverlay">
-    <div></div>
-  </div>
+  <div id="loadingOverlay"><div></div></div>
 
   <script>
     /* ===== TOGGLE FORMS ===== */
@@ -248,11 +132,9 @@
       const loginForm = document.getElementById("login-form");
       const signupForm = document.getElementById("signup-form");
       if (loginForm.style.display === "none") {
-        loginForm.style.display = "block";
-        signupForm.style.display = "none";
+        loginForm.style.display = "block"; signupForm.style.display = "none";
       } else {
-        loginForm.style.display = "none";
-        signupForm.style.display = "block";
+        loginForm.style.display = "none"; signupForm.style.display = "block";
       }
     }
 
@@ -262,7 +144,7 @@
       if (email) alert("Password reset link sent to " + email);
     }
 
-    /* ===== LOADER FUNCTIONS ===== */
+    /* ===== LOADER ===== */
     function showLoader() { document.getElementById("loadingOverlay").style.display = "flex"; }
     function hideLoader() { document.getElementById("loadingOverlay").style.display = "none"; }
 
@@ -271,17 +153,17 @@
       e.preventDefault();
       showLoader();
 
-      const email = document.getElementById("login-email").value;
+      const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value;
 
       setTimeout(() => {
         hideLoader();
         if (email && password) {
-          // Save login state
+          // ✅ Save login state
           localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("currentUser", email);
 
-          // Restore or create user cart
+          // ✅ Restore this user's saved cart
           const savedCart = localStorage.getItem("cart_" + email);
           if (savedCart) {
             localStorage.setItem("userCart", savedCart);
@@ -318,25 +200,7 @@
       }, 1000);
     });
 
-    /* ===== LOGOUT FUNCTION ===== */
-    function logoutUser() {
-      const email = localStorage.getItem("currentUser");
-      if (email) {
-        // Save the cart before logout
-        const cart = localStorage.getItem("userCart");
-        if (cart) {
-          localStorage.setItem("cart_" + email, cart);
-        }
-      }
-
-      localStorage.removeItem("currentUser");
-      localStorage.removeItem("userCart");
-      localStorage.setItem("isLoggedIn", "false");
-
-      window.location.href = "login.html";
-    }
-
-    // Already logged in? Redirect home
+    // If already logged in, redirect home
     if (localStorage.getItem("isLoggedIn") === "true") {
       window.location.href = "index.html";
     }
