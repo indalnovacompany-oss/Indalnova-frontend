@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping Details | Indalnova</title>
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box; font-family:Arial, sans-serif;}
+    body {background-image:url(Assets/bg.png); color:#222; min-height:100vh; display:flex; justify-content:center; align-items:flex-start; padding:20px;}
+    form {width:100%; max-width:800px; background:#fff; padding:25px; border-radius:16px; border:2px solid #ff5722; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+    h2 {font-size:24px; margin-bottom:20px; color:#ff5722; text-align:center;}
+    label {font-size:14px; font-weight:bold; margin-bottom:4px; display:block;}
+    input, select, textarea {padding:12px; font-size:14px; border:1px solid #ccc; border-radius:8px; width:100%; margin-bottom:14px; transition:border 0.3s;}
+    input:focus, select:focus, textarea:focus {border:1px solid #ff5722; outline:none;}
+    textarea {resize:none;}
+    button {background:#ff5722; color:white; border:none; padding:14px; font-size:16px; border-radius:8px; cursor:pointer; width:100%; margin-top:10px; transition:background 0.3s;}
+    button:hover {background:#e64a19;}
+    .row {display:flex; gap:16px;}
+    .row>div {flex:1;}
+    small {color:red; font-size:12px; display:none;}
+    .payment-options {margin:20px 0;}
+    .payment-options p {margin-bottom:12px; font-weight:bold; font-size:16px; color:#444;}
+    .payment-card {display:block; border:2px solid #ccc; border-radius:10px; padding:14px; margin-bottom:12px; cursor:pointer; transition:all 0.3s ease;}
+    .payment-card input {display:none;}
+    .payment-card .card-content {display:flex; align-items:center; gap:12px; font-size:15px; font-weight:500; color:#333;}
+    .payment-card .icon {font-size:20px;}
+    .payment-card:hover {border-color:#ff5722; background:#fff5f0;}
+    .payment-card input:checked+.card-content {border-left:5px solid #ff5722; color:#ff5722;}
+    @media(max-width:700px) {.row {flex-direction:column;}}
+  </style>
+</head>
+
+<body>
+  <form id="shippingForm" novalidate>
+    <h2>Shipping Details</h2>
+
+    <label for="name">Full Name *</label>
+    <input type="text" id="name" name="name" required>
+    <small id="nameError">Please enter your name (English only).</small>
+
+    <label for="phone">Phone Number *</label>
+    <input type="tel" id="phone" name="phone" required pattern="^[0-9]{10}$">
+    <small id="phoneError">Enter a valid 10-digit phone number.</small>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email">
+    <small id="emailError" style="display:none;color:red;">Enter a valid email.</small>
+
+    <label for="addr1">Address Line 1 *</label>
+    <input type="text" id="addr1" name="addr1" required>
+    <small id="addr1Error">Enter a valid address (English only).</small>
+
+    <label for="addr2">Address Line 2 (optional)</label>
+    <input type="text" id="addr2" name="addr2">
+
+    <div class="row">
+      <div>
+        <label for="district">District *</label>
+        <input type="text" id="district" name="district" required readonly>
+      </div>
+      <div>
+        <label for="state">State *</label>
+        <input type="text" id="state" name="state" required readonly>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="pincode">Pincode *</label>
+        <input type="text" id="pincode" name="pincode" required pattern="^[0-9]{6}$">
+        <small id="pinError">Enter a valid 6-digit pincode.</small>
+      </div>
+      <div>
+        <label for="country">Country *</label>
+        <select id="country" name="country" required>
+          <option value="">Select</option>
+          <option value="India">India</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="notes">Delivery Instructions / Landmark</label>
+    <textarea id="notes" name="notes" rows="2" maxlength="200"></textarea>
+
+    <div class="payment-options">
+      <p><strong>Select Payment Method</strong></p>
+
+      <label class="payment-card">
+        <input type="radio" name="paymentMethod" value="COD" required>
+        <div class="card-content">
+          <span class="icon">💵</span>
+          <span>Cash on Delivery</span>
+        </div>
+      </label>
+
+      <label class="payment-card">
+        <input type="radio" name="paymentMethod" value="ONLINE" required>
+        <div class="card-content">
+          <span class="icon">💳</span>
+          <span>Online Payment (UPI / Card / Netbanking)</span>
+        </div>
+      </label>
+    </div>
+
+    <button type="submit">Confirm & Continue</button>
+  </form>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    const form = document.getElementById('shippingForm');
+
+    // Check if user is logged in
+    const currentUser = localStorage.getItem("currentUser");
+    if (!currentUser) {
+      alert("❌ You must log in first!");
+      window.location.href = "/login.html";
+    }
+
+    function isEnglish(text) { return /^[A-Za-z0-9\s,.-/]+$/.test(text); }
+
+    document.getElementById('pincode').addEventListener('blur', async function () {
+      const pin = this.value.trim();
+      if (/^[0-9]{6}$/.test(pin)) {
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+          const data = await res.json();
+          if (data[0].Status === "Success" && data[0].PostOffice?.length > 0) {
+            document.getElementById('district').value = data[0].PostOffice[0].District;
+            document.getElementById('state').value = data[0].PostOffice[0].State;
+          } else {
+            alert("⚠️ Invalid pincode. Please check again.");
+            document.getElementById('district').value = "";
+            document.getElementById('state').value = "";
+          }
+        } catch (err) {
+          console.error(err);
+          alert("❌ Unable to fetch district/state. Try again.");
+        }
+      }
+    });
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      let valid = true;
+
+      const name = document.getElementById('name');
+      const phone = document.getElementById('phone');
+      const addr1 = document.getElementById('addr1');
+      const pincode = document.getElementById('pincode');
+      const email = document.getElementById('email');
+
+      if (!isEnglish(name.value.trim())) { document.getElementById('nameError').style.display = 'block'; valid = false; } else { document.getElementById('nameError').style.display = 'none'; }
+      if (!/^[0-9]{10}$/.test(phone.value.trim())) { document.getElementById('phoneError').style.display = 'block'; valid = false; } else { document.getElementById('phoneError').style.display = 'none'; }
+      if (!isEnglish(addr1.value.trim())) { document.getElementById('addr1Error').style.display = 'block'; valid = false; } else { document.getElementById('addr1Error').style.display = 'none'; }
+      if (!/^[0-9]{6}$/.test(pincode.value.trim())) { document.getElementById('pinError').style.display = 'block'; valid = false; } else { document.getElementById('pinError').style.display = 'none'; }
+      if (email.value.trim() !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { document.getElementById('emailError').style.display = 'block'; valid = false; } else { document.getElementById('emailError').style.display = 'none'; }
+
+      if (!valid) return;
+
+      const formData = Object.fromEntries(new FormData(form).entries());
+      const cart = JSON.parse(localStorage.getItem("cart_" + currentUser) || "[]");
+      if (cart.length === 0) { alert("Cart is empty!"); return; }
+
+      const orderId = "ORD" + Math.floor(100000 + Math.random() * 900000);
+      const productIds = cart.map(p => p.id).join(",");
+      const quantities = cart.map(p => p.qty).join(",");
+      const totalPrice = cart.reduce((sum, p) => sum + p.price * p.qty, 0);
+
+      const payload = {
+        orderId,
+        productIds,
+        quantities,
+        totalPrice,
+        orderDate: new Date().toLocaleString(),
+        paymentMethod: formData.paymentMethod,
+        shipping: {
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          addr1: formData.addr1,
+          addr2: formData.addr2,
+          district: formData.district,
+          state: formData.state,
+          pincode: formData.pincode,
+          country: formData.country,
+          notes: formData.notes
+        }
+      };
+
+      const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPF9dvBDcCjJW2tcaUG6dCJpVbGGq-Ssf_eqNpGTDCF_UnzVbzHs2KGFLcl5gG5wJt/exec";
+
+      if (formData.paymentMethod === "COD") {
+        alert("✅ Order placed with Cash on Delivery!");
+        fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
+          .then(r => r.json()).then(d => console.log(d)).catch(e => console.error(e));
+        localStorage.removeItem("cart_" + currentUser);
+      } else if (formData.paymentMethod === "ONLINE") {
+        try {
+          const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ cart, shippingDetails: formData, paymentMethod: "ONLINE" }) });
+          const result = await res.json();
+          if (result.success) {
+            const options = {
+              key: result.key,
+              amount: result.amount,
+              currency: result.currency,
+              order_id: result.orderId,
+              name: "Indalnova",
+              description: "Order Payment",
+              handler: function (response) {
+                alert("✅ Payment Successful!");
+                payload.paymentId = response.razorpay_payment_id;
+                payload.paymentSignature = response.razorpay_signature;
+                fetch(GOOGLE_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) }).then(r => r.json()).then(d => console.log(d)).catch(e => console.error(e));
+                localStorage.removeItem("cart_" + currentUser);
+              },
+              prefill: { name: formData.name, email: formData.email, contact: formData.phone }
+            };
+            const rzp = new Razorpay(options);
+            rzp.open();
+          } else { alert(result.message || "❌ Payment initialization failed."); }
+        } catch (err) { alert("❌ Server error: " + err.message); }
+      }
+    });
+  </script>
+</body>
+</html>
