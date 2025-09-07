@@ -316,7 +316,7 @@
 
       // Function to save order to Supabase
       async function saveOrder() {
-        const res = await fetch("/api/saveOrder", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const res = await fetch("/api/saveorder", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
         const data = await res.json();
         if (!data.success) alert("❌ Failed to save order: " + (data.message || ""));
         else localStorage.removeItem("cart_" + currentUser);
@@ -360,5 +360,6 @@
   </script>
 
 </body>
+
 
 </html>
