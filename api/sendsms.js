@@ -1,5 +1,15 @@
-// /api/sendsms.js
-let otpStore = {}; // temporary in-memory OTP storage
+import mongoose from "mongoose";
+import OTP from "./otpmodel.js";
+
+const CONNECTION_STRING = process.env.MONGO_URI || "mongodb+srv://indalnova:1LpW2CMG1MHEpuca@cluster0.05abfqy.mongodb.net/?retryWrites=true&w=majority";
+let isConnected = false;
+
+async function connectDB() {
+  if (isConnected) return;
+  if (mongoose.connection.readyState >= 1) { isConnected = true; return; }
+  await mongoose.connect(CONNECTION_STRING, { maxPoolSize: 10 });
+  isConnected = true;
+}
 
 // Helper: clean phone number
 function cleanPhone(phone) {
@@ -9,28 +19,14 @@ function cleanPhone(phone) {
   return phone;
 }
 
-// Exported helper to verify OTP in login/signup
-export function verifyOTP(phone, inputOtp) {
-  phone = cleanPhone(phone);
-  const record = otpStore[phone];
-  if (!record) return false;
-  if (Date.now() > record.expires) {
-    delete otpStore[phone];
-    return false;
-  }
-  if (record.otp.toString() === inputOtp.toString()) {
-    delete otpStore[phone]; // OTP used only once
-    return true;
-  }
-  return false;
-}
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ success: false, message: "Method not allowed" });
   }
 
   try {
+    await connectDB();
+
     const { phone, type } = req.body; // type = "login" or "signup"
     if (!phone) return res.status(400).json({ success: false, message: "Phone is required" });
 
@@ -42,27 +38,33 @@ export default async function handler(req, res) {
     // Generate 6-digit numeric OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
 
-    // Store OTP in memory for 5 minutes
-    otpStore[clean] = { otp, expires: Date.now() + 5 * 60 * 1000 };
+    // Delete any old OTPs for this number
+    await OTP.deleteMany({ phone: clean });
 
-    // Send via Fast2SMS (numeric-only)
-  const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
-  method: "POST",
-  headers: {
-    authorization: process.env.FAST2SMS_API_KEY,
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    route: "otp",
-    sender_id: "TXTIND",
-    message: otp.toString(),      // numeric OTP
-    language: "english",
-    flash: 0,
-    numbers: phone,
-    variables_values: otp.toString(),  // THIS MUST BE numeric
-  }),
-});
+    // Save new OTP in Mongo
+    await OTP.create({
+      phone: clean,
+      otp: otp.toString(),
+      expires: new Date(Date.now() + 5 * 60 * 1000) // 5 mins
+    });
 
+    // Send via Fast2SMS
+    const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
+      method: "POST",
+      headers: {
+        authorization: process.env.FAST2SMS_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        route: "otp",
+        sender_id: "TXTIND",
+        message: otp.toString(),       // numeric OTP
+        language: "english",
+        flash: 0,
+        numbers: clean,                // use cleaned phone
+        variables_values: otp.toString(),
+      }),
+    });
 
     const data = await response.json();
     if (data.return) {
