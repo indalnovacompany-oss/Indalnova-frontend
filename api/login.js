@@ -1,3 +1,4 @@
+// /api/login.js
 import mongoose from "mongoose";
 import OTP from "./otpmodel.js";
 
@@ -7,28 +8,28 @@ const CONNECTION_STRING =
 
 let isConnected = false;
 
-// Connect to MongoDB
 async function connectDB() {
   if (isConnected) return;
-  if (mongoose.connection.readyState >= 1) { isConnected = true; return; }
+  if (mongoose.connection.readyState >= 1) {
+    isConnected = true;
+    return;
+  }
   await mongoose.connect(CONNECTION_STRING, { maxPoolSize: 10 });
   isConnected = true;
 }
 
-// User schema
+// User schema (same as signup)
 const userSchema = new mongoose.Schema(
   {
     name: String,
-    email: { type: String, unique: true },
-    phone: { type: String, unique: true },
-    isVerified: { type: Boolean, default: false },
+    email: String,
+    phone: String,
   },
   { timestamps: true }
 );
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-// Clean phone
 function cleanPhone(phone) {
   phone = phone.replace(/\D/g, "");
   if (phone.startsWith("91") && phone.length > 10) phone = phone.slice(2);
@@ -36,31 +37,46 @@ function cleanPhone(phone) {
   return phone;
 }
 
-// API handler
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ success: false, message: "Method not allowed" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, message: "Method not allowed" });
+  }
 
   try {
     await connectDB();
+
     let { identifier, otp } = req.body;
-    if (!identifier || !otp) return res.status(400).json({ success: false, message: "Identifier & OTP required" });
+    if (!identifier) {
+      return res.status(400).json({ success: false, message: "Phone or email is required" });
+    }
 
-    let user;
-    let phone = "";
+    // handle phone/email
+    let query = {};
+    if (identifier.includes("@")) {
+      query.email = identifier.toLowerCase();
+    } else {
+      const phone = cleanPhone(identifier);
+      if (!/^[0-9]{10}$/.test(phone)) {
+        return res.status(400).json({ success: false, message: "Invalid phone number" });
+      }
+      query.phone = phone;
+    }
 
-    // Determine if email or phone
-    if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(identifier)) {
-      user = await User.findOne({ email: identifier.toLowerCase() });
-      if (!user) return res.status(401).json({ success: false, message: "Email not registered" });
-      phone = cleanPhone(user.phone);
-    } else if (/^\d{10,12}$/.test(identifier.replace(/\D/g,''))) {
-      phone = cleanPhone(identifier);
-      user = await User.findOne({ phone });
-      if (!user) return res.status(401).json({ success: false, message: "Phone not registered" });
-    } else return res.status(400).json({ success: false, message: "Invalid identifier" });
+    // check if user exists
+    const user = await User.findOne(query).lean();
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found. Please signup first." });
+    }
 
-    // Verify OTP
-    const record = await OTP.findOne({ phone, otp });
+    // first step: send OTP
+    if (!otp) {
+      // call your sendsms function here instead of dummy
+      // await sendSMS(user.phone)
+      return res.status(200).json({ success: true, message: "OTP sent successfully" });
+    }
+
+    // second step: verify OTP
+    const record = await OTP.findOne({ phone: user.phone, otp });
     if (!record || record.expires.getTime() < Date.now()) {
       return res.status(401).json({ success: false, message: "Invalid or expired OTP" });
     }
@@ -69,11 +85,17 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       message: "Login successful",
-      phone: user.phone,
-      user: { id: user._id, name: user.name, email: user.email }
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+      },
     });
   } catch (err) {
     console.error("Login error:", err);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 }
+
+
