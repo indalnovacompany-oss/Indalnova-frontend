@@ -58,7 +58,7 @@ export default async function handler(req, res) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        route: "q",
+        route: "otp",
         sender_id: "TXTIND",
         message: `Your OTP for ${type} is ${otp}. It is valid for 5 minutes.`,
         language: "english",
@@ -89,5 +89,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: "Failed to send OTP" });
   }
 }
+
 
 
