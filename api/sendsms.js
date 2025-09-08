@@ -1,0 +1,72 @@
+import mongoose from "mongoose";
+import OTP from "./otpmodel.js";
+
+const CONNECTION_STRING = process.env.MONGO_URI;
+let isConnected = false;
+
+async function connectDB() {
+  if (isConnected) return;
+  if (mongoose.connection.readyState >= 1) { isConnected = true; return; }
+  await mongoose.connect(CONNECTION_STRING, { maxPoolSize: 10 });
+  isConnected = true;
+}
+
+function cleanPhone(phone) {
+  phone = phone.replace(/\D/g, "");
+  if (phone.startsWith("91") && phone.length > 10) phone = phone.slice(2);
+  if (phone.startsWith("0") && phone.length > 10) phone = phone.slice(1);
+  return phone;
+}
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, message: "Method not allowed" });
+  }
+
+  try {
+    await connectDB();
+
+    const { phone, type } = req.body;
+    if (!phone) return res.status(400).json({ success: false, message: "Phone is required" });
+
+    const clean = cleanPhone(phone);
+    if (!/^[0-9]{10}$/.test(clean)) {
+      return res.status(400).json({ success: false, message: "Invalid 10-digit phone number" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000);
+
+    await OTP.deleteMany({ phone: clean });
+    await OTP.create({
+      phone: clean,
+      otp: otp.toString(),
+      expires: new Date(Date.now() + 5 * 60 * 1000)
+    });
+
+    const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
+      method: "POST",
+      headers: {
+        authorization: process.env.FAST2SMS_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        route: "otp",
+        variables_values: otp.toString(), // ✅ only numeric
+        numbers: clean,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.return) {
+      console.log(`OTP sent to ${clean}: ${otp}`);
+      return res.status(200).json({ success: true, message: "OTP sent successfully" });
+    } else {
+      console.error("Fast2SMS error:", data);
+      return res.status(500).json({ success: false, message: data.message || "Failed to send OTP" });
+    }
+
+  } catch (error) {
+    console.error("SendSMS error:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+}
