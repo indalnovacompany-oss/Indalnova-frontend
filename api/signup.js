@@ -1,33 +1,25 @@
 // /api/signup.js
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 import OTP from "./otpmodel.js";
 
-const CONNECTION_STRING =
-  process.env.MONGO_URI ||
-  "mongodb+srv://indalnova:1LpW2CMG1MHEpuca@cluster0.05abfqy.mongodb.net/?retryWrites=true&w=majority";
-
+const CONNECTION_STRING = process.env.MONGO_URI;
 let isConnected = false;
 
-// connect DB
 async function connectDB() {
   if (isConnected) return;
-  if (mongoose.connection.readyState >= 1) {
-    isConnected = true;
-    return;
-  }
+  if (mongoose.connection.readyState >= 1) { isConnected = true; return; }
   await mongoose.connect(CONNECTION_STRING, { maxPoolSize: 10 });
   isConnected = true;
 }
 
-// User schema
-const userSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true, unique: true },
-  },
-  { timestamps: true }
-);
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: { type: String, unique: true },
+  phone: { type: String, unique: true },
+  password: String,
+  address: Object,
+}, { timestamps: true });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
@@ -45,51 +37,34 @@ export default async function handler(req, res) {
 
   try {
     await connectDB();
-
     let { name, email, phone, otp } = req.body;
+    phone = cleanPhone(phone || "");
 
-    if (!name || !email || !phone) {
-      return res.status(400).json({ success: false, message: "Name, email and phone are required" });
+    if (!name || !email || !phone || !otp) {
+      return res.status(400).json({ success: false, message: "Name, email, phone & OTP required" });
     }
 
-    phone = cleanPhone(phone);
-    if (!/^[0-9]{10}$/.test(phone)) {
-      return res.status(400).json({ success: false, message: "Invalid phone number" });
-    }
-
-    // if no OTP → step 1 (send OTP)
-    if (!otp) {
-      // check if already exists
-      const existingUser = await User.findOne({ $or: [{ email }, { phone }] }).lean();
-      if (existingUser) {
-        return res.status(400).json({ success: false, message: "Email or phone already registered" });
-      }
-
-      // send OTP using your sendsms function
-      // await sendSMS(phone);
-      return res.status(200).json({ success: true, message: "OTP sent successfully" });
-    }
-
-    // step 2 → verify OTP
+    // Verify OTP from DB
     const record = await OTP.findOne({ phone, otp });
     if (!record || record.expires.getTime() < Date.now()) {
       return res.status(401).json({ success: false, message: "Invalid or expired OTP" });
     }
-    await OTP.deleteOne({ _id: record._id });
+    await OTP.deleteOne({ _id: record._id }); // consume OTP
 
-    // save user
-    const newUser = await User.create({ name, email: email.toLowerCase(), phone });
+    // Check if already registered
+    const existing = await User.findOne({ $or: [{ email }, { phone }] });
+    if (existing) {
+      return res.status(400).json({ success: false, message: "Email/Phone already registered" });
+    }
 
-    return res.status(201).json({
-      success: true,
-      message: "Signup successful",
-      user: {
-        id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        phone: newUser.phone,
-      },
-    });
+    // Default password & address (if you don’t need them)
+    const hashedPassword = await bcrypt.hash("defaultpass", 10);
+    const address = { addr1: "Not set", pincode: "000000", district: "NA" };
+
+    const newUser = await User.create({ name, email, phone, password: hashedPassword, address });
+
+    return res.json({ success: true, message: "User created successfully", user: newUser });
+
   } catch (err) {
     console.error("Signup error:", err);
     return res.status(500).json({ success: false, message: "Server error" });
