@@ -1,46 +1,83 @@
-import { createClient } from '@supabase/supabase-js';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY; // keep secret in env
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const CONNECTION_STRING = "mongodb+srv://indalnova:1LpW2CMG1MHEpuca@cluster0.05abfqy.mongodb.net/?retryWrites=true&w=majority";
+let isConnected = false;
+
+// Connect DB
+async function connectDB() {
+  if (isConnected) return;
+  if (mongoose.connection.readyState >= 1) {
+    isConnected = true;
+    return;
+  }
+  await mongoose.connect(CONNECTION_STRING, { maxPoolSize: 10 });
+  isConnected = true;
+}
+
+// Define schema inside API
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: { type: String, unique: true },
+  password: String,
+  phone: { type: String, required: true, unique: true },
+  otp: String,
+  otpExpiry: Date,
+  address: String,
+  cart: { type: Array, default: [] },
+  orders: { type: Array, default: [] }
+}, { timestamps: true });
+
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ success: false, message: "Method not allowed" });
-  }
+  if (req.method !== "POST") return res.status(405).json({ success: false, message: "Method not allowed" });
 
   try {
-    const order = req.body;
+    await connectDB();
 
-    if (!order) throw new Error("No order data provided");
+    const { phone, password, otp } = req.body;
+    if (!phone) return res.status(400).json({ success: false, message: "Phone is required" });
 
-    const { data, error } = await supabase
-      .from('orders')
-      .insert([{
-        order_id: order.orderId,
-        user_email: order.email,
-        name: order.name,
-        phone: order.phone,
-        address: order.address,
-        city: order.city || '',
-        state: order.state || '',
-        notes: order.notes || '',
-        product_ids: order.productIds,
-        quantities: order.quantities,
-        prices: order.prices,
-        total_price: order.totalPrice,
-        payment_method: order.paymentMethod,
-        payment_status: order.paymentMethod === "COD" ? "pending" : "paid",
-        transaction_id: order.paymentId || null,
-        payment_signature: order.paymentSignature || null,
-        order_date: new Date()
-      }]);
+    const user = await User.findOne({ phone }).select("name email password phone otp otpExpiry address");
+    if (!user) return res.status(401).json({ success: false, message: "User not found" });
 
-    if (error) throw error;
+    // OTP login
+    if (otp) {
+      if (!user.otp || !user.otpExpiry || user.otp !== otp || user.otpExpiry.getTime() < Date.now()) {
+        return res.status(401).json({ success: false, message: "OTP mismatch or expired" });
+      }
 
-    return res.status(200).json({ success: true, data });
+      // Clear OTP after successful login
+      user.otp = undefined;
+      user.otpExpiry = undefined;
+      await user.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Logged in successfully with OTP",
+        user: { id: user._id, name: user.name, email: user.email, phone: user.phone, address: user.address }
+      });
+    }
+
+    // Password login
+    if (password) {
+      if (!user.password) return res.status(401).json({ success: false, message: "No password set for this user" });
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) return res.status(401).json({ success: false, message: "Invalid password" });
+
+      return res.status(200).json({
+        success: true,
+        message: "Logged in successfully with password",
+        user: { id: user._id, name: user.name, email: user.email, phone: user.phone, address: user.address }
+      });
+    }
+
+    return res.status(400).json({ success: false, message: "Provide OTP or password to login" });
+
   } catch (err) {
-    console.error("Save order error:", err);
-    return res.status(500).json({ success: false, message: err.message });
+    console.error("Login error:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 }
