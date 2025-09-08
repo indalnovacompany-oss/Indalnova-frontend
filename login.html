@@ -220,107 +220,132 @@
     <div></div>
   </div>
 
-  <script>
-    const loadingOverlay = document.getElementById("loadingOverlay");
-    function showLoader() { loadingOverlay.style.display = "flex"; }
-    function hideLoader() { loadingOverlay.style.display = "none"; }
+ <script>
+  const loadingOverlay = document.getElementById("loadingOverlay");
+  function showLoader() { loadingOverlay.style.display = "flex"; }
+  function hideLoader() { loadingOverlay.style.display = "none"; }
 
-    function toggleForms() {
-      const loginDiv = document.getElementById("login-form");
-      const signupDiv = document.getElementById("signup-form");
-      loginDiv.style.display = loginDiv.style.display === "none" ? "block" : "none";
-      signupDiv.style.display = signupDiv.style.display === "block" ? "none" : "block";
-    }
+  function toggleForms() {
+    const loginDiv = document.getElementById("login-form");
+    const signupDiv = document.getElementById("signup-form");
+    loginDiv.style.display = loginDiv.style.display === "none" ? "block" : "none";
+    signupDiv.style.display = loginDiv.style.display === "block" ? "none" : "block";
+  }
 
-    function cleanPhone(phone) { phone = phone.replace(/\D/g, ""); if (phone.startsWith("91") && phone.length > 10) phone = phone.slice(2); if (phone.startsWith("0") && phone.length > 10) phone = phone.slice(1); return phone; }
-    function isValidPhone(phone) { return /^[0-9]{10}$/.test(phone); }
-    function isValidEmail(email) { return /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email); }
+  function cleanPhone(phone) { phone = phone.replace(/\D/g, ""); if (phone.startsWith("91") && phone.length > 10) phone = phone.slice(2); if (phone.startsWith("0") && phone.length > 10) phone = phone.slice(1); return phone; }
+  function isValidPhone(phone) { return /^[0-9]{10}$/.test(phone); }
+  function isValidEmail(email) { return /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email); }
 
-    let loginResendCount = 0, signupResendCount = 0, maxResends = 3;
+  let loginResendCount = 0, signupResendCount = 0, maxResends = 3;
 
-    // LOGIN
-    async function sendLoginOTP() {
-      let identifier = document.getElementById("login-identifier").value.trim();
-      if (!identifier) return alert("Enter phone/email");
-      showLoader();
-      const res = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ identifier }) });
-      const data = await res.json(); hideLoader();
-      if (data.success) {
-        document.getElementById("login-otp-section").style.display = "block";
-        document.getElementById("login-resend-btn").disabled = false;
-        alert("OTP sent!");
-      } else alert(data.message);
-    }
+  // ================= LOGIN =================
+  async function sendLoginOTP() {
+    let identifier = document.getElementById("login-identifier").value.trim();
+    if (!identifier) return alert("Enter phone/email");
+    showLoader();
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ step: "send", identifier })   // 👈 added step
+    });
+    const data = await res.json(); hideLoader();
+    if (data.success) {
+      document.getElementById("login-otp-section").style.display = "block";
+      document.getElementById("login-resend-btn").disabled = false;
+      alert("OTP sent!");
+    } else alert(data.message);
+  }
 
-    async function verifyLoginOTP() {
-      let identifier = document.getElementById("login-identifier").value.trim();
-      let otp = document.getElementById("login-otp").value.trim();
-      if (!otp) return alert("Enter OTP");
-      showLoader();
-      const res = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ identifier, otp }) });
-      const data = await res.json(); hideLoader();
-      if (data.success) {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("currentUser", data.phone);
-        alert("Login successful!");
-        window.location.href = "index.html";
-      } else alert(data.message);
-    }
+  async function verifyLoginOTP() {
+    let identifier = document.getElementById("login-identifier").value.trim();
+    let otp = document.getElementById("login-otp").value.trim();
+    if (!otp) return alert("Enter OTP");
+    showLoader();
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ step: "verify", identifier, otp })   // 👈 added step
+    });
+    const data = await res.json(); hideLoader();
+    if (data.success) {
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("currentUser", data.phone || identifier);
+      alert("Login successful!");
+      window.location.href = "index.html";
+    } else alert(data.message);
+  }
 
-    function resendLoginOTP() {
-      if (loginResendCount >= maxResends) return alert("Max attempts reached");
-      loginResendCount++;
-      sendLoginOTP();
-      if (loginResendCount >= maxResends) document.getElementById("login-resend-btn").disabled = true;
-    }
+  function resendLoginOTP() {
+    if (loginResendCount >= maxResends) return alert("Max attempts reached");
+    loginResendCount++;
+    sendLoginOTP();
+    if (loginResendCount >= maxResends) document.getElementById("login-resend-btn").disabled = true;
+  }
 
-    // SIGNUP
-    async function sendSignupOTP() {
-      const name = document.getElementById("signup-name").value.trim();
-      const phone = cleanPhone(document.getElementById("signup-phone").value.trim());
-      const email = document.getElementById("signup-email").value.trim().toLowerCase();
-      if (!name) return alert("Enter name");
-      if (!isValidPhone(phone)) return alert("Enter valid phone");
-      if (!isValidEmail(email)) return alert("Enter valid Gmail");
-      showLoader();
-      const res = await fetch("/api/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, phone, email }) });
-      const data = await res.json(); hideLoader();
-      if (data.success) {
-        document.getElementById("signup-otp-section").style.display = "block";
-        document.getElementById("signup-resend-btn").disabled = false;
-        alert("OTP sent!");
-      } else alert(data.message);
-    }
+  // ================= SIGNUP =================
+  async function sendSignupOTP() {
+    const name = document.getElementById("signup-name").value.trim();
+    const phone = cleanPhone(document.getElementById("signup-phone").value.trim());
+    const email = document.getElementById("signup-email").value.trim().toLowerCase();
 
-    async function verifySignupOTP() {
-      const name = document.getElementById("signup-name").value.trim();
-      const phone = cleanPhone(document.getElementById("signup-phone").value.trim());
-      const email = document.getElementById("signup-email").value.trim().toLowerCase();
-      const otp = document.getElementById("signup-otp").value.trim();
-      if (!otp) return alert("Enter OTP");
-      showLoader();
-      const res = await fetch("/api/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, phone, email, otp }) });
-      const data = await res.json(); hideLoader();
-      if (data.success) {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("currentUser", phone);
-        alert("Signup successful!");
-        window.location.href = "index.html";
-      } else alert(data.message);
-    }
+    if (!name) return alert("Enter name");
+    if (!isValidPhone(phone)) return alert("Enter valid phone");
+    if (!isValidEmail(email)) return alert("Enter valid Gmail");
 
-    function resendSignupOTP() {
-      if (signupResendCount >= maxResends) return alert("Max attempts reached");
-      signupResendCount++;
-      sendSignupOTP();
-      if (signupResendCount >= maxResends) document.getElementById("signup-resend-btn").disabled = true;
-    }
+    showLoader();
+    const res = await fetch("/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ step: "send", name, phone, email })   // 👈 added step
+    });
+    const data = await res.json(); hideLoader();
+    if (data.success) {
+      document.getElementById("signup-otp-section").style.display = "block";
+      document.getElementById("signup-resend-btn").disabled = false;
+      alert("OTP sent!");
+    } else alert(data.message);
+  }
 
-    // redirect if already logged in
-    if (localStorage.getItem("isLoggedIn") === "true") window.location.href = "index.html";
+  async function verifySignupOTP() {
+    const name = document.getElementById("signup-name").value.trim();
+    const phone = cleanPhone(document.getElementById("signup-phone").value.trim());
+    const email = document.getElementById("signup-email").value.trim().toLowerCase();
+    const otp = document.getElementById("signup-otp").value.trim();
 
-  </script>
+    if (!otp) return alert("Enter OTP");
+
+    // default password & address (backend requires them)
+    const password = "defaultpass";
+    const address = { addr1: "Not set", pincode: "000000", district: "NA" };
+
+    showLoader();
+    const res = await fetch("/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ step: "verify", name, phone, email, otp, password, address })   // 👈 added step
+    });
+    const data = await res.json(); hideLoader();
+    if (data.success) {
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("currentUser", phone);
+      alert("Signup successful!");
+      window.location.href = "index.html";
+    } else alert(data.message);
+  }
+
+  function resendSignupOTP() {
+    if (signupResendCount >= maxResends) return alert("Max attempts reached");
+    signupResendCount++;
+    sendSignupOTP();
+    if (signupResendCount >= maxResends) document.getElementById("signup-resend-btn").disabled = true;
+  }
+
+  // Redirect if already logged in
+  if (localStorage.getItem("isLoggedIn") === "true") window.location.href = "index.html";
+</script>
+
 </body>
 
 
 </html>
+
