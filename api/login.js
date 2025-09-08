@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const CONNECTION_STRING = "mongodb+srv://indalnova:1LpW2CMG1MHEpuca@cluster0.05abfqy.mongodb.net/?retryWrites=true&w=majority";
 let isConnected = false;
 
-// ---- Connect to DB (cached) ----
+// Connect DB
 async function connectDB() {
   if (isConnected) return;
   if (mongoose.connection.readyState >= 1) {
@@ -15,7 +15,7 @@ async function connectDB() {
   isConnected = true;
 }
 
-// ---- User Schema ----
+// Define schema inside API
 const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
@@ -30,43 +30,25 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
-// ---- Helper: normalize phone ----
-function normalizePhone(phone) {
-  phone = phone.replace(/\D/g, "");      // remove non-digits
-  if (phone.startsWith("91") && phone.length > 10) phone = phone.slice(2);
-  if (phone.startsWith("0") && phone.length > 10) phone = phone.slice(1);
-  return phone;
-}
-
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ success: false, message: "Method not allowed" });
-  }
+  if (req.method !== "POST") return res.status(405).json({ success: false, message: "Method not allowed" });
 
   try {
     await connectDB();
 
-    let { phone, password, otp } = req.body;
+    const { phone, password, otp } = req.body;
     if (!phone) return res.status(400).json({ success: false, message: "Phone is required" });
 
-    // Normalize phone
-    const cleanPhone = normalizePhone(phone);
-
-    // Find user by normalized phone
-    const user = await User.findOne({ phone: cleanPhone }).select("name email password phone otp otpExpiry address");
+    const user = await User.findOne({ phone }).select("name email password phone otp otpExpiry address");
     if (!user) return res.status(401).json({ success: false, message: "User not found" });
 
-    console.log("Login attempt:", { phone: cleanPhone, otp, password });
-
-    // ===== OTP login =====
+    // OTP login
     if (otp) {
-      otp = otp.toString().trim();
-      if (!user.otp || !user.otpExpiry || user.otp.toString().trim() !== otp || user.otpExpiry.getTime() < Date.now()) {
-        console.log("OTP mismatch or expired:", { storedOtp: user.otp, otpExpiry: user.otpExpiry });
-        return res.status(401).json({ success: false, message: "Invalid or expired OTP" });
+      if (!user.otp || !user.otpExpiry || user.otp !== otp || user.otpExpiry.getTime() < Date.now()) {
+        return res.status(401).json({ success: false, message: "OTP mismatch or expired" });
       }
 
-      // Clear OTP after use
+      // Clear OTP after successful login
       user.otp = undefined;
       user.otpExpiry = undefined;
       await user.save();
@@ -78,7 +60,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // ===== Password login =====
+    // Password login
     if (password) {
       if (!user.password) return res.status(401).json({ success: false, message: "No password set for this user" });
 
@@ -96,7 +78,7 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error("Login error:", err);
-    return res.status(500).json({ success: false, message: "Server error, please try again later" });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 }
 
