@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
-import OTP from "./otpModel.js";
+import OTP from "./otpmodel.js";
 
 const CONNECTION_STRING = process.env.MONGO_URI || "your_connection_string_here";
 let isConnected = false;
@@ -90,3 +90,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: "Server error" });
   }
 }
+
