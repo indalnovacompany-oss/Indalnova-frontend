@@ -1,4 +1,6 @@
+// /api/signup.js
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 import OTP from "./otpmodel.js";
 
 const CONNECTION_STRING = process.env.MONGO_URI;
@@ -13,9 +15,17 @@ async function connectDB() {
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  email: { type: String, unique: true, sparse: true },
-  phone: { type: String, unique: true, sparse: true },
-  isVerified: { type: Boolean, default: false },
+  email: { type: String, unique: true },
+  phone: { type: String, unique: true },
+  password: String,
+  address: {
+    addr1: String,
+    addr2: String,
+    pincode: String,
+    district: String,
+    state: String,
+    notes: String,
+  },
 }, { timestamps: true });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
@@ -32,58 +42,54 @@ export default async function handler(req, res) {
 
   try {
     await connectDB();
-    let { step, name, identifier, otp } = req.body;
+    let { step, name, email, phone, otp, password, address } = req.body;
 
-    if (!identifier) return res.status(400).json({ success: false, message: "Phone or email required" });
+    if (!step) return res.status(400).json({ success: false, message: "Step required" });
 
     // -------- STEP 1: SEND OTP --------
     if (step === "send") {
-      if (!name) return res.status(400).json({ success: false, message: "Name required for signup" });
-
-      let phone = "";
-      let email = "";
-
-      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)) {
-        email = identifier.toLowerCase();
-        const exists = await User.findOne({ email });
-        if (exists) return res.status(400).json({ success: false, message: "Email already registered" });
-      } else {
-        phone = cleanPhone(identifier);
-        const exists = await User.findOne({ phone });
-        if (exists) return res.status(400).json({ success: false, message: "Phone already registered" });
+      if (!name || !email || !phone) {
+        return res.status(400).json({ success: false, message: "Name, email & phone are required" });
       }
 
-      // here call your sendSMS() or sendEmail() function
-      // and save OTP in OTP collection
+      phone = cleanPhone(phone);
+
+      const exists = await User.findOne({ $or: [{ email }, { phone }] });
+      if (exists) return res.status(400).json({ success: false, message: "Email or phone already registered" });
+
+      // Generate and save OTP
+      const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      await OTP.create({ phone, otp: newOtp, expires: new Date(Date.now() + 5 * 60 * 1000) });
+
+      // send SMS/email here
       return res.status(200).json({ success: true, message: "OTP sent" });
     }
 
-    // -------- STEP 2: VERIFY OTP --------
+    // -------- STEP 2: VERIFY & REGISTER --------
     if (step === "verify") {
-      if (!otp || !name) return res.status(400).json({ success: false, message: "Name and OTP required" });
-
-      let phone = "";
-      let email = "";
-
-      if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier)) {
-        email = identifier.toLowerCase();
-      } else {
-        phone = cleanPhone(identifier);
+      if (!otp || !phone || !email || !name || !password || !address) {
+        return res.status(400).json({ success: false, message: "All fields & OTP required" });
       }
 
+      phone = cleanPhone(phone);
+
+      // Check OTP
       const record = await OTP.findOne({ phone, otp });
       if (!record || record.expires.getTime() < Date.now()) {
         return res.status(401).json({ success: false, message: "Invalid or expired OTP" });
       }
       await OTP.deleteOne({ _id: record._id });
 
-      const newUser = new User({ name, email, phone, isVerified: true });
-      await newUser.save();
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Create user
+      const newUser = await User.create({ name, email, phone, password: hashedPassword, address });
 
       return res.status(201).json({
         success: true,
         message: "Signup successful",
-        user: { id: newUser._id, name: newUser.name, email: newUser.email, phone: newUser.phone },
+        user: { id: newUser._id, name: newUser.name, email: newUser.email, phone: newUser.phone }
       });
     }
 
