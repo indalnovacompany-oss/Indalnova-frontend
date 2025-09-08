@@ -46,20 +46,23 @@ export default async function handler(req, res) {
     otpStore[clean] = { otp, expires: Date.now() + 5 * 60 * 1000 };
 
     // Send via Fast2SMS (numeric-only)
-    const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
-      method: "POST",
-      headers: {
-        authorization: process.env.FAST2SMS_API_KEY,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        route: "otp",       // numeric OTP route
-        sender_id: "TXTIND",
-        message: otp.toString(),
-        numbers: clean,
-        flash: 0,
-      }),
-    });
+  const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
+  method: "POST",
+  headers: {
+    authorization: process.env.FAST2SMS_API_KEY,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    route: "otp",
+    sender_id: "TXTIND",
+    message: otp.toString(),      // numeric OTP
+    language: "english",
+    flash: 0,
+    numbers: phone,
+    variables_values: otp.toString(),  // THIS MUST BE numeric
+  }),
+});
+
 
     const data = await response.json();
     if (data.return) {
@@ -75,3 +78,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: "Server error" });
   }
 }
+
