@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
           div.classList.add("top-product");
           div.innerHTML = `
             <div class="product-img">
-              <img src="${product.image}" alt="${product.name}">
+              <img src="${product.image}" alt="">
             </div>
             <div class="details">
               <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
@@ -98,3 +98,4 @@ function addToCart(product) {
   }
   saveCart();
 }
+
