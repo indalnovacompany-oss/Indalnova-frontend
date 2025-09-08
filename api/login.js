@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import OTP from "./otpmodel.js";
 
-const CONNECTION_STRING = process.env.MONGO_URI || "your_connection_string_here";
+const CONNECTION_STRING = process.env.MONGO_URI || "mongodb+srv://indalnova:1LpW2CMG1MHEpuca@cluster0.05abfqy.mongodb.net/?retryWrites=true&w=majority";
 let isConnected = false;
 
 async function connectDB() {
@@ -90,4 +90,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: "Server error" });
   }
 }
+
 
