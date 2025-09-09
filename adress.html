@@ -13,16 +13,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <title>Shipping Address | Indalnova</title>
     <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            margin: 20px;
+
         }
 
         .address-container {
             max-width: 600px;
-            margin: auto;
-            margin-bottom:150px;
+            margin: 20px auto 30px auto;
+            /* 20px space from top, auto center, 30px bottom */
+            padding: 0 15px;
         }
+
 
         .address-card {
             border: 1px solid #ccc;
@@ -147,8 +154,15 @@
             color: brown;
             font-weight: bold;
         }
-        .offers-section{
-          align-items: center;
+
+        .offers-section {
+            align-items: center;
+        }
+
+        @media screen and (max-width:780px) {
+            .address-container {
+                max-width: 350px;
+            }
         }
 
         /* Navbar override */
@@ -158,89 +172,91 @@
 <body>
 
     <!-- Address Section -->
-    <section class="address-container">
-        <h2>Select Shipping Address</h2>
-        <div id="existing-addresses"></div>
+    <section>
+        <div class="address-container">
+            <h2>Select Shipping Address</h2>
+            <div id="existing-addresses"></div>
 
-        <button id="add-new-btn">Add New <i class="fa-solid fa-plus"></i></button>
+            <button id="add-new-btn">Add New <i class="fa-solid fa-plus"></i></button>
 
-        <div class="pin">
-            <input type="number" name="pincode" id="pin" placeholder="Enter Pin code" required>
-            <p id="result"></p>
-        </div>
-
-        <div class="address-form" style="display: none;">
-            <div class="state-city">
-                <input type="text" name="state" id="state" placeholder="State" required>
-                <input type="text" name="city" id="city" placeholder="City" required>
+            <div class="pin">
+                <input type="number" name="pincode" id="pin" placeholder="Enter Pin code" required>
+                <p id="result"></p>
             </div>
-            <input type="name" name="name" id="name" placeholder="Name" required>
-            <input type="text" name="adress" id="adress" placeholder="Address" required>
-            <input type="text" name="landmark" id="Landmark" placeholder="Landmark">
-            <input type="number" name="Phone" id="Phone" placeholder="Mobile Number">
-            <div class="payment-options">
-                <p><strong>Select Payment Method</strong></p>
 
-                <label class="payment-card">
-                    <input type="radio" name="paymentMethod" value="COD" required>
-                    <div class="card-content">
-                        <span class="icon">💵</span>
-                        <span>Cash on Delivery</span>
-                    </div>
-                </label>
+            <div class="address-form" style="display: none;">
+                <div class="state-city">
+                    <input type="text" name="state" id="state" placeholder="State" required>
+                    <input type="text" name="city" id="city" placeholder="City" required>
+                </div>
+                <input type="name" name="name" id="name" placeholder="Name" required>
+                <input type="text" name="adress" id="adress" placeholder="Address" required>
+                <input type="text" name="landmark" id="Landmark" placeholder="Landmark">
+                <input type="number" name="Phone" id="Phone" placeholder="Mobile Number">
+                <div class="payment-options">
+                    <p><strong>Select Payment Method</strong></p>
 
-                <label class="payment-card">
-                    <input type="radio" name="paymentMethod" value="ONLINE" required>
-                    <div class="card-content">
-                        <span class="icon">💳</span>
-                        <span>Online Payment (UPI / Card / Netbanking)</span>
-                    </div>
-                </label>
+                    <label class="payment-card">
+                        <input type="radio" name="paymentMethod" value="COD" required>
+                        <div class="card-content">
+                            <span class="icon">💵</span>
+                            <span>Cash on Delivery</span>
+                        </div>
+                    </label>
+
+                    <label class="payment-card">
+                        <input type="radio" name="paymentMethod" value="ONLINE" required>
+                        <div class="card-content">
+                            <span class="icon">💳</span>
+                            <span>Online Payment (UPI / Card / Netbanking)</span>
+                        </div>
+                    </label>
+                </div>
             </div>
         </div>
     </section>
-        <section>
-            <div class="offers-section">
-                <div class="coupn">
-                    <div class="coupn-det">
-                        <div class="coupn-header">
-                            <span id="coupn-note">View all coupons</span>
-                            <span id="toggel">
-                                <i class="fa-solid fa-eye" id="eye" style="color:black"></i>
-                                <i class="fa-solid fa-eye-slash" id="eyeSlash" style="color: black; display:none;"></i>
-                            </span>
-                        </div>
-                        <div class="coupon-items" id="coupon-items" style="display:none;">
-                            <div class="coupon-item">
-                                <input type="text" id="manual-coupon" placeholder="Enter code">
-                                <button class="apply" data-type="percent" data-value="10">Apply</button>
-                            </div>
-                            <div class="coupon-item">
-                                <span class="coupon-code">CODE5 - 5% off</span>
-                                <button class="apply-coupon" data-type="percent" data-value="10">Apply</button>
-                            </div>
-                            <div class="coupon-item">
-                                <span class="coupon-code">UPI 10 - ₹10 off</span>
-                                <button class="apply-coupon" data-type="fixed" data-value="50">Apply</button>
-                            </div>
-                            <div class="coupon-item">
-                                <span class="coupon-code">NEWUSER - ₹20 off</span>
-                                <button class="apply-coupon" data-type="fixed" data-value="100">Apply</button>
-                            </div>
-                        </div>
+    <section>
+        <div class="offers-section">
+            <div class="coupn">
+                <div class="coupn-det">
+                    <div class="coupn-header">
+                        <span id="coupn-note">View all coupons</span>
+                        <span id="toggel">
+                            <i class="fa-solid fa-eye" id="eye" style="color:black"></i>
+                            <i class="fa-solid fa-eye-slash" id="eyeSlash" style="color: black; display:none;"></i>
+                        </span>
                     </div>
-                </div>
-                <div class="upi">
-                    <div class="upi-det">
-                        <span id="upi-note">Extra Discount on all UPI Payments</span>
-                        <span id="upi-image"><img src="Assets/upi.png" height="25px" alt=""></span>
+                    <div class="coupon-items" id="coupon-items" style="display:none;">
+                        <div class="coupon-item">
+                            <input type="text" id="manual-coupon" placeholder="Enter code">
+                            <button class="apply" data-type="percent" data-value="10">Apply</button>
+                        </div>
+                        <div class="coupon-item">
+                            <span class="coupon-code">CODE5 - 5% off</span>
+                            <button class="apply-coupon" data-type="percent" data-value="10">Apply</button>
+                        </div>
+                        <div class="coupon-item">
+                            <span class="coupon-code">UPI 10 - ₹10 off</span>
+                            <button class="apply-coupon" data-type="fixed" data-value="50">Apply</button>
+                        </div>
+                        <div class="coupon-item">
+                            <span class="coupon-code">NEWUSER - ₹20 off</span>
+                            <button class="apply-coupon" data-type="fixed" data-value="100">Apply</button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="checkout-bar">
-                <span class="total-text">Total: ₹0</span>
-                <button class="checkout-btn"><i class="fa-solid fa-lock"></i> Proceed to Checkout</button>
-        </section>
+            <div class="upi">
+                <div class="upi-det">
+                    <span id="upi-note">Extra Discount on all UPI Payments</span>
+                    <span id="upi-image"><img src="Assets/upi.png" height="25px" alt=""></span>
+                </div>
+            </div>
+        </div>
+        <div class="checkout-bar">
+            <span class="total-text">Total: ₹0</span>
+            <button class="checkout-btn"><i class="fa-solid fa-lock"></i> Proceed to Checkout</button>
+    </section>
     </div>
     <script src="script.js"></script>
     <script>
