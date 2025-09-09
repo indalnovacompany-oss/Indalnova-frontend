@@ -1,6 +1,6 @@
-// /api/login.js
 import mongoose from "mongoose";
 import OTP from "./otpmodel.js";
+import { sendOTP } from "./sendsms.js";
 
 const CONNECTION_STRING =
   process.env.MONGO_URI ||
@@ -8,25 +8,20 @@ const CONNECTION_STRING =
 
 let isConnected = false;
 
+// Connect DB
 async function connectDB() {
   if (isConnected) return;
-  if (mongoose.connection.readyState >= 1) {
-    isConnected = true;
-    return;
-  }
+  if (mongoose.connection.readyState >= 1) { isConnected = true; return; }
   await mongoose.connect(CONNECTION_STRING, { maxPoolSize: 10 });
   isConnected = true;
 }
 
-// User schema (same as signup)
-const userSchema = new mongoose.Schema(
-  {
-    name: String,
-    email: String,
-    phone: String,
-  },
-  { timestamps: true }
-);
+// User schema
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  phone: String,
+}, { timestamps: true });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
@@ -45,57 +40,54 @@ export default async function handler(req, res) {
   try {
     await connectDB();
 
-    let { identifier, otp } = req.body;
+    let { step, identifier, otp } = req.body;
     if (!identifier) {
-      return res.status(400).json({ success: false, message: "Phone or email is required" });
+      return res.status(400).json({ success: false, message: "Phone or email required" });
     }
 
-    // handle phone/email
+    // Find user
     let query = {};
+    let phoneValue;
     if (identifier.includes("@")) {
       query.email = identifier.toLowerCase();
     } else {
-      const phone = cleanPhone(identifier);
-      if (!/^[0-9]{10}$/.test(phone)) {
+      phoneValue = cleanPhone(identifier);
+      if (!/^[0-9]{10}$/.test(phoneValue)) {
         return res.status(400).json({ success: false, message: "Invalid phone number" });
       }
-      query.phone = phone;
+      query.phone = phoneValue;
     }
 
-    // check if user exists
     const user = await User.findOne(query).lean();
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found. Please signup first." });
     }
 
-    // first step: send OTP
-    if (!otp) {
-      // call your sendsms function here instead of dummy
-      // await sendSMS(user.phone)
+    // Step 1 → Send OTP
+    if (step === "send") {
+      await sendOTP(user.phone);
       return res.status(200).json({ success: true, message: "OTP sent successfully" });
     }
 
-    // second step: verify OTP
-    const record = await OTP.findOne({ phone: user.phone, otp });
-    if (!record || record.expires.getTime() < Date.now()) {
-      return res.status(401).json({ success: false, message: "Invalid or expired OTP" });
-    }
-    await OTP.deleteOne({ _id: record._id });
+    // Step 2 → Verify OTP
+    if (step === "verify") {
+      const record = await OTP.findOne({ phone: user.phone, otp });
+      if (!record || record.expires.getTime() < Date.now()) {
+        return res.status(401).json({ success: false, message: "Invalid or expired OTP" });
+      }
+      await OTP.deleteOne({ _id: record._id });
 
-    return res.status(200).json({
-      success: true,
-      message: "Login successful",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-      },
-    });
+      return res.status(200).json({
+        success: true,
+        message: "Login successful",
+        user: { id: user._id, name: user.name, email: user.email, phone: user.phone },
+      });
+    }
+
+    return res.status(400).json({ success: false, message: "Invalid step" });
+
   } catch (err) {
     console.error("Login error:", err);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 }
-
-
