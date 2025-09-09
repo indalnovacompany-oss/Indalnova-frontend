@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indalnova | Login & Signup</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-image: url(Assets/bg.png);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
+      display: flex;
+      width: 90%;
+      max-width: 950px;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    .image-section {
+      flex: 1;
+      background-color:#f9f3e2;
+      min-height: 400px;
+      /* container height */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      /* keeps it tidy */
+    }
+
+    .image-section img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      /* ensures whole image fits inside */
+    }
+
+    .form-section {
+      flex: 1;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-section h2 {
+      font-size: 1.8rem;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-section p {
+      margin-bottom: 1.5rem;
+      color: #555;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #d4a055;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.9rem;
+      background: brown;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: darkred;
+    }
+
+    .toggle-text {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: 0.95rem;
+    }
+
+    .toggle-text span {
+      color: brown;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(2px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #loadingOverlay div {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid brown;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .otp-input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      outline: none;
+    }
+
+    .otp-input:focus {
+      border-color: #d4a055;
+    }
+
+    .resend-btn {
+      background: none;
+      border: none;
+      color: brown;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      text-decoration: underline;
+    }
+
+    .resend-btn:disabled {
+      color: gray;
+      cursor: not-allowed;
+      text-decoration: none;
+    }
+
+    @media screen and (max-width:480px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="image-section"><img src="Assets/loginbanner.jpg" alt=""></div>
+    <div class="form-section">
+
+      <!-- LOGIN -->
+      <div id="login-form">
+        <h2>Welcome Back <span style="color:brown;">INDALNOVA</span></h2>
+        <p>Login to Explore !!</p>
+        <div class="form-group">
+          <input type="text" id="login-identifier" placeholder="Phone Number or Email" />
+        </div>
+        <div id="login-otp-section" style="display:none; margin-top:1rem;">
+          <input type="text" id="login-otp" placeholder="Enter OTP" class="otp-input" />
+        </div>
+        <button type="button" class="btn" id="login-btn" onclick="handleLogin()">Proceed</button>
+        <button id="login-resend-btn" class="resend-btn" onclick="resendLoginOTP()" disabled>Resend OTP</button>
+        <p class="toggle-text">New here? <span onclick="toggleForms()">Create Account</span></p>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="signup-form" style="display:none;">
+        <h2>Create your <span style="color:brown;">INDALNOVA</span> Account</h2>
+        <div class="form-group"><input type="text" id="signup-name" placeholder="Full Name" /></div>
+        <div class="form-group"><input type="email" id="signup-email" placeholder="Email (Gmail)" /></div>
+        <div class="form-group"><input type="text" id="signup-phone" placeholder="Phone Number" /></div>
+        <div id="signup-otp-section" style="display:none; margin-top:1rem;">
+          <input type="text" id="signup-otp" placeholder="Enter OTP" class="otp-input" />
+        </div>
+        <button type="button" class="btn" id="signup-btn" onclick="handleSignup()">Proceed</button>
+        <button id="signup-resend-btn" class="resend-btn" onclick="resendSignupOTP()" disabled>Resend OTP</button>
+        <p class="toggle-text">Already have an account? <span onclick="toggleForms()">Login</span></p>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="loadingOverlay">
+    <div></div>
+  </div>
+
+  <script>
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    function showLoader() { loadingOverlay.style.display = "flex"; }
+    function hideLoader() { loadingOverlay.style.display = "none"; }
+
+    function toggleForms() {
+      const loginDiv = document.getElementById("login-form");
+      const signupDiv = document.getElementById("signup-form");
+      loginDiv.style.display = loginDiv.style.display === "none" ? "block" : "none";
+      signupDiv.style.display = loginDiv.style.display === "block" ? "none" : "block";
+    }
+
+    function cleanPhone(phone) { phone = phone.replace(/\D/g, ""); if (phone.startsWith("91") && phone.length > 10) phone = phone.slice(2); if (phone.startsWith("0") && phone.length > 10) phone = phone.slice(1); return phone; }
+    function isValidPhone(phone) { return /^[0-9]{10}$/.test(phone); }
+    function isValidEmail(email) { return /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email); }
+
+    let loginResendCount = 0, signupResendCount = 0, maxResends = 3;
+
+    // ================= LOGIN =================
+    let loginStep = "send";
+    async function handleLogin() {
+      let identifier = document.getElementById("login-identifier").value.trim();
+      let otp = document.getElementById("login-otp").value.trim();
+
+      if (loginStep === "send") {
+        if (!identifier) return alert("Enter phone/email");
+        showLoader();
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ step: "send", identifier })
+        });
+        const data = await res.json(); hideLoader();
+
+        if (data.success) {
+          document.getElementById("login-otp-section").style.display = "block";
+          document.getElementById("login-btn").textContent = "Verify OTP";
+          document.getElementById("login-resend-btn").disabled = false;
+          loginStep = "verify";
+          alert("OTP sent!");
+        } else alert(data.message);
+      } else if (loginStep === "verify") {
+        if (!otp) return alert("Enter OTP");
+        showLoader();
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ step: "verify", identifier, otp })
+        });
+        const data = await res.json(); hideLoader();
+
+        if (data.success) {
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("currentUser", data.phone || identifier);
+          alert("Login successful!");
+          window.location.href = "index.html";
+        } else alert(data.message);
+      }
+    }
+    function resendLoginOTP() {
+      if (loginResendCount >= maxResends) return alert("Max attempts reached");
+      loginResendCount++;
+      loginStep = "send"; // re-send mode
+      handleLogin();
+      if (loginResendCount >= maxResends) document.getElementById("login-resend-btn").disabled = true;
+    }
+
+    // ================= SIGNUP =================
+    let signupStep = "send";
+    async function handleSignup() {
+      const name = document.getElementById("signup-name").value.trim();
+      const phone = cleanPhone(document.getElementById("signup-phone").value.trim());
+      const email = document.getElementById("signup-email").value.trim().toLowerCase();
+      const otp = document.getElementById("signup-otp").value.trim();
+
+      if (signupStep === "send") {
+        if (!name) return alert("Enter name");
+        if (!isValidPhone(phone)) return alert("Enter valid phone");
+        if (!isValidEmail(email)) return alert("Enter valid Gmail");
+
+        showLoader();
+        const res = await fetch("/api/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ step: "send", name, phone, email })
+        });
+        const data = await res.json(); hideLoader();
+
+        if (data.success) {
+          document.getElementById("signup-otp-section").style.display = "block";
+          document.getElementById("signup-btn").textContent = "Verify OTP";
+          document.getElementById("signup-resend-btn").disabled = false;
+          signupStep = "verify";
+          alert("OTP sent!");
+        } else alert(data.message);
+      } else if (signupStep === "verify") {
+        if (!otp) return alert("Enter OTP");
+
+        const password = "defaultpass";
+        const address = { addr1: "Not set", pincode: "000000", district: "NA" };
+
+        showLoader();
+        const res = await fetch("/api/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ step: "verify", name, phone, email, otp, password, address })
+        });
+        const data = await res.json(); hideLoader();
+
+        if (data.success) {
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("currentUser", phone);
+          alert("Signup successful!");
+          window.location.href = "index.html";
+        } else alert(data.message);
+      }
+    }
+    function resendSignupOTP() {
+      if (signupResendCount >= maxResends) return alert("Max attempts reached");
+      signupResendCount++;
+      signupStep = "send";
+      handleSignup();
+      if (signupResendCount >= maxResends) document.getElementById("signup-resend-btn").disabled = true;
+    }
+
+    // Redirect if already logged in
+    if (localStorage.getItem("isLoggedIn") === "true") window.location.href = "index.html";
+  </script>
+
+</body>
+
+</html>
