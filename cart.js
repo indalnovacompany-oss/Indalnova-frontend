@@ -7,15 +7,27 @@ function hideLoader() {
 }
 
 // ===== Current User & Cart =====
-const currentUserId = localStorage.getItem("currentUser") || null;
-let cart = currentUserId
-  ? JSON.parse(localStorage.getItem("cart_" + currentUserId) || "[]")
+const currentUserRaw = localStorage.getItem("currentUser") || null;
+let cart = currentUserRaw
+  ? JSON.parse(localStorage.getItem("cart_" + currentUserRaw) || "[]")
   : JSON.parse(localStorage.getItem("guestCart") || "[]");
+
+// ===== Identify User (email or phone) =====
+function getUserIdentifier() {
+  if (!currentUserRaw) return null;
+
+  // If 10-digit number → treat as phone
+  if (/^[0-9]{10}$/.test(currentUserRaw)) {
+    return { loginId: currentUserRaw };
+  }
+  // Otherwise treat as email
+  return { email: currentUserRaw };
+}
 
 // ===== Save Cart =====
 function saveCart() {
-  if (currentUserId) {
-    localStorage.setItem("cart_" + currentUserId, JSON.stringify(cart));
+  if (currentUserRaw) {
+    localStorage.setItem("cart_" + currentUserRaw, JSON.stringify(cart));
   } else {
     localStorage.setItem("guestCart", JSON.stringify(cart));
   }
@@ -110,7 +122,7 @@ const checkoutBtn = document.querySelector(".checkout-btn");
 if (checkoutBtn) {
   checkoutBtn.addEventListener("click", () => {
     // Case 1: Not logged in
-    if (!currentUserId) {
+    if (!currentUserRaw) {
       alert("Please login first.");
       window.location.href = "login.html";
       return;
@@ -119,7 +131,7 @@ if (checkoutBtn) {
     // Case 2: Save checkout data
     let total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     const checkoutData = {
-      user: currentUserId,
+      ...getUserIdentifier(),
       cart: cart,
       total: total,
       timestamp: new Date().toISOString()
@@ -136,7 +148,8 @@ function addToCart(newItem) {
   // Always check if item exists
   const existing = cart.find(p => p.id === newItem.id);
   if (existing) {
-    existing.qty += newItem.qty || 1;
+    // Reset if it was previously removed completely
+    existing.qty = (existing.qty || 0) + (newItem.qty || 1);
   } else {
     cart.push({ ...newItem, qty: newItem.qty || 1 });
   }
