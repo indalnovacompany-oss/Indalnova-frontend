@@ -34,7 +34,6 @@
             color: brown;
         }
 
-        /* Address Section */
         .address-section,
         .summary-section,
         .payment-section,
@@ -88,12 +87,13 @@
             cursor: pointer;
         }
 
-        /* Slide-in Form */
         .address-slide {
             position: fixed;
             bottom: -100%;
-            left: 0;
-            width: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 500px;
             background: white;
             padding: 20px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
@@ -115,7 +115,6 @@
             border: 1px solid #ccc;
         }
 
-        /* Save As (radio style) */
         .save-type {
             display: flex;
             align-items: center;
@@ -155,35 +154,28 @@
             color: black;
         }
 
-        /* Coupon Section */
-        .coupon-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .coupon-row input {
-            flex: 1;
+        .coupon-section input {
             padding: 10px;
-            border: 1px solid #ccc;
             border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 70%;
         }
 
-        .coupon-row button {
-            padding: 10px 16px;
+        .apply-btn {
+            padding: 10px 14px;
             border: none;
+            border-radius: 8px;
             background: brown;
             color: white;
-            border-radius: 8px;
             cursor: pointer;
+            margin-left: 10px;
         }
 
-        #coupon-msg {
+        .coupon-msg {
             margin-top: 8px;
-            font-size: 14px;
+            color: green;
         }
 
-        /* Order Summary */
         .summary-item {
             display: flex;
             justify-content: space-between;
@@ -196,7 +188,6 @@
             color: green;
         }
 
-        /* Payment Section */
         .payment-option {
             padding: 12px;
             border: 1px solid #ccc;
@@ -210,7 +201,6 @@
             background: #f9ecec;
         }
 
-        /* Checkout Bar */
         .checkout-bar {
             position: fixed;
             bottom: 0;
@@ -248,49 +238,42 @@
         }
 
 
-        @media (min-width: 768px) {
-            .address-slide {
-                width: 90%;
-                left: 50%;
-                transform: translateX(-50%);
-                border-radius: 12px 12px 0 0;
-            }
-        }
+    @media (min-width: 768px) {
+  .address-slide {
+    width: 90% !important;   /* force override if needed */
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 12px 12px 0 0;
+  }
+}
 
-        /* Center slide on large screens */
     </style>
 </head>
 
 <body>
 
     <div class="container">
-        <!-- Address Section -->
         <div class="address-section">
             <h2>Select Shipping Address</h2>
             <div id="existing-addresses"></div>
             <button class="add-new-btn" id="add-new-btn">+ Add New Address</button>
         </div>
 
-        <!-- Coupon Section -->
         <div class="coupon-section">
             <h2>Apply Coupon</h2>
-            <div class="coupon-row">
-                <input type="text" id="coupon-input" placeholder="Enter coupon code">
-                <button id="apply-coupon">Apply</button>
-            </div>
-            <p id="coupon-msg"></p>
+            <input type="text" id="coupon-input" placeholder="Enter coupon code">
+            <button class="apply-btn" id="apply-coupon">Apply</button>
+            <p id="coupon-msg" class="coupon-msg"></p>
         </div>
 
-        <!-- Order Summary -->
         <div class="summary-section">
             <h2>Order Summary</h2>
             <div class="summary-item"><span>Subtotal</span><span id="subtotal">₹2000</span></div>
-            <div class="summary-item"><span>Discount</span><span id="discount">-₹0</span></div>
+            <div class="summary-item"><span>Discount</span><span id="discount">-₹200</span></div>
             <div class="summary-item"><span>Delivery Charges</span><span style="color:green">FREE</span></div>
-            <div class="summary-item summary-total"><span>Total</span><span id="total">₹2000</span></div>
+            <div class="summary-item summary-total"><span>Total</span><span id="total">₹1800</span></div>
         </div>
 
-        <!-- Payment Section -->
         <div class="payment-section">
             <h2>Payment Options</h2>
             <div class="payment-option" data-value="online">💳 Online (UPI, Debit/Credit)</div>
@@ -298,7 +281,6 @@
         </div>
     </div>
 
-    <!-- Slide-in Form -->
     <div class="address-slide" id="address-slide">
         <h3>Add Shipping Address</h3>
         <input type="number" id="pin" placeholder="PIN Code">
@@ -311,7 +293,6 @@
         <input type="text" id="landmark" placeholder="Landmark">
         <input type="number" id="phone" placeholder="Phone Number">
 
-        <!-- Save As Home / Work (radio style) -->
         <div class="save-type">
             <span>Save As:</span>
             <label><input type="radio" name="saveAs" value="Home" checked> Home</label>
@@ -324,9 +305,8 @@
         </div>
     </div>
 
-    <!-- Checkout Bar -->
     <div class="checkout-bar" id="checkout-bar">
-        <span class="total-text">Total: ₹2000</span>
+        <span class="total-text">Total: ₹1800</span>
         <button class="continue" id="continue-btn">Continue</button>
     </div>
 
@@ -341,45 +321,42 @@
             const checkoutBar = document.getElementById("checkout-bar");
             const paymentOptions = document.querySelectorAll(".payment-option");
 
-            // Order data
-            let subtotal = 2000;
-            let discount = 0;
-            let total = subtotal;
+            const couponInput = document.getElementById("coupon-input");
+            const applyCouponBtn = document.getElementById("apply-coupon");
+            const couponMsg = document.getElementById("coupon-msg");
+            const subtotalEl = document.getElementById("subtotal");
+            const discountEl = document.getElementById("discount");
+            const totalEl = document.getElementById("total");
 
-            // Coupons (dummy, later link to Google Sheet/DB)
-            const coupons = {
-                SAVE200: 200,
-                SAVE500: 500,
-                INDAL10: 10
-            };
-
-            function updateSummary() {
-                document.getElementById("subtotal").textContent = "₹" + subtotal;
-                document.getElementById("discount").textContent = "-₹" + discount;
-                document.getElementById("total").textContent = "₹" + (subtotal - discount);
-                document.querySelector(".total-text").textContent = "Total: ₹" + (subtotal - discount);
-            }
-
-            document.getElementById("apply-coupon").addEventListener("click", () => {
-                const input = document.getElementById("coupon-input").value.trim().toUpperCase();
-                const msg = document.getElementById("coupon-msg");
-
-                if (coupons[input]) {
-                    discount = coupons[input];
-                    msg.style.color = "green";
-                    msg.textContent = `Coupon applied! You saved ₹${discount}`;
-                } else {
-                    discount = 0;
-                    msg.style.color = "red";
-                    msg.textContent = "Invalid coupon code!";
-                }
-                updateSummary();
-            });
-
-            // Addresses
             let addresses = [];
             let selectedAddressId = null;
             let selectedPayment = "online";
+
+            let subtotal = 2000;
+            let discount = 200;
+            let total = subtotal - discount;
+
+            const coupons = { "SAVE100": 100, "NEW200": 200 };
+
+            function updateSummary() {
+                subtotalEl.textContent = "₹" + subtotal;
+                discountEl.textContent = "-₹" + discount;
+                total = subtotal - discount;
+                totalEl.textContent = "₹" + total;
+                document.querySelector(".total-text").textContent = "Total: ₹" + total;
+            }
+
+            applyCouponBtn.addEventListener("click", () => {
+                const code = couponInput.value.trim().toUpperCase();
+                if (coupons[code]) {
+                    discount = 200 + coupons[code];
+                    couponMsg.textContent = `Coupon applied! You saved ₹${coupons[code]}`;
+                } else {
+                    couponMsg.textContent = "Invalid coupon!";
+                    discount = 200;
+                }
+                updateSummary();
+            });
 
             function renderAddresses() {
                 existingAddressesEl.innerHTML = "";
@@ -406,14 +383,13 @@
                         addresses = addresses.filter(a => a.id !== addr.id);
                         if (selectedAddressId === addr.id) selectedAddressId = null;
                         renderAddresses();
-                        if (addresses.length === 0) {
-                            openSlide();
-                        }
+                        if (addresses.length === 0) openSlide();
                     });
                 });
             }
 
             function openSlide() {
+                clearForm();
                 checkoutBar.style.display = "none";
                 addressSlide.classList.add("show");
             }
@@ -422,7 +398,40 @@
                 checkoutBar.style.display = "flex";
             }
 
-            // Payment option toggle
+            function clearForm() {
+                document.getElementById("pin").value = "";
+                document.getElementById("state").value = "";
+                document.getElementById("city").value = "";
+                document.getElementById("name").value = "";
+                document.getElementById("address1").value = "";
+                document.getElementById("address2").value = "";
+                document.getElementById("landmark").value = "";
+                document.getElementById("phone").value = "";
+                document.querySelector("input[name='saveAs'][value='Home']").checked = true;
+                document.getElementById("pin-result").textContent = "";
+            }
+
+            // PIN auto-fill
+            document.getElementById("pin").addEventListener("blur", async (e) => {
+                const pin = e.target.value.trim();
+                if (pin.length === 6) {
+                    try {
+                        const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+                        const data = await res.json();
+                        if (data[0].Status === "Success") {
+                            const postOffice = data[0].PostOffice[0];
+                            document.getElementById("state").value = postOffice.State;
+                            document.getElementById("city").value = postOffice.District;
+                            document.getElementById("pin-result").textContent = "✔️ Auto-filled City & State";
+                        } else {
+                            document.getElementById("pin-result").textContent = "❌ Invalid PIN Code";
+                        }
+                    } catch {
+                        document.getElementById("pin-result").textContent = "❌ Error fetching data";
+                    }
+                }
+            });
+
             paymentOptions.forEach(opt => {
                 opt.addEventListener("click", () => {
                     paymentOptions.forEach(o => o.classList.remove("active"));
@@ -432,7 +441,6 @@
             });
             paymentOptions[0].classList.add("active");
 
-            // Show slide on Add New
             addBtn.addEventListener("click", () => {
                 if (addresses.length >= 3) {
                     alert("You can add only 3 addresses");
@@ -470,10 +478,7 @@
                 alert(`Proceeding with ${selectedPayment.toUpperCase()} using address ID: ${selectedAddressId}`);
             });
 
-            // Auto open if no address
-            if (addresses.length === 0) {
-                openSlide();
-            }
+            if (addresses.length === 0) openSlide();
 
             renderAddresses();
             updateSummary();
