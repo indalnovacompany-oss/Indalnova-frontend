@@ -9,7 +9,10 @@ let isConnected = false;
 // Connect DB
 async function connectDB() {
   if (isConnected) return;
-  if (mongoose.connection.readyState >= 1) { isConnected = true; return; }
+  if (mongoose.connection.readyState >= 1) { 
+    isConnected = true; 
+    return; 
+  }
   await mongoose.connect(CONNECTION_STRING, { maxPoolSize: 10 });
   isConnected = true;
 }
@@ -39,15 +42,24 @@ const User = mongoose.models.User || mongoose.model("User", userSchema);
 export default async function handler(req, res) {
   await connectDB();
 
-  const { email, loginId } = req.query; // frontend may send email or loginId
-  const identifier = loginId || email;
-  if (!identifier) return res.status(400).json({ success: false, message: "User identifier required" });
+  // ✅ Fix: read identifier from both query and body
+  const identifier =
+    req.query.loginId ||
+    req.query.email ||
+    req.body?.loginId ||
+    req.body?.email;
+
+  if (!identifier) {
+    return res.status(400).json({ success: false, message: "User identifier required" });
+  }
 
   // Find by email or phone
   const user = await User.findOne({
     $or: [{ email: identifier }, { phone: identifier }]
   });
-  if (!user) return res.status(404).json({ success: false, message: "User not found" });
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
 
   // ===== GET: fetch all addresses =====
   if (req.method === "GET") {
