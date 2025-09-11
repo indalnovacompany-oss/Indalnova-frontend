@@ -18,6 +18,7 @@
             font-family: 'Poppins', sans-serif;
             background-image: url(Assets/bg.png);
             padding-bottom: 100px;
+            position: relative;
         }
 
         .container {
@@ -237,6 +238,23 @@
             border-radius: 10px;
             color: brown;
         }
+
+        /* ==== Loader Overlay ==== */
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: brown;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -300,6 +318,9 @@
         <button class="continue" id="continue-btn">Continue</button>
     </div>
 
+    <!-- Loader -->
+    <div id="loader-overlay">Processing Payment...</div>
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
@@ -318,6 +339,7 @@
             const subtotalEl = document.getElementById("subtotal");
             const discountEl = document.getElementById("discount");
             const totalEl = document.getElementById("total");
+            const loaderOverlay = document.getElementById("loader-overlay");
 
             let addresses = [];
             let selectedAddressId = null;
@@ -501,8 +523,9 @@
                     paymentMethod: selectedPayment.toUpperCase()
                 };
 
-                if (selectedPayment === "COD") {
-                    // ✅ COD: directly save order
+                loaderOverlay.style.display = "flex"; // show loader
+
+                if (selectedPayment === "cod") {
                     try {
                         const res = await fetch("/api/saveorder", {
                             method: "POST",
@@ -510,6 +533,7 @@
                             body: JSON.stringify(order)
                         });
                         const data = await res.json();
+                        loaderOverlay.style.display = "none"; // hide loader
                         if (data.success) {
                             localStorage.setItem("currentOrder", JSON.stringify(order));
                             window.location.href = "orderconform.html?orderId=" + orderId;
@@ -518,10 +542,11 @@
                         }
                     } catch (err) {
                         console.error(err);
+                        loaderOverlay.style.display = "none";
                         alert("Error saving order");
                     }
                 } else {
-                    // ✅ Online Payment: open Razorpay
+                    // Online payment
                     try {
                         const res = await fetch("/api/checkout", {
                             method: "POST",
@@ -534,7 +559,10 @@
                             })
                         });
                         const data = await res.json();
-                        if (!data.success) return alert(data.message || "Checkout failed");
+                        if (!data.success) {
+                            loaderOverlay.style.display = "none";
+                            return alert(data.message || "Checkout failed");
+                        }
 
                         const options = {
                             key: data.key,
@@ -555,12 +583,14 @@
                                         body: JSON.stringify(order)
                                     });
                                     const saveData = await saveRes.json();
+                                    loaderOverlay.style.display = "none"; // hide loader
                                     if (saveData.success) {
                                         localStorage.setItem("currentOrder", JSON.stringify(order));
                                         window.location.href = "orderconform.html?orderId=" + orderId;
                                     } else alert(saveData.message || "Failed to save order after payment");
                                 } catch (err) {
                                     console.error(err);
+                                    loaderOverlay.style.display = "none";
                                     alert("Error saving order after payment");
                                 }
                             },
@@ -576,6 +606,7 @@
                         rzp.open();
                     } catch (err) {
                         console.error(err);
+                        loaderOverlay.style.display = "none";
                         alert("Checkout failed");
                     }
                 }
@@ -614,4 +645,3 @@
 </body>
 
 </html>
-
