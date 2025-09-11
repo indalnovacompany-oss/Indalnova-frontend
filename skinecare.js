@@ -1,5 +1,19 @@
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// ===== Current User & Cart =====
+const currentUserRaw = localStorage.getItem("currentUser") || null;
+let cart = currentUserRaw
+  ? JSON.parse(localStorage.getItem("cart_" + currentUserRaw) || "[]")
+  : JSON.parse(localStorage.getItem("guestCart") || "[]");
 
+// ===== Save Cart =====
+function saveCart() {
+  if (currentUserRaw) {
+    localStorage.setItem("cart_" + currentUserRaw, JSON.stringify(cart));
+  } else {
+    localStorage.setItem("guestCart", JSON.stringify(cart));
+  }
+}
+
+// ===== Load Products =====
 fetch("product.json")
   .then(res => res.json())
   .then(products => {
@@ -59,7 +73,7 @@ fetch("product.json")
   })
   .catch(err => console.error("Error loading products:", err));
 
-// Add to cart function
+// ===== Add to Cart =====
 function addToCart(product) {
   let existing = cart.find(p => p.id === product.id);
   if (existing) {
@@ -68,5 +82,5 @@ function addToCart(product) {
     product.qty = 1;
     cart.push(product);
   }
-  localStorage.setItem("cart", JSON.stringify(cart));
+  saveCart(); // ✅ use correct save system
 }
