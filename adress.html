@@ -457,113 +457,6 @@
                 } catch (err) { console.error(err); }
             });
 
-            continueBtn.addEventListener("click", async () => {
-                if (!selectedAddressId) return alert("Select a shipping address!");
-                const selectedAddress = addresses.find(a => a.id === selectedAddressId);
-                if (!cartData.length) return alert("Cart is empty!");
-
-                const orderId = "ORD" + Math.floor(1000 + Math.random() * 9000);
-
-                // ✅ Proper order object with separate address fields
-                const order = {
-                    orderId,
-                    email: localStorage.getItem("currentUser"),
-                    name: selectedAddress.name,
-                    phone: selectedAddress.phone,
-                    address1: selectedAddress.address1,
-                    address2: selectedAddress.address2 || "",
-                    pin: selectedAddress.pin,
-                    city: selectedAddress.city,
-                    state: selectedAddress.state,
-                    productIds: cartData.map(p => p.id),
-                    quantities: cartData.map(p => p.qty),
-                    prices: cartData.map(p => p.price),
-                    totalPrice: total,
-                    paymentMethod: selectedPayment.toUpperCase()
-                };
-
-                if (selectedPayment === "COD") {
-                    // ===== Cash on Delivery Flow =====
-                    try {
-                        const res = await fetch("/api/saveorder", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(order)
-                        });
-                        const data = await res.json();
-                        if (data.success) {
-                            localStorage.setItem("currentOrder", JSON.stringify(order));
-                            window.location.href = "orderconform.html?orderId=" + orderId;
-                        } else {
-                            alert(data.message || "Failed to save order");
-                        }
-                    } catch (err) {
-                        console.error("Error saving COD order:", err);
-                        alert("Error saving order");
-                    }
-                } else {
-                    // ===== Online Payment Flow =====
-                    try {
-                        const res = await fetch("/api/checkout", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                cart: cartData,
-                                shippingDetails: selectedAddress,
-                                paymentMethod: "ONLINE",
-                                email: localStorage.getItem("currentUser")
-                            })
-                        });
-                        const data = await res.json();
-                        if (!data.success) return alert(data.message || "Checkout failed");
-
-                        const options = {
-                            key: data.key,
-                            amount: data.amount,
-                            currency: data.currency,
-                            name: "Indalnova",
-                            description: "Order Payment",
-                            order_id: data.orderId,
-                            handler: async function (response) {
-                                // attach payment details
-                                order.paymentId = response.razorpay_payment_id;
-                                order.paymentSignature = response.razorpay_signature;
-
-                                // save order after payment
-                                try {
-                                    const saveRes = await fetch("/api/saveorder", {
-                                        method: "POST",
-                                        headers: { "Content-Type": "application/json" },
-                                        body: JSON.stringify(order)
-                                    });
-                                    const saveData = await saveRes.json();
-                                    if (saveData.success) {
-                                        localStorage.setItem("currentOrder", JSON.stringify(order));
-                                        window.location.href = "orderconform.html?orderId=" + orderId;
-                                    } else {
-                                        alert(saveData.message || "Failed to save order after payment");
-                                    }
-                                } catch (err) {
-                                    console.error("Error saving order after online payment:", err);
-                                    alert("Error saving order after payment");
-                                }
-                            },
-                            prefill: {
-                                name: selectedAddress.name,
-                                email: localStorage.getItem("currentUser"),
-                                contact: selectedAddress.phone
-                            },
-                            theme: { color: "brown" }
-                        };
-
-                        const rzp = new Razorpay(options);
-                        rzp.open();
-                    } catch (err) {
-                        console.error("Online checkout failed:", err);
-                        alert("Checkout failed");
-                    }
-                }
-            });
 
             // ===== PIN Auto-fill =====
             document.getElementById("pin").addEventListener("blur", async e => {
@@ -577,7 +470,114 @@
                             document.getElementById("state").value = postOffice.State;
                             document.getElementById("city").value = postOffice.District;
                             document.getElementById("pin-result").textContent = "✔️ Auto-filled City & State";
-                        } else document.getElementById("pin-result").textContent = "❌ Invalid PIN Code";
+                        } else document.getElemecontinueBtn.addEventListener("click", async () => {
+                            if (!selectedAddressId) return alert("Select a shipping address!");
+                            const selectedAddress = addresses.find(a => a.id === selectedAddressId);
+                            if (!cartData.length) return alert("Cart is empty!");
+
+                            const orderId = "ORD" + Math.floor(1000 + Math.random() * 9000);
+
+                            // Prepare order object
+                            const order = {
+                                orderId,
+                                email: localStorage.getItem("currentUser"),
+                                name: selectedAddress.name,
+                                phone: selectedAddress.phone,
+                                address1: selectedAddress.address1,
+                                address2: selectedAddress.address2 || "",
+                                city: selectedAddress.city,
+                                state: selectedAddress.state,
+                                pin: selectedAddress.pin,
+                                productIds: cartData.map(p => p.id),
+                                quantities: cartData.map(p => p.qty),
+                                prices: cartData.map(p => p.price),
+                                totalPrice: total,
+                                paymentMethod: selectedPayment.toUpperCase()
+                            };
+
+                            if (selectedPayment === "COD") {
+                                // ✅ COD: directly save order
+                                try {
+                                    const res = await fetch("/api/saveorder", {
+                                        method: "POST",
+                                        headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify(order)
+                                    });
+                                    const data = await res.json();
+                                    if (data.success) {
+                                        localStorage.setItem("currentOrder", JSON.stringify(order));
+                                        window.location.href = "orderconform.html?orderId=" + orderId;
+                                    } else {
+                                        alert(data.message || "Failed to save order");
+                                    }
+                                } catch (err) {
+                                    console.error(err);
+                                    alert("Error saving order");
+                                }
+                            } else {
+                                // ✅ Online Payment: open Razorpay
+                                try {
+                                    const res = await fetch("/api/checkout", {
+                                        method: "POST",
+                                        headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify({
+                                            cart: cartData,
+                                            shippingDetails: selectedAddress,
+                                            paymentMethod: "ONLINE",
+                                            email: localStorage.getItem("currentUser")
+                                        })
+                                    });
+                                    const data = await res.json();
+                                    if (!data.success) return alert(data.message || "Checkout failed");
+
+                                    const options = {
+                                        key: data.key,
+                                        amount: data.amount,
+                                        currency: data.currency,
+                                        name: "Indalnova",
+                                        description: "Order Payment",
+                                        order_id: data.orderId,
+                                        handler: async function (response) {
+                                            // ✅ save payment info
+                                            order.paymentId = response.razorpay_payment_id;
+                                            order.paymentSignature = response.razorpay_signature;
+                                            order.paymentStatus = "paid";
+
+                                            // Save order after successful payment
+                                            try {
+                                                const saveRes = await fetch("/api/saveorder", {
+                                                    method: "POST",
+                                                    headers: { "Content-Type": "application/json" },
+                                                    body: JSON.stringify(order)
+                                                });
+                                                const saveData = await saveRes.json();
+                                                if (saveData.success) {
+                                                    localStorage.setItem("currentOrder", JSON.stringify(order));
+                                                    window.location.href = "orderconform.html?orderId=" + orderId;
+                                                } else alert(saveData.message || "Failed to save order after payment");
+                                            } catch (err) {
+                                                console.error(err);
+                                                alert("Error saving order after payment");
+                                            }
+                                        },
+                                        prefill: {
+                                            name: selectedAddress.name,
+                                            email: localStorage.getItem("currentUser"),
+                                            contact: selectedAddress.phone
+                                        },
+                                        theme: { color: "brown" }
+                                    };
+
+                                    const rzp = new Razorpay(options);
+                                    rzp.open();
+                                    // ❌ Do not redirect here, wait for handler
+                                } catch (err) {
+                                    console.error(err);
+                                    alert("Checkout failed");
+                                }
+                            }
+                        });
+                        ntById("pin-result").textContent = "❌ Invalid PIN Code";
                     } catch { document.getElementById("pin-result").textContent = "❌ Error fetching data"; }
                 }
             });
