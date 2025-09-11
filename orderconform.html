@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Confirmation</title>
+  <style>
+    body {
+      font-family: Roboto, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      background-image: url(Assets/bg.png);
+
+      /* new flexbox setup */
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .order-page {
+      padding: 50px;
+      margin-top: 80px;
+      flex: 1;
+      /* take remaining space */
+    }
+
+    .footer {
+      margin-top: auto;
+      /* pushes footer to bottom */
+    }
+
+    .made-in-india-inline {
+      font-family: Inter, system-ui, Arial;
+      font-size: 14px;
+      color: #0b2540;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    button {
+      height:45px;
+      width: 170px;
+      border-radius: 10px;
+      background-color: brown;
+      color: white;
+      margin-top: 10px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .made-in-india-inline strong {
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .site-footer {
+      text-align: center;
+      color:black;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 15px 10px;
+    }
+
+    .site-footer a {
+      color:brown;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .site-footer a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+  </style>
+
+</head>
+
+<body>
+  <!-- Order Confirmation Page -->
+  <div class="order-page">
+    <img src="Assets/conformationimg.png" alt="Order Confirmed">
+    <h1>Thank you for your order!</h1>
+    <p>Your order has been placed successfully.</p>
+    <p>Your OrderID is: <strong id="orderIdDisplay">—</strong></p>
+    <p>Tracking ID will be shared once your package is shipped.</p>
+    <button onclick="window.location.href='index.html'">Continue Shopping</button>
+  </div>
+  <div class="footer">
+    <footer>
+      <span class="made-in-india-inline">
+        <svg viewBox="0 0 36 24" width="18" height="12" aria-hidden="true" focusable="false"
+          style="vertical-align:middle;margin-right:6px">
+          <rect width="36" height="8" fill="#FF9933" />
+          <rect y="8" width="36" height="8" fill="#FFFFFF" />
+          <rect y="16" width="36" height="8" fill="#138808" />
+          <circle cx="18" cy="12" r="3.2" fill="none" stroke="#054187" stroke-width="0.9" />
+        </svg>
+        <strong>Made in India</strong>
+      </span>
+    </footer>
+    <footer class="site-footer">
+      <p>© 2025 Indalnova. All rights reserved.</p>
+      <p>Made with ❤️ by <a href="https://shivamportfoliyo.netlify.app/" target="_blank">Shivam</a></p>
+    </footer>
+
+  </div>
+  <script>
+    // ===== Get Order ID from URL =====
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get("orderId");
+    if (orderId) {
+      document.getElementById("orderIdDisplay").textContent = orderId;
+    }
+
+    // ===== Confetti JS =====
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let confettiPieces = [];
+    let confettiActive = false;
+
+    function ConfettiPiece() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height - canvas.height;
+      this.size = Math.random() * 8 + 4;
+      this.speed = Math.random() * 3 + 2;
+      this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+    }
+
+    function createConfetti() {
+      for (let i = 0; i < 150; i++) {
+        confettiPieces.push(new ConfettiPiece());
+      }
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiPieces.forEach((p) => {
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+        ctx.closePath();
+      });
+    }
+
+    function updateConfetti() {
+      confettiPieces.forEach((p) => {
+        p.y += p.speed;
+        p.x += Math.sin(p.y * 0.01) * 2;
+      });
+      confettiPieces = confettiPieces.filter(p => p.y < canvas.height + 20);
+    }
+
+    function loopConfetti() {
+      if (!confettiActive) return;
+      drawConfetti();
+      updateConfetti();
+      requestAnimationFrame(loopConfetti);
+    }
+
+    function startConfetti() {
+      confettiActive = true;
+      createConfetti();
+      loopConfetti();
+      // Stop after 5s
+      setTimeout(() => {
+        confettiActive = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, 5000);
+    }
+
+    // Auto-start confetti when page loads
+    window.onload = startConfetti;
+  </script>
+</body>
+
+</html>
