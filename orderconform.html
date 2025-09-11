@@ -40,7 +40,7 @@
     }
 
     button {
-      height:45px;
+      height: 45px;
       width: 170px;
       border-radius: 10px;
       background-color: brown;
@@ -58,7 +58,7 @@
 
     .site-footer {
       text-align: center;
-      color:black;
+      color: black;
       font-family: 'Segoe UI', sans-serif;
       font-size: 14px;
       line-height: 1.6;
@@ -66,7 +66,7 @@
     }
 
     .site-footer a {
-      color:brown;
+      color: brown;
       font-weight: 600;
       text-decoration: none;
     }
@@ -75,11 +75,25 @@
       color: #fff;
       text-decoration: underline;
     }
+
+    /* Confetti canvas styles */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2000;
+    }
   </style>
 
 </head>
 
 <body>
+  <!-- Confetti Canvas -->
+  <canvas id="confetti"></canvas>
+
   <!-- Order Confirmation Page -->
   <div class="order-page">
     <img src="Assets/conformationimg.png" alt="Order Confirmed">
@@ -106,8 +120,8 @@
       <p>© 2025 Indalnova. All rights reserved.</p>
       <p>Made with ❤️ by <a href="https://shivamportfoliyo.netlify.app/" target="_blank">Shivam</a></p>
     </footer>
-
   </div>
+
   <script>
     // ===== Get Order ID from URL =====
     const params = new URLSearchParams(window.location.search);
@@ -119,8 +133,13 @@
     // ===== Confetti JS =====
     const canvas = document.getElementById("confetti");
     const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
     let confettiPieces = [];
     let confettiActive = false;
@@ -168,14 +187,12 @@
       confettiActive = true;
       createConfetti();
       loopConfetti();
-      // Stop after 5s
       setTimeout(() => {
         confettiActive = false;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }, 5000);
     }
 
-    // Auto-start confetti when page loads
     window.onload = startConfetti;
   </script>
 </body>
