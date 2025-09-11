@@ -323,6 +323,7 @@
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const existingAddressesEl = document.getElementById("existing-addresses");
@@ -341,13 +342,11 @@
             const totalEl = document.getElementById("total");
             const loaderOverlay = document.getElementById("loader-overlay");
 
-            let addresses = [];
-            let selectedAddressId = null;
-            let selectedPayment = "online";
-
-            const currentUser = localStorage.getItem("currentUser");
+            // ===== LOGIN CHECK =====
+            let currentUser = localStorage.getItem("currentUser");
             if (!currentUser) {
-                alert("Please login first.");
+                // Save current page to redirect after login
+                localStorage.setItem("redirectAfterLogin", window.location.href);
                 window.location.href = "login.html";
                 return;
             }
@@ -356,6 +355,7 @@
                 return /^[0-9]{10}$/.test(currentUser) ? { loginId: currentUser } : { email: currentUser };
             }
 
+            // ===== CART DATA =====
             let cartData = JSON.parse(localStorage.getItem("cart_" + currentUser) || "[]");
             let subtotal = cartData.reduce((sum, p) => sum + Number(p.price) * Number(p.qty), 0);
             let discount = 0;
@@ -375,20 +375,26 @@
                 opt.classList.add("active");
                 selectedPayment = opt.dataset.value;
             }));
+            let selectedPayment = "online";
             paymentOptions[0].classList.add("active");
 
-            // ===== Fetch Addresses =====
+            // ===== Address Management =====
+            let addresses = [];
+            let selectedAddressId = null;
+
             async function fetchAddresses() {
                 try {
                     const query = new URLSearchParams(getUserIdentifier()).toString();
                     const res = await fetch(`/api/address?${query}`);
                     const data = await res.json();
                     if (data.success) addresses = data.addresses || [];
+
                     const selectedFromStorage = JSON.parse(localStorage.getItem("selectedAddress") || "null");
                     if (selectedFromStorage) {
                         const match = addresses.find(a => a.id === selectedFromStorage.id);
                         if (match) selectedAddressId = match.id;
                     } else if (addresses.length > 0) selectedAddressId = addresses[0].id;
+
                     renderAddresses();
                     if (addresses.length === 0) openSlide();
                 } catch (err) { console.error(err); }
@@ -642,6 +648,7 @@
             updateSummary();
         });
     </script>
+
 </body>
 
 </html>
