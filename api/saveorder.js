@@ -6,9 +6,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res
-      .status(405)
-      .json({ success: false, message: "Method not allowed" });
+    return res.status(405).json({ success: false, message: "Method not allowed" });
   }
 
   try {
@@ -21,7 +19,7 @@ export default async function handler(req, res) {
       !order.email ||
       !order.name ||
       !order.phone ||
-      !order.address ||      // combined address string
+      !order.address1 ||      // separate address fields
       !order.city ||
       !order.state ||
       !order.productIds?.length ||
@@ -35,10 +33,7 @@ export default async function handler(req, res) {
     // ===== Recalculate total price to ensure integrity =====
     const prices = order.prices.map(Number);
     const quantities = order.quantities.map(Number);
-    const verifiedTotal = prices.reduce(
-      (sum, p, i) => sum + p * quantities[i],
-      0
-    );
+    const verifiedTotal = prices.reduce((sum, p, i) => sum + p * quantities[i], 0);
 
     // ===== Insert into Supabase =====
     const { data, error } = await supabase.from("orders").insert([
@@ -47,9 +42,11 @@ export default async function handler(req, res) {
         email: order.email,
         name: order.name,
         phone: order.phone,
-        address: order.address, // combined address
+        address1: order.address1,      // ✅ use address1
+        address2: order.address2 || "",// ✅ use address2
         city: order.city,
         state: order.state,
+        pin: order.pin || "",           // optional pin
         notes: order.notes || "",
         product_ids: order.productIds,  // text[]
         quantities: order.quantities,   // int[]
