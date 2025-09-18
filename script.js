@@ -94,30 +94,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // ===== Login/Logout Toggle =====
+  // ===== Login Button Toggle =====
   const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-
-  if (loginBtn && logoutBtn) {
+  if (loginBtn) {
     const { email, isLoggedIn } = getCurrentUser();
-    if (email && isLoggedIn) {
-      loginBtn.style.display = "none";
-      logoutBtn.style.display = "flex";
-    } else {
-      loginBtn.style.display = "flex";
-      logoutBtn.style.display = "none";
-    }
+    loginBtn.style.display = email && isLoggedIn ? "none" : "flex";
   }
-
-  // ===== Logout Function =====
-  window.logoutUser = function () {
-    localStorage.setItem("isLoggedIn", "false");
-    localStorage.removeItem("currentUser");
-    showAlert("info", "You have been logged out!");
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1200);
-  };
 });
 
 // ===== Add to Cart =====
@@ -201,7 +183,4 @@ function closeCustomAlert() {
   document.getElementById("customAlert").style.display = "none";
 }
 
-function closeCustomAlert() {
-  document.getElementById("customAlert").style.display = "none";
-}
 
