@@ -125,7 +125,7 @@ function attachEvents() {
       saveCart();
       renderCart();
       hideLoader();
-      showAlert("info", `${product.name} quantity increased`);
+      // ALERT REMOVED
     });
   });
 
@@ -138,7 +138,7 @@ function attachEvents() {
       if (product) {
         if (product.qty > 1) {
           product.qty -= 1;
-          showAlert("info", `${product.name} quantity decreased`);
+          // ALERT REMOVED
         } else {
           cart = cart.filter(p => p.id !== id);
           showAlert("success", `${product.name} removed from cart`);
@@ -210,3 +210,4 @@ window.addEventListener("load", () => {
   hideLoader();
   renderCart();
 });
+
