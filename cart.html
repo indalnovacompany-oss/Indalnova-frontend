@@ -7,57 +7,133 @@
   <title>My Cart</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="cart.css">
+  <link rel="stylesheet" href="media.css">
+
   <style>
-    body { font-family:'Poppins', sans-serif; margin:0; padding:0; }
-    .navbar { display:flex; justify-content:space-between; align-items:center; padding:10px 20px; background:#f9f3e2; }
-    .navbar .logo { font-weight:bold; font-size:1.2rem; color:brown; }
-    .nav-links a { margin:0 10px; text-decoration:none; color:#333; }
-    .cart-container { padding:20px; display:flex; flex-direction:column; gap:15px; }
-    .cart-item { display:flex; justify-content:space-between; align-items:center; padding:10px; border:1px solid #ccc; border-radius:8px; }
-    .cart-item img { width:70px; height:70px; object-fit:cover; border-radius:6px; }
-    .cart-item-details { flex:1; margin-left:15px; }
-    .cart-item-details h4 { margin-bottom:5px; }
-    .cart-item-actions { display:flex; align-items:center; gap:10px; }
-    .cart-item-actions input { width:50px; text-align:center; }
-    .cart-item-actions button { background:brown; color:#fff; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; }
-    .checkout-bar { position:fixed; bottom:0; left:0; width:100%; display:flex; justify-content:space-between; padding:15px 20px; background:#fff; border-top:1px solid #ccc; box-shadow:0 -3px 8px rgba(0,0,0,0.1); }
-    .checkout-bar .checkout-btn { background:brown; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; }
-    #loadingOverlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); display:none; justify-content:center; align-items:center; z-index:10000; }
-    .spinner { border:5px solid #f3f3f3; border-top:5px solid brown; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite; }
-    @keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+    /* Loader Overlay */
+    #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      z-index: 2000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .spinner {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid brown;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
     /* Custom Alert */
-    #customAlert { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:10001; }
-    .custom-alert-content { background:#fff; padding:20px 30px; border-radius:12px; text-align:center; box-shadow:0 8px 20px rgba(0,0,0,0.3); }
-    .custom-alert-content p { margin-bottom:15px; }
-    .custom-alert-content button { background:brown; color:#fff; border:none; padding:8px 18px; border-radius:6px; cursor:pointer; }
-    .custom-alert-content button:hover { background:#a83232; }
-    .custom-alert-content i { font-size:30px; margin-bottom:10px; display:block; }
+    #customAlert {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 10001;
+    }
+
+    .custom-alert-content {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .custom-alert-content i {
+      font-size: 30px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .custom-alert-content button {
+      background: brown;
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .custom-alert-content button:hover {
+      background: #a83232;
+    }
   </style>
 </head>
 
 <body>
-
-  <div class="navbar">
-    <div class="logo">My Cart</div>
-    <div class="nav-links">
-      <a href="skincare.html">Skincare</a>
-      <a href="perfume.html">Perfume</a>
-      <a href="#">Track order</a>
-      <a href="#">Offers*</a>
+  <!-- Header Section -->
+  <section>
+    <div class="heading1">
+      <h4>Click here to Explore our Products.</h4>
     </div>
-    <span onclick="window.location.href='index.html'"><i class="fa-solid fa-left-long" style="color:brown;"></i></span>
-  </div>
+  </section>
 
+  <!-- Navbar -->
+  <section>
+    <div class="navbar">
+      <div class="logo">My Cart</div>
+      <div class="nav-links">
+        <a href="skincare.html">Skincare</a>
+        <a href="perfume.html">Perfume</a>
+        <a href="#">Track Order</a>
+        <a href="#">Offers*</a>
+      </div>
+      <div class="options">
+        <span id="Back" onclick="window.location.href='index.html'">
+          <i class="fa-solid fa-left-long" style="color: brown;"></i>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Secondary Nav -->
+  <section>
+    <div class="nav-2">
+      <div class="skincare"><a href="skincare.html">Skincare</a></div>
+      <div class="perfume"><a href="perfume.html">Perfume</a></div>
+      <div class="New"><a href="">New Products</a></div>
+      <div class="track"><a href="">Track Order</a></div>
+      <div class="return"><a href="">Return Order</a></div>
+      <div class="backbtn"><button onclick="window.history.back()">Back</button></div>
+    </div>
+  </section>
+
+  <!-- Cart Container -->
   <div class="cart-container"></div>
 
+  <!-- Checkout Bar -->
   <div class="checkout-bar">
     <span class="total-text">Total: ₹0</span>
     <button class="checkout-btn"><i class="fa-solid fa-lock"></i> Proceed to Checkout</button>
   </div>
 
   <!-- Loader -->
-  <div id="loadingOverlay"><div class="spinner"></div></div>
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
 
   <!-- Custom Alert -->
   <div id="customAlert">
@@ -69,110 +145,9 @@
     </div>
   </div>
 
-  <script>
-    // Loader
-    const loader = document.getElementById("loadingOverlay");
-    function showLoader(){ loader.style.display="flex"; }
-    function hideLoader(){ loader.style.display="none"; }
-
-    // Custom Alert
-    function showAlert(type,message){
-      const overlay=document.getElementById("customAlert");
-      const icon=overlay.querySelector(".alert-icon");
-      const title=overlay.querySelector(".alert-title");
-      const msg=overlay.querySelector(".alert-message");
-      const okBtn=overlay.querySelector(".alert-ok");
-
-      let iconClass="fa-circle-exclamation", color="#ff4d4d", titleText="Alert";
-      if(type==="success"){ iconClass="fa-circle-check"; color="#28a745"; titleText="Success"; }
-      else if(type==="error"){ iconClass="fa-circle-xmark"; color="#ff4d4d"; titleText="Error"; }
-      else if(type==="info"){ iconClass="fa-circle-info"; color="#007bff"; titleText="Info"; }
-
-      icon.className=`fa-solid ${iconClass} alert-icon`;
-      icon.style.color=color;
-      title.innerText=titleText;
-      msg.innerText=message;
-
-      overlay.style.display="flex";
-      okBtn.onclick=()=>{ overlay.style.display="none"; };
-    }
-
-    // Cart logic
-    const currentUserEmail = localStorage.getItem("currentUser") || null;
-    let cart = currentUserEmail
-      ? JSON.parse(localStorage.getItem("cart_" + currentUserEmail) || "[]")
-      : JSON.parse(localStorage.getItem("guestCart") || "[]");
-
-    function saveCart(){
-      if(currentUserEmail) localStorage.setItem("cart_" + currentUserEmail, JSON.stringify(cart));
-      else localStorage.setItem("guestCart", JSON.stringify(cart));
-    }
-
-    function renderCart(){
-      const container=document.querySelector(".cart-container");
-      container.innerHTML="";
-      let total=0;
-      if(cart.length===0){
-        container.innerHTML="<p>Your cart is empty!</p>";
-      }
-      cart.forEach((item,index)=>{
-        const div=document.createElement("div");
-        div.className="cart-item";
-        div.innerHTML=`
-          <img src="${item.image}" alt="">
-          <div class="cart-item-details">
-            <h4>${item.name}</h4>
-            <p>Price: ₹${item.price}</p>
-          </div>
-          <div class="cart-item-actions">
-            <input type="number" min="1" value="${item.qty}" data-index="${index}" class="qty-input">
-            <button data-index="${index}" class="remove-btn">Remove</button>
-          </div>
-        `;
-        container.appendChild(div);
-        total+=item.price*item.qty;
-      });
-      document.querySelector(".total-text").innerText=`Total: ₹${total}`;
-
-      // Qty change
-      document.querySelectorAll(".qty-input").forEach(input=>{
-        input.addEventListener("change",e=>{
-          const idx=parseInt(e.target.dataset.index);
-          const val=parseInt(e.target.value);
-          if(val<1){ e.target.value=cart[idx].qty; return; }
-          cart[idx].qty=val;
-          saveCart();
-          renderCart();
-          showAlert("info","Quantity updated");
-        });
-      });
-
-      // Remove button
-      document.querySelectorAll(".remove-btn").forEach(btn=>{
-        btn.addEventListener("click",e=>{
-          const idx=parseInt(e.target.dataset.index);
-          const removed=cart.splice(idx,1);
-          saveCart();
-          renderCart();
-          showAlert("success",`${removed[0].name} removed from cart`);
-        });
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded",()=>{
-      renderCart();
-
-      document.querySelector(".checkout-btn").addEventListener("click",()=>{
-        if(cart.length===0){ showAlert("error","Cart is empty!"); return; }
-        showLoader();
-        setTimeout(()=>{
-          hideLoader();
-          showAlert("success","Proceeding to checkout...");
-          // window.location.href="checkout.html"; // Uncomment for real redirect
-        },500);
-      });
-    });
-  </script>
+  <!-- Scripts -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="cart.js"></script>
 </body>
 
 </html>
