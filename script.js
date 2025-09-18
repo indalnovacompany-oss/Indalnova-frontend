@@ -9,8 +9,14 @@ function hideLoader() {
   if (overlay) overlay.style.display = "none";
 }
 
-// ===== Current User Setup =====
-const currentUserEmail = localStorage.getItem("currentUser") || null;
+// ===== Current User & Login Status =====
+function getCurrentUser() {
+  const email = localStorage.getItem("currentUser") || null;
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  return { email, isLoggedIn };
+}
+
+let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 
 // Each user has a separate cart
 let cart = currentUserEmail
@@ -93,7 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logoutBtn");
 
   if (loginBtn && logoutBtn) {
-    if (currentUserEmail) {
+    const { email, isLoggedIn } = getCurrentUser();
+    if (email && isLoggedIn) {
       loginBtn.style.display = "none";
       logoutBtn.style.display = "flex";
     } else {
@@ -102,6 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ===== Logout Function =====
   window.logoutUser = function () {
     localStorage.setItem("isLoggedIn", "false");
     localStorage.removeItem("currentUser");
@@ -192,3 +200,8 @@ function showCustomAlert(message) {
 function closeCustomAlert() {
   document.getElementById("customAlert").style.display = "none";
 }
+
+function closeCustomAlert() {
+  document.getElementById("customAlert").style.display = "none";
+}
+
