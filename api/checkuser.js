@@ -1,6 +1,8 @@
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGO_URI;  // Add this in Vercel > Project Settings > Environment Variables
+// Use your Vercel environment variable for MongoDB connection
+const uri = process.env.MONGO_URI;
+
 let client;
 let clientPromise;
 
@@ -17,7 +19,8 @@ export default async function handler(req, res) {
   try {
     const { email, phone } = req.body;
 
-    if (!email) {
+    if (!email && !phone) {
+      // If neither email nor phone is provided, return false
       return res.status(200).json({ exists: false });
     }
 
@@ -25,8 +28,11 @@ export default async function handler(req, res) {
     const db = conn.db("test");            // ✅ your DB name
     const users = db.collection("users");  // ✅ your collection
 
-    // check by email + phone if provided, otherwise just email
-    const query = phone ? { email, phone } : { email };
+    // Build query dynamically
+    const query = {};
+    if (email) query.email = email;
+    if (phone) query.phone = phone;
+
     const user = await users.findOne(query);
 
     return res.status(200).json({ exists: !!user });
