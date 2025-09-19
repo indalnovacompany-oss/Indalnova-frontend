@@ -19,9 +19,9 @@ let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 
 // ===== Verify User From DB =====
 async function verifyUser(silent = true) {
-  if (!currentUserEmail || !isLoggedIn) return false; // Not logged in → skip DB
+  if (!currentUserEmail || !isLoggedIn) return true; // Not logged in → continue
 
-  showLoader(); // Show loader while checking DB
+  showLoader();
   try {
     const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
     const data = await res.json();
@@ -41,28 +41,28 @@ async function verifyUser(silent = true) {
     return true; // User verified
   } catch (err) {
     console.error("User verification failed:", err);
-    if (!silent) showAlert("error", "Unable to verify account. Try again later.");
-    return false;
+    // Network error → don't block products
+    return true;
   } finally {
     hideLoader();
   }
 }
 
-// ===== Load Products =====
+// ===== Load Products & Setup =====
 document.addEventListener("DOMContentLoaded", async () => {
-  // Silent check: don't show alert on first visit
-  const userValid = await verifyUser(true);
-
   const { email, isLoggedIn } = getCurrentUser();
   const loginBtn = document.getElementById("loginBtn");
 
-  if (!isLoggedIn || !userValid) {
-    if (loginBtn) loginBtn.style.display = "flex"; // Show login button
-    return; // Stop further product loading
+  // Show login button if not logged in
+  if (!isLoggedIn) {
+    if (loginBtn) loginBtn.style.display = "flex";
+  } else {
+    // User logged in → verify silently
+    await verifyUser(true);
+    if (loginBtn) loginBtn.style.display = "none";
   }
 
-  if (loginBtn) loginBtn.style.display = "none"; // Hide login button
-
+  // Load products
   const productContainer = document.querySelector(".product-container");
   if (!productContainer) return;
 
@@ -95,23 +95,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       hideLoader();
 
-      // ===== Add to Cart Event =====
+      // Add to cart buttons
       document.querySelectorAll(".add-to-cart").forEach(button => {
         button.addEventListener("click", () => {
           const id = parseInt(button.dataset.id);
           const productToAdd = products.find(p => p.id === id);
-          if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
+          if (typeof addToCart === "function") addToCart(productToAdd);
           showAlert("success", `${productToAdd.name} added to cart!`);
         });
       });
 
-      // ===== Buy Now Event =====
+      // Buy now buttons
       document.querySelectorAll(".buy-now").forEach(button => {
         button.addEventListener("click", () => {
           const id = parseInt(button.dataset.id);
           const productToBuy = products.find(p => p.id === id);
           showLoader();
-          if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
+          if (typeof addToCart === "function") addToCart(productToBuy);
           setTimeout(() => {
             window.location.href = "cart.html";
           }, 1200);
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       showAlert("error", "Failed to load products!");
     });
 
-  // ===== If cart.html page, hide loader after load =====
+  // Hide loader on cart page
   if (window.location.pathname.includes("cart.html")) {
     hideLoader();
   }
@@ -175,5 +175,4 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
-
 
