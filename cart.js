@@ -1,4 +1,3 @@
-
 // ===== Loader =====
 function showLoader() {
   const loader = document.getElementById("loadingOverlay");
@@ -207,8 +206,33 @@ function addToCart(newItem) {
 // ===== Init =====
 window.addEventListener("load", () => {
   showLoader();
-  // Delay slightly to show loader before render
-  setTimeout(() => {
-    renderCart();
-  }, 400);
+
+  if (currentUserRaw) {
+    fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserRaw)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          // user deleted from DB → logout
+          localStorage.removeItem("currentUser");
+          localStorage.removeItem("cart_" + currentUserRaw);
+          showAlert("error", "Your account no longer exists. Please sign up again.");
+          setTimeout(() => window.location.href = "login.html", 1500);
+          return;
+        }
+        // ✅ User exists → render cart
+        setTimeout(() => {
+          renderCart();
+        }, 400);
+      })
+      .catch(() => {
+        hideLoader();
+        showAlert("error", "Unable to verify account. Try again later.");
+      });
+  } else {
+    // guest user
+    setTimeout(() => {
+      renderCart();
+    }, 400);
+  }
 });
+
