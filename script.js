@@ -3,6 +3,7 @@ function showLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
+
 function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -47,8 +48,8 @@ function showAlert(type, message) {
 
 // ===== Current User & Login Status =====
 function getCurrentUser() {
-  const email = localStorage.getItem("username") || null; // email/phone stored
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true"; 
+  const email = localStorage.getItem("username") || null;
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   return { email, isLoggedIn };
 }
 
@@ -56,7 +57,7 @@ let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 const currentUser = currentUserEmail || "guest";
 const cartKey = "cart_" + currentUser;
 
-// ===== Cart Functions =====
+// ===== Add to Cart =====
 function addToCart(newItem) {
   let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
   const existing = cart.find(p => p.id === newItem.id);
@@ -146,19 +147,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (currentUserEmail && isLoggedIn) {
     try {
+      // Detect if phone or email
+      const body = /^[0-9]{10}$/.test(currentUserEmail)
+        ? { phone: currentUserEmail }   // phone
+        : { email: currentUserEmail };  // email
+
       const res = await fetch("/api/checkuser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: currentUserEmail })
+        body: JSON.stringify(body)
       });
+
       const data = await res.json();
+
       if (data.exists) {
-        if (loginBtn) loginBtn.style.display = "none";
+        if (loginBtn) loginBtn.style.display = "none";  // hide login
       } else {
         localStorage.removeItem("username");
         localStorage.removeItem("isLoggedIn");
         if (loginBtn) loginBtn.style.display = "inline-block";
       }
+
     } catch (err) {
       console.error(err);
       if (loginBtn) loginBtn.style.display = "inline-block";
@@ -177,6 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 function hideelement() {
   document.querySelector(".nav-2").classList.toggle("show");
 }
+
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
