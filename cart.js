@@ -1,8 +1,11 @@
+
+
 // ===== Loader =====
 function showLoader() {
   const loader = document.getElementById("loadingOverlay");
   if (loader) loader.style.display = "flex";
 }
+
 function hideLoader() {
   const loader = document.getElementById("loadingOverlay");
   if (loader) loader.style.display = "none";
@@ -11,6 +14,8 @@ function hideLoader() {
 // ===== Custom Alert =====
 function showAlert(type, message) {
   const overlay = document.getElementById("customAlert");
+  if (!overlay) return;
+
   const icon = overlay.querySelector(".alert-icon");
   const title = overlay.querySelector(".alert-title");
   const msg = overlay.querySelector(".alert-message");
@@ -75,12 +80,12 @@ function renderCart() {
 
   if (cart.length === 0) {
     container.innerHTML = `<p class="empty-cart" style="text-align:center; padding:20px;">Your cart is empty</p>`;
+    hideLoader();
+    return;
   }
 
   cart.forEach(item => {
-    const discountPercent = Math.round(
-      ((item.original - item.price) / item.original) * 100
-    );
+    const discountPercent = Math.round(((item.original - item.price) / item.original) * 100);
     const div = document.createElement("div");
     div.classList.add("product-card");
     div.dataset.id = item.id;
@@ -104,8 +109,6 @@ function renderCart() {
 
   attachEvents();
   updateTotal();
-
-  // Hide loader after render is done
   hideLoader();
 }
 
@@ -118,7 +121,6 @@ function updateTotal() {
 
 // ===== Attach Events =====
 function attachEvents() {
-  // Increase
   document.querySelectorAll(".increase").forEach(btn => {
     btn.addEventListener("click", () => {
       showLoader();
@@ -130,7 +132,6 @@ function attachEvents() {
     });
   });
 
-  // Decrease
   document.querySelectorAll(".decrease").forEach(btn => {
     btn.addEventListener("click", () => {
       showLoader();
@@ -149,7 +150,6 @@ function attachEvents() {
     });
   });
 
-  // Remove
   document.querySelectorAll(".remove-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       showLoader();
@@ -172,7 +172,6 @@ if (checkoutBtn) {
       setTimeout(() => window.location.href = "login.html", 1200);
       return;
     }
-
     if (cart.length === 0) {
       showAlert("error", "Cart is empty!");
       return;
@@ -208,18 +207,18 @@ window.addEventListener("load", () => {
   showLoader();
 
   if (currentUserRaw) {
+    // Check if user still exists in DB
     fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserRaw)}`)
       .then(res => res.json())
       .then(data => {
         if (!data.success) {
-          // user deleted from DB → logout
           localStorage.removeItem("currentUser");
           localStorage.removeItem("cart_" + currentUserRaw);
           showAlert("error", "Your account no longer exists. Please sign up again.");
           setTimeout(() => window.location.href = "login.html", 1500);
           return;
         }
-        // ✅ User exists → render cart
+        // User exists → render cart
         setTimeout(() => {
           renderCart();
         }, 400);
@@ -229,10 +228,9 @@ window.addEventListener("load", () => {
         showAlert("error", "Unable to verify account. Try again later.");
       });
   } else {
-    // guest user
+    // Guest user → render cart
     setTimeout(() => {
       renderCart();
     }, 400);
   }
 });
-
