@@ -10,8 +10,8 @@ function hideLoader() {
 
 // ===== Current User & Login Status =====
 function getCurrentUser() {
-  const email = localStorage.getItem("username") || null; // saved email/phone
-  const isLoggedIn = localStorage.getItem("userLoggedIn") === "true"; // ✅ fixed key
+  const email = localStorage.getItem("username") || null; // email/phone stored
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true"; // ✅ check correct key
   return { email, isLoggedIn };
 }
 
@@ -79,27 +79,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
   }
 
-  // ===== Login Button Toggle (updated with backend check) =====
+  // ===== Login Button Toggle (with backend check) =====
   const loginBtn = document.getElementById("loginBtn");
 
-  // Only hide login if userLoggedIn = true AND user exists in DB
+  // initially hide login button to avoid flash
+  if (loginBtn) loginBtn.style.display = "none";
+
   if (currentUserEmail && isLoggedIn) {
     try {
-      const res = await fetch("/api/checkuser", {
+      const res = await fetch("/api/checkUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: currentUserEmail }),
+        body: JSON.stringify({ email: currentUserEmail })
       });
       const data = await res.json();
       if (data.exists) {
         if (loginBtn) loginBtn.style.display = "none";
       } else {
         localStorage.removeItem("username");
-        localStorage.removeItem("userLoggedIn");
-        if (loginBtn) loginBtn.style.display = "none";
+        localStorage.removeItem("isLoggedIn");
+        if (loginBtn) loginBtn.style.display = "inline-block";
       }
     } catch (err) {
-      console.error("Error checking user:", err);
+      console.error(err);
       if (loginBtn) loginBtn.style.display = "inline-block";
     }
   } else {
