@@ -88,7 +88,6 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error("Login error:", err);
-    return res.status(500).json({ success: false, message: "Server error.You have reached you otp limit Try after some time." });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 }
-
