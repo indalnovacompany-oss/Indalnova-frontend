@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (user && user.email) {
     try {
-      const res = await fetch("/api/checkUser", {
+      const res = await fetch("/api/checkuser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: user.email, phone: user.phone || null }),
@@ -170,4 +170,5 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
+
 
