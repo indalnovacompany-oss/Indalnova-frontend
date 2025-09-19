@@ -8,118 +8,114 @@ function hideLoader() {
   if (overlay) overlay.style.display = "none";
 }
 
-// ===== Current User & Login Status =====
-function getCurrentUser() {
-  const email = localStorage.getItem("currentUser") || null;
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  return { email, isLoggedIn };
+// ===== Utility Functions =====
+function hideLoginBtn() {
+  const loginBtn = document.getElementById("loginBtn");
+  if (loginBtn) loginBtn.style.display = "none";
+}
+function showLoginBtn() {
+  const loginBtn = document.getElementById("loginBtn");
+  if (loginBtn) loginBtn.style.display = "flex";
 }
 
-let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
-
-// ===== Verify User From DB =====
-async function verifyUser(silent = true) {
-  if (!currentUserEmail || !isLoggedIn) return false;
-
-  showLoader(); // Show loader while checking database
-
+// ===== Get Current User =====
+function getCurrentUser() {
   try {
-    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
-    const data = await res.json();
-
-    if (!data.success) {
-      // User deleted → force logout
-      localStorage.removeItem("currentUser");
-      localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("cart_" + currentUserEmail);
-
-      if (!silent) showAlert("error", "Your account was deleted. Please log in again.");
-      setTimeout(() => {
-        window.location.href = "login.html";
-      }, 1500);
-      return false;
-    }
-
-    return true;
-  } catch (err) {
-    console.error("User verification failed:", err);
-    if (!silent) showAlert("error", "Unable to verify account. Try again later.");
-    return false;
-  } finally {
-    hideLoader(); // Hide loader after verification
+    return JSON.parse(localStorage.getItem("currentUser")) || null;
+  } catch {
+    return null;
   }
 }
 
-// ===== Load Products =====
+// ===== On Page Load =====
 document.addEventListener("DOMContentLoaded", async () => {
-  // Only verify silently on load
-  await verifyUser(true);
-
   const productContainer = document.querySelector(".product-container");
-  if (!productContainer) return;
 
-  showLoader();
-  fetch("product.json")
-    .then(res => res.json())
-    .then(products => {
-      products.forEach(product => {
-        const div = document.createElement("div");
-        div.classList.add("top-product");
-        div.innerHTML = `
-          <div class="product-img">
-            <img src="${product.image}" alt="">
-          </div>
-          <div class="details">
-            <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
-            <p>${product.name}</p>
-            <p>₹${product.price} <span class="dis">₹${product.original}</span> 
-            <span class="savings">${product.discount} OFF</span></p>
-            <div class="atc">
-              <button class="add-to-cart" data-id="${product.id}">
-                Add to cart <i class="fa-solid fa-cart-shopping"></i>
-              </button>
-              <button class="buy-now" data-id="${product.id}">Buy Now</button>
+  // Load products if container exists
+  if (productContainer) {
+    showLoader();
+    fetch("product.json")
+      .then(res => res.json())
+      .then(products => {
+        products.forEach(product => {
+          const div = document.createElement("div");
+          div.classList.add("top-product");
+          div.innerHTML = `
+            <div class="product-img">
+              <img src="${product.image}" alt="">
             </div>
-          </div>
-        `;
-        productContainer.appendChild(div);
-      });
-
-      hideLoader();
-
-      // ===== Add to Cart Event =====
-      document.querySelectorAll(".add-to-cart").forEach(button => {
-        button.addEventListener("click", () => {
-          const id = parseInt(button.dataset.id);
-          const productToAdd = products.find(p => p.id === id);
-          if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
-          showAlert("success", `${productToAdd.name} added to cart!`);
+            <div class="details">
+              <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
+              <p>${product.name}</p>
+              <p>₹${product.price} <span class="dis">₹${product.original}</span> 
+              <span class="savings">${product.discount} OFF</span></p>
+              <div class="atc">
+                <button class="add-to-cart" data-id="${product.id}">
+                  Add to cart <i class="fa-solid fa-cart-shopping"></i>
+                </button>
+                <button class="buy-now" data-id="${product.id}">Buy Now</button>
+              </div>
+            </div>
+          `;
+          productContainer.appendChild(div);
         });
-      });
 
-      // ===== Buy Now Event =====
-      document.querySelectorAll(".buy-now").forEach(button => {
-        button.addEventListener("click", () => {
-          const id = parseInt(button.dataset.id);
-          const productToBuy = products.find(p => p.id === id);
-          showLoader();
-          if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
-          setTimeout(() => {
-            window.location.href = "cart.html";
-          }, 1200);
+        hideLoader();
+
+        // Add to Cart Events
+        document.querySelectorAll(".add-to-cart").forEach(button => {
+          button.addEventListener("click", () => {
+            const id = parseInt(button.dataset.id);
+            const productToAdd = products.find(p => p.id === id);
+            if (typeof addToCart === "function") addToCart(productToAdd);
+            showAlert("success", `${productToAdd.name} added to cart!`);
+          });
         });
-      });
-    })
-    .catch(() => {
-      hideLoader();
-      showAlert("error", "Failed to load products!");
-    });
 
-  // ===== Login Button Toggle =====
-  const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn) {
-    const { email, isLoggedIn } = getCurrentUser();
-    loginBtn.style.display = email && isLoggedIn ? "none" : "flex";
+        // Buy Now Events
+        document.querySelectorAll(".buy-now").forEach(button => {
+          button.addEventListener("click", () => {
+            const id = parseInt(button.dataset.id);
+            const productToBuy = products.find(p => p.id === id);
+            showLoader();
+            if (typeof addToCart === "function") addToCart(productToBuy);
+            setTimeout(() => {
+              window.location.href = "cart.html";
+            }, 1200);
+          });
+        });
+      })
+      .catch(() => {
+        hideLoader();
+        showAlert("error", "Failed to load products!");
+      });
+  }
+
+  // ===== Login Button Visibility (with backend check) =====
+  const user = getCurrentUser();
+
+  if (user && user.email) {
+    try {
+      const res = await fetch("/api/checkUser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, phone: user.phone || null }),
+      });
+
+      const data = await res.json();
+
+      if (data.exists) {
+        hideLoginBtn();
+      } else {
+        localStorage.removeItem("currentUser");
+        showLoginBtn();
+      }
+    } catch (err) {
+      console.error("Error checking user:", err);
+      showLoginBtn();
+    }
+  } else {
+    showLoginBtn();
   }
 
   // ===== If cart.html page, hide loader after load =====
@@ -127,17 +123,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     hideLoader();
   }
 });
-
-// ===== Add to Cart =====
-function addToCart(product) {
-  const existing = cart.find(item => item.id === product.id);
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({ ...product, qty: 1 });
-  }
-  saveCart();
-}
 
 // ===== Nav Toggles =====
 function hideelement() {
@@ -185,5 +170,4 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
-
 
