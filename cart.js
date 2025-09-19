@@ -1,5 +1,3 @@
-
-
 // ===== Loader =====
 function showLoader() {
   const loader = document.getElementById("loadingOverlay");
@@ -52,9 +50,8 @@ function showAlert(type, message) {
 
 // ===== Current User & Cart =====
 const currentUserRaw = localStorage.getItem("currentUser") || null;
-let cart = currentUserRaw
-  ? JSON.parse(localStorage.getItem("cart_" + currentUserRaw) || "[]")
-  : JSON.parse(localStorage.getItem("guestCart") || "[]");
+const cartKey = currentUserRaw ? "cart_" + currentUserRaw : "guestCart";
+let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
 
 // ===== Identify User (email or phone) =====
 function getUserIdentifier() {
@@ -65,11 +62,7 @@ function getUserIdentifier() {
 
 // ===== Save Cart =====
 function saveCart() {
-  if (currentUserRaw) {
-    localStorage.setItem("cart_" + currentUserRaw, JSON.stringify(cart));
-  } else {
-    localStorage.setItem("guestCart", JSON.stringify(cart));
-  }
+  localStorage.setItem(cartKey, JSON.stringify(cart));
 }
 
 // ===== Render Cart =====
@@ -207,21 +200,24 @@ window.addEventListener("load", () => {
   showLoader();
 
   if (currentUserRaw) {
-    // Check if user still exists in DB
-    fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserRaw)}`)
+    // POST check to backend (email or phone)
+    const body = currentUserRaw.includes("@") ? { email: currentUserRaw } : { phone: currentUserRaw };
+    fetch("/api/checkUser", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    })
       .then(res => res.json())
       .then(data => {
-        if (!data.success) {
+        if (!data.exists) {
           localStorage.removeItem("currentUser");
-          localStorage.removeItem("cart_" + currentUserRaw);
+          localStorage.removeItem(cartKey);
           showAlert("error", "Your account no longer exists. Please sign up again.");
           setTimeout(() => window.location.href = "login.html", 1500);
           return;
         }
         // User exists → render cart
-        setTimeout(() => {
-          renderCart();
-        }, 400);
+        renderCart();
       })
       .catch(() => {
         hideLoader();
@@ -229,8 +225,7 @@ window.addEventListener("load", () => {
       });
   } else {
     // Guest user → render cart
-    setTimeout(() => {
-      renderCart();
-    }, 400);
+    renderCart();
   }
 });
+
