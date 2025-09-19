@@ -3,7 +3,6 @@ function showLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
-
 function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -20,10 +19,9 @@ let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 
 // ===== Verify User From DB =====
 async function verifyUser() {
-  if (!currentUserEmail || !isLoggedIn) return;
+  if (!currentUserEmail || !isLoggedIn) return false; // If not logged in, skip DB check
 
   showLoader(); // Show loader while checking database
-
   try {
     const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
     const data = await res.json();
@@ -38,11 +36,13 @@ async function verifyUser() {
       setTimeout(() => {
         window.location.href = "login.html";
       }, 1500);
-      return;
+      return false;
     }
+    return true; // User verified successfully
   } catch (err) {
     console.error("User verification failed:", err);
     showAlert("error", "Unable to verify account. Try again later.");
+    return false;
   } finally {
     hideLoader(); // Hide loader after verification
   }
@@ -50,7 +50,19 @@ async function verifyUser() {
 
 // ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
-  await verifyUser(); // Verify user first
+  const { email, isLoggedIn } = getCurrentUser();
+
+  const loginBtn = document.getElementById("loginBtn");
+  if (!isLoggedIn) {
+    if (loginBtn) loginBtn.style.display = "flex"; // Show login button if user not logged in
+    return; // Do not proceed further
+  }
+
+  // User is logged in according to localStorage → verify DB
+  const userValid = await verifyUser();
+  if (!userValid) return; // Stop if DB check failed
+
+  if (loginBtn) loginBtn.style.display = "none"; // Hide login button if logged in & valid
 
   const productContainer = document.querySelector(".product-container");
   if (!productContainer) return;
@@ -64,7 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         div.classList.add("top-product");
         div.innerHTML = `
           <div class="product-img">
-            <img src="${product.image}" alt="${product.name}">
+            <img src="${product.image}" alt="">
           </div>
           <div class="details">
             <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
@@ -89,7 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         button.addEventListener("click", () => {
           const id = parseInt(button.dataset.id);
           const productToAdd = products.find(p => p.id === id);
-          if (typeof addToCart === "function") addToCart(productToAdd);
+          if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
           showAlert("success", `${productToAdd.name} added to cart!`);
         });
       });
@@ -100,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const id = parseInt(button.dataset.id);
           const productToBuy = products.find(p => p.id === id);
           showLoader();
-          if (typeof addToCart === "function") addToCart(productToBuy);
+          if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
           setTimeout(() => {
             window.location.href = "cart.html";
           }, 1200);
@@ -111,13 +123,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       hideLoader();
       showAlert("error", "Failed to load products!");
     });
-
-  // ===== Login Button Toggle =====
-  const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn) {
-    const { email, isLoggedIn } = getCurrentUser();
-    loginBtn.style.display = email && isLoggedIn ? "none" : "flex";
-  }
 
   // ===== If cart.html page, hide loader after load =====
   if (window.location.pathname.includes("cart.html")) {
@@ -171,3 +176,4 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
+
