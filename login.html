@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -324,8 +325,7 @@
     function isValidPhone(phone) { return /^[0-9]{10}$/.test(phone); }
     function isValidEmail(email) { return /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email); }
 
-    let loginResendCount = 0, signupResendCount = 0, maxResends = 3;
-    let loginStep = "send", signupStep = "send";
+    let loginStep = "send", signupStep = "send", loginResendCount = 0, signupResendCount = 0, maxResends = 3;
 
     function showAlert(type, message) {
       const overlay = document.getElementById("customAlert");
@@ -356,29 +356,23 @@
       if (loginStep === "send") {
         if (!identifier) return showAlert("error", "Enter phone/email");
         showLoader();
-        const res = await fetch("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ step: "send", identifier })
-        });
-        const data = await res.json(); hideLoader();
+        const res = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ step: "send", identifier }) });
+        const data = await res.json();
+        hideLoader();
 
         if (data.success) {
           document.getElementById("login-otp-section").style.display = "block";
           document.getElementById("login-btn").textContent = "Verify OTP";
           document.getElementById("login-resend-btn").disabled = false;
           loginStep = "verify";
-          showAlert("success", "OTP sent!");
+          showAlert("success", "OTP has been sent to your WhatsApp number!");
         } else showAlert("error", data.message);
       } else {
         if (!otp) return showAlert("error", "Enter OTP");
         showLoader();
-        const res = await fetch("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ step: "verify", identifier, otp })
-        });
-        const data = await res.json(); hideLoader();
+        const res = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ step: "verify", identifier, otp }) });
+        const data = await res.json();
+        hideLoader();
 
         if (data.success) {
           localStorage.setItem("isLoggedIn", "true");
@@ -410,30 +404,23 @@
         if (!isValidEmail(email)) return showAlert("error", "Enter valid Gmail");
 
         showLoader();
-        const res = await fetch("/api/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ step: "send", name, phone, email })
-        });
-        const data = await res.json(); hideLoader();
+        const res = await fetch("/api/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ step: "send", name, phone, email }) });
+        const data = await res.json();
+        hideLoader();
 
         if (data.success) {
           document.getElementById("signup-otp-section").style.display = "block";
           document.getElementById("signup-btn").textContent = "Verify OTP";
           document.getElementById("signup-resend-btn").disabled = false;
           signupStep = "verify";
-          showAlert("success", "OTP sent!");
+          showAlert("success", "OTP has been sent to your WhatsApp number!");
         } else showAlert("error", data.message);
       } else {
         if (!otp) return showAlert("error", "Enter OTP");
-
         showLoader();
-        const res = await fetch("/api/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ step: "verify", name, phone, email, otp, password, address })
-        });
-        const data = await res.json(); hideLoader();
+        const res = await fetch("/api/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ step: "verify", name, phone, email, otp, password, address }) });
+        const data = await res.json();
+        hideLoader();
 
         if (data.success) {
           localStorage.setItem("isLoggedIn", "true");
@@ -451,8 +438,9 @@
     }
 
     if (localStorage.getItem("isLoggedIn") === "true") window.location.href = "index.html";
+
   </script>
 
 </body>
-</html>
 
+</html>
