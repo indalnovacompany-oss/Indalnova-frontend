@@ -1,80 +1,37 @@
-import mongoose from "mongoose";
+import { MongoClient } from "mongodb";
 
-const CONNECTION_STRING =
-  process.env.MONGO_URI ||
-  "mongodb+srv://indalnova:1LpW2CMG1MHEpuca@cluster0.05abfqy.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGO_URI;  // set in Vercel Dashboard
+let client;
+let clientPromise;
 
-let isConnected = false;
-
-// Connect to MongoDB
-async function connectDB() {
-  if (isConnected) return;
-  if (mongoose.connection.readyState >= 1) {
-    isConnected = true;
-    return;
-  }
-  try {
-    await mongoose.connect(CONNECTION_STRING, { maxPoolSize: 10 });
-    isConnected = true;
-    console.log("MongoDB connected");
-  } catch (err) {
-    console.error("MongoDB connection error:", err);
-    throw new Error("DB connection failed");
-  }
+if (!clientPromise) {
+  client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  clientPromise = client.connect();
 }
 
-// Clean phone number to match DB format
-function cleanPhone(phone) {
-  phone = phone.replace(/\D/g, "");
-  if (phone.startsWith("91") && phone.length > 10) phone = phone.slice(2);
-  if (phone.startsWith("0") && phone.length > 10) phone = phone.slice(1);
-  return phone;
-}
-
-// User Schema
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  phone: String,
-}, { timestamps: true });
-
-const User = mongoose.models.User || mongoose.model("User", userSchema);
-
-// API Handler
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ success: false, message: "Method not allowed" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    await connectDB();
+    const { email, phone } = req.body;
 
-    const { identifier } = req.query;
-    if (!identifier) {
-      return res.status(400).json({ success: false, message: "Identifier is required" });
+    if (!email) {
+      return res.status(200).json({ exists: false });
     }
 
-    let query = {};
-    if (identifier.includes("@")) {
-      query.email = identifier.toLowerCase();
-    } else {
-      const cleaned = cleanPhone(identifier);
-      if (!/^[0-9]{10}$/.test(cleaned)) {
-        return res.status(400).json({ success: false, message: "Invalid phone number" });
-      }
-      query.phone = cleaned;
-    }
+    const conn = await clientPromise;
+    const db = conn.db("test");             // your DB
+    const users = db.collection("users");   // your collection
 
-    const user = await User.findOne(query).lean();
+    // check by email + phone if phone is provided, else just email
+    const query = phone ? { email, phone } : { email };
+    const user = await users.findOne(query);
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-
-    return res.status(200).json({ success: true, user });
-
+    return res.status(200).json({ exists: !!user });
   } catch (err) {
-    console.error("CheckUser error:", err);
-    return res.status(500).json({ success: false, message: "Server error. Try again later." });
+    console.error("MongoDB error:", err);
+    return res.status(500).json({ error: "Database error" });
   }
 }
