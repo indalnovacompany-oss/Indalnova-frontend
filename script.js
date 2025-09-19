@@ -15,22 +15,21 @@ function getCurrentUser() {
   return { email, isLoggedIn };
 }
 
-let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
-
 // ===== Verify User From DB =====
 async function verifyUser(silent = true) {
-  if (!currentUserEmail || !isLoggedIn) return true; // Not logged in → continue
+  const { email, isLoggedIn } = getCurrentUser();
+  if (!email || !isLoggedIn) return true; // Not logged in → continue
 
   showLoader();
   try {
-    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
+    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(email)}`);
     const data = await res.json();
 
     if (!data.success) {
       // User deleted → force logout
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("cart_" + currentUserEmail);
+      localStorage.removeItem("cart_" + email);
 
       if (!silent) showAlert("error", "Your account was deleted. Please log in again.");
       setTimeout(() => {
@@ -41,8 +40,7 @@ async function verifyUser(silent = true) {
     return true; // User verified
   } catch (err) {
     console.error("User verification failed:", err);
-    // Network error → don't block products
-    return true;
+    return true; // Allow page to continue even if verification fails
   } finally {
     hideLoader();
   }
@@ -50,16 +48,20 @@ async function verifyUser(silent = true) {
 
 // ===== Load Products & Setup =====
 document.addEventListener("DOMContentLoaded", async () => {
-  const { email, isLoggedIn } = getCurrentUser();
   const loginBtn = document.getElementById("loginBtn");
 
-  // Show login button if not logged in
+  // Compute login status fresh
+  let { email, isLoggedIn } = getCurrentUser();
+
+  // Show login button first if user not logged in
   if (!isLoggedIn) {
     if (loginBtn) loginBtn.style.display = "flex";
-  } else {
-    // User logged in → verify silently
-    await verifyUser(true);
-    if (loginBtn) loginBtn.style.display = "none";
+  }
+
+  // Only verify user if logged in
+  if (isLoggedIn) {
+    const verified = await verifyUser(true); // silent
+    if (verified && loginBtn) loginBtn.style.display = "none";
   }
 
   // Load products
@@ -124,9 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
   // Hide loader on cart page
-  if (window.location.pathname.includes("cart.html")) {
-    hideLoader();
-  }
+  if (window.location.pathname.includes("cart.html")) hideLoader();
 });
 
 // ===== Nav Toggles =====
