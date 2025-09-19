@@ -15,17 +15,15 @@ function getCurrentUser() {
   return { email, isLoggedIn };
 }
 
-let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
-
 // ===== Verify User From DB =====
 async function verifyUser(silent = false) {
-  if (!currentUserEmail || !isLoggedIn) return false;
+  const { email, isLoggedIn } = getCurrentUser();
+  if (!email || !isLoggedIn) return false;
 
-  showLoader(); // Show loader while checking DB
+  showLoader(); // show loader while checking
   try {
-    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
+    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(email)}`);
     const data = await res.json();
-
     if (!data.success) {
       // User deleted → force logout
       localStorage.removeItem("currentUser");
@@ -76,23 +74,23 @@ async function loadProducts() {
       productContainer.appendChild(div);
     });
 
-    // ===== Add to Cart Event =====
+    // Add to cart event
     document.querySelectorAll(".add-to-cart").forEach(button => {
       button.addEventListener("click", () => {
         const id = parseInt(button.dataset.id);
         const productToAdd = products.find(p => p.id === id);
-        if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
+        if (typeof addToCart === "function") addToCart(productToAdd);
         showAlert("success", `${productToAdd.name} added to cart!`);
       });
     });
 
-    // ===== Buy Now Event =====
+    // Buy now event
     document.querySelectorAll(".buy-now").forEach(button => {
       button.addEventListener("click", () => {
         const id = parseInt(button.dataset.id);
         const productToBuy = products.find(p => p.id === id);
         showLoader();
-        if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
+        if (typeof addToCart === "function") addToCart(productToBuy);
         setTimeout(() => window.location.href = "cart.html", 1200);
       });
     });
@@ -110,23 +108,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   const loginBtn = document.getElementById("loginBtn");
   if (!loginBtn) return;
 
-  // Show login button by default
+  // Default: show login button
   loginBtn.style.display = "flex";
 
   const { email, isLoggedIn } = getCurrentUser();
 
   if (isLoggedIn && email) {
-    const verified = await verifyUser(true); // silent check
+    const verified = await verifyUser(true); // silent verification
     if (verified) {
-      loginBtn.style.display = "none"; // hide if verified
+      // Verified → hide login button
+      loginBtn.style.display = "none";
     } else {
-      loginBtn.style.display = "flex"; // show if verification fails
+      // Verification failed → force login
+      loginBtn.style.display = "flex";
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isLoggedIn");
     }
   }
 
-  // Load products after verification
+  // Load products
   loadProducts();
 });
 
