@@ -18,11 +18,12 @@ function getCurrentUser() {
 
 let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 
-// ===== Verify User From DB =====
-async function verifyUser(silent = false) {
+// ===== Verify User From DB (Silent) =====
+async function verifyUser(silent = true) {
   if (!currentUserEmail || !isLoggedIn) return false;
 
   showLoader(); // Show loader while checking database
+
   try {
     const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
     const data = await res.json();
@@ -32,21 +33,41 @@ async function verifyUser(silent = false) {
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("cart_" + currentUserEmail);
+
       if (!silent) showAlert("error", "Your account was deleted. Please log in again.");
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1500);
       return false;
     }
+
     return true;
   } catch (err) {
     console.error("User verification failed:", err);
     if (!silent) showAlert("error", "Unable to verify account. Try again later.");
     return false;
   } finally {
-    hideLoader(); // Hide loader after verification
+    hideLoader();
   }
 }
 
 // ===== Load Products =====
-async function loadProducts() {
+document.addEventListener("DOMContentLoaded", async () => {
+  const { email, isLoggedIn } = getCurrentUser();
+  const loginBtn = document.getElementById("loginBtn");
+
+  // Toggle login button based on localStorage status
+  if (loginBtn) loginBtn.style.display = email && isLoggedIn ? "none" : "flex";
+
+  // Silent verification for logged-in users
+  if (email && isLoggedIn) {
+    const verified = await verifyUser(true);
+    if (!verified) {
+      // Already handled inside verifyUser
+      return;
+    }
+  }
+
   const productContainer = document.querySelector(".product-container");
   if (!productContainer) return;
 
@@ -107,41 +128,18 @@ async function loadProducts() {
   } finally {
     hideLoader();
   }
-}
 
-// ===== DOMContentLoaded =====
-document.addEventListener("DOMContentLoaded", async () => {
-  const loginBtn = document.getElementById("loginBtn");
-  if (!loginBtn) return;
-
-  const { email, isLoggedIn } = getCurrentUser();
-
-  if (isLoggedIn && email) {
-    // Hide button immediately for logged-in user
-    loginBtn.style.display = "none";
-
-    // Verify silently in background
-    const verified = await verifyUser(true); // silent = true
-    if (!verified) {
-      // Verification failed → logout
-      localStorage.removeItem("currentUser");
-      localStorage.removeItem("isLoggedIn");
-      loginBtn.style.display = "flex"; // show login button
-      console.warn("User verification failed silently.");
-    }
-  } else {
-    // Not logged in → show login button
-    loginBtn.style.display = "flex";
+  // ===== If cart.html page, hide loader after load =====
+  if (window.location.pathname.includes("cart.html")) {
+    hideLoader();
   }
-
-  // Load products after verification check
-  loadProducts();
 });
 
 // ===== Nav Toggles =====
 function hideelement() {
   document.querySelector(".nav-2").classList.toggle("show");
 }
+
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
@@ -184,4 +182,5 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
+
 
