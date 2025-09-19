@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGO_URI;  // set in Vercel Dashboard
+const uri = process.env.MONGO_URI;  // Add this in Vercel > Project Settings > Environment Variables
 let client;
 let clientPromise;
 
@@ -22,10 +22,10 @@ export default async function handler(req, res) {
     }
 
     const conn = await clientPromise;
-    const db = conn.db("test");             // your DB
-    const users = db.collection("users");   // your collection
+    const db = conn.db("test");            // ✅ your DB name
+    const users = db.collection("users");  // ✅ your collection
 
-    // check by email + phone if phone is provided, else just email
+    // check by email + phone if provided, otherwise just email
     const query = phone ? { email, phone } : { email };
     const user = await users.findOne(query);
 
@@ -35,3 +35,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Database error" });
   }
 }
+
