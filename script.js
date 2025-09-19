@@ -8,39 +8,18 @@ function hideLoader() {
   if (overlay) overlay.style.display = "none";
 }
 
-// ===== Utility Functions =====
-function hideLoginBtn() {
-  const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn) loginBtn.style.display = "none";
-}
-function showLoginBtn() {
-  const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn) loginBtn.style.display = "flex";
-}
-
-// ===== Get Current User =====
+// ===== Current User & Login Status =====
 function getCurrentUser() {
-  try {
-    const data = localStorage.getItem("currentUser");
-    if (!data) return null;
-
-    // old storage: just email string
-    if (data.includes("@")) {
-      return { email: data };
-    }
-
-    // new storage: object { email, phone }
-    return JSON.parse(data);
-  } catch {
-    return null;
-  }
+  const email = localStorage.getItem("username") || null; // saved email/phone
+  const isLoggedIn = localStorage.getItem("userLoggedIn") === "true"; // ✅ fixed key
+  return { email, isLoggedIn };
 }
 
-// ===== On Page Load =====
+let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
+
+// ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
   const productContainer = document.querySelector(".product-container");
-
-  // Load products if container exists
   if (productContainer) {
     showLoader();
     fetch("product.json")
@@ -71,23 +50,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         hideLoader();
 
-        // Add to Cart Events
+        // ===== Add to Cart Event =====
         document.querySelectorAll(".add-to-cart").forEach(button => {
           button.addEventListener("click", () => {
             const id = parseInt(button.dataset.id);
             const productToAdd = products.find(p => p.id === id);
-            if (typeof addToCart === "function") addToCart(productToAdd);
+            if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
             showAlert("success", `${productToAdd.name} added to cart!`);
           });
         });
 
-        // Buy Now Events
+        // ===== Buy Now Event =====
         document.querySelectorAll(".buy-now").forEach(button => {
           button.addEventListener("click", () => {
             const id = parseInt(button.dataset.id);
             const productToBuy = products.find(p => p.id === id);
             showLoader();
-            if (typeof addToCart === "function") addToCart(productToBuy);
+            if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
             setTimeout(() => {
               window.location.href = "cart.html";
             }, 1200);
@@ -100,31 +79,31 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
   }
 
-  // ===== Login Button Visibility (with backend check) =====
-  const user = getCurrentUser();
+  // ===== Login Button Toggle (updated with backend check) =====
+  const loginBtn = document.getElementById("loginBtn");
 
-  if (user && user.email) {
+  // Only hide login if userLoggedIn = true AND user exists in DB
+  if (currentUserEmail && isLoggedIn) {
     try {
-      const res = await fetch("/api/checkUser", {
+      const res = await fetch("/api/checkuser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, phone: user.phone || null }),
+        body: JSON.stringify({ email: currentUserEmail }),
       });
-
       const data = await res.json();
-
       if (data.exists) {
-        hideLoginBtn();
+        if (loginBtn) loginBtn.style.display = "none";
       } else {
-        localStorage.removeItem("currentUser");
-        showLoginBtn();
+        localStorage.removeItem("username");
+        localStorage.removeItem("userLoggedIn");
+        if (loginBtn) loginBtn.style.display = "none";
       }
     } catch (err) {
       console.error("Error checking user:", err);
-      showLoginBtn();
+      if (loginBtn) loginBtn.style.display = "inline-block";
     }
   } else {
-    showLoginBtn();
+    if (loginBtn) loginBtn.style.display = "inline-block";
   }
 
   // ===== If cart.html page, hide loader after load =====
@@ -179,4 +158,3 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
-
