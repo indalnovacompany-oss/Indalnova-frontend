@@ -21,7 +21,16 @@ function showLoginBtn() {
 // ===== Get Current User =====
 function getCurrentUser() {
   try {
-    return JSON.parse(localStorage.getItem("currentUser")) || null;
+    const data = localStorage.getItem("currentUser");
+    if (!data) return null;
+
+    // old storage: just email string
+    if (data.includes("@")) {
+      return { email: data };
+    }
+
+    // new storage: object { email, phone }
+    return JSON.parse(data);
   } catch {
     return null;
   }
@@ -96,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (user && user.email) {
     try {
-      const res = await fetch("/api/checkuser", {
+      const res = await fetch("/api/checkUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: user.email, phone: user.phone || null }),
@@ -170,5 +179,4 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
-
 
