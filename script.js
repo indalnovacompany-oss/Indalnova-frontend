@@ -11,7 +11,7 @@ function hideLoader() {
 // ===== Current User & Login Status =====
 function getCurrentUser() {
   const email = localStorage.getItem("currentUser") || null;
-  const isLoggedIn = localStorage.getItem("userLoggedIn") === "true"; // <-- updated key
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   return { email, isLoggedIn };
 }
 
@@ -19,9 +19,9 @@ let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 
 // ===== Verify User From DB =====
 async function verifyUser(silent = true) {
-  if (!currentUserEmail || !isLoggedIn) return false; // No verification needed
+  if (!currentUserEmail || !isLoggedIn) return false;
 
-  showLoader(); // Show loader while checking DB
+  showLoader(); // Show loader while checking database
 
   try {
     const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
@@ -30,7 +30,7 @@ async function verifyUser(silent = true) {
     if (!data.success) {
       // User deleted → force logout
       localStorage.removeItem("currentUser");
-      localStorage.removeItem("userLoggedIn");
+      localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("cart_" + currentUserEmail);
 
       if (!silent) showAlert("error", "Your account was deleted. Please log in again.");
@@ -40,33 +40,20 @@ async function verifyUser(silent = true) {
       return false;
     }
 
-    return true; // User verified
+    return true;
   } catch (err) {
     console.error("User verification failed:", err);
     if (!silent) showAlert("error", "Unable to verify account. Try again later.");
     return false;
   } finally {
-    hideLoader();
+    hideLoader(); // Hide loader after verification
   }
 }
 
 // ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
-  const loginBtn = document.getElementById("loginBtn");
-
-  // Check login status first
-  const { email, isLoggedIn } = getCurrentUser();
-  if (loginBtn) loginBtn.style.display = email && isLoggedIn ? "none" : "flex";
-
-  // Verify user silently if logged in
-  if (isLoggedIn) {
-    const valid = await verifyUser(true); // silent verification
-    if (!valid) {
-      if (loginBtn) loginBtn.style.display = "flex";
-    } else {
-      if (loginBtn) loginBtn.style.display = "none";
-    }
-  }
+  // Only verify silently on load
+  await verifyUser(true);
 
   const productContainer = document.querySelector(".product-container");
   if (!productContainer) return;
@@ -105,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         button.addEventListener("click", () => {
           const id = parseInt(button.dataset.id);
           const productToAdd = products.find(p => p.id === id);
-          if (typeof addToCart === "function") addToCart(productToAdd);
+          if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
           showAlert("success", `${productToAdd.name} added to cart!`);
         });
       });
@@ -116,7 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const id = parseInt(button.dataset.id);
           const productToBuy = products.find(p => p.id === id);
           showLoader();
-          if (typeof addToCart === "function") addToCart(productToBuy);
+          if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
           setTimeout(() => {
             window.location.href = "cart.html";
           }, 1200);
@@ -128,11 +115,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       showAlert("error", "Failed to load products!");
     });
 
-  // ===== Hide loader if on cart.html =====
+  // ===== Login Button Toggle =====
+  const loginBtn = document.getElementById("loginBtn");
+  if (loginBtn) {
+    const { email, isLoggedIn } = getCurrentUser();
+    loginBtn.style.display = email && isLoggedIn ? "none" : "flex";
+  }
+
+  // ===== If cart.html page, hide loader after load =====
   if (window.location.pathname.includes("cart.html")) {
     hideLoader();
   }
 });
+
+// ===== Add to Cart =====
+function addToCart(product) {
+  const existing = cart.find(item => item.id === product.id);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+  saveCart();
+}
 
 // ===== Nav Toggles =====
 function hideelement() {
@@ -180,4 +185,5 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
+
 
