@@ -3,7 +3,6 @@ function showLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
-
 function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -18,109 +17,100 @@ function getCurrentUser() {
 
 let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 
-// Each user has a separate cart
-let cart = currentUserEmail
-  ? JSON.parse(localStorage.getItem("cart_" + currentUserEmail) || "[]")
-  : JSON.parse(localStorage.getItem("guestCart") || "[]");
-
-// ===== Save Cart Function =====
-function saveCart() {
-  if (currentUserEmail) {
-    localStorage.setItem("cart_" + currentUserEmail, JSON.stringify(cart));
-  } else {
-    localStorage.setItem("guestCart", JSON.stringify(cart));
-  }
-}
-
 // ===== Verify User From DB =====
 async function verifyUser() {
-  const { email, isLoggedIn } = getCurrentUser();
-  if (!email || !isLoggedIn) return;
+  if (!currentUserEmail || !isLoggedIn) return;
+
+  showLoader(); // Show loader while checking database
 
   try {
-    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(email)}`);
+    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
     const data = await res.json();
 
     if (!data.success) {
       // User deleted → force logout
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("cart_" + email);
+      localStorage.removeItem("cart_" + currentUserEmail);
 
       showAlert("error", "Your account was deleted. Please log in again.");
       setTimeout(() => {
         window.location.href = "login.html";
       }, 1500);
+      return;
     }
   } catch (err) {
     console.error("User verification failed:", err);
+    showAlert("error", "Unable to verify account. Try again later.");
+  } finally {
+    hideLoader(); // Hide loader after verification
   }
 }
 
 // ===== Load Products =====
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // Verify user on load
-  verifyUser();
+  await verifyUser();
 
   const productContainer = document.querySelector(".product-container");
-  if (productContainer) {
-    showLoader();
-    fetch("product.json")
-      .then(res => res.json())
-      .then(products => {
-        products.forEach(product => {
-          const div = document.createElement("div");
-          div.classList.add("top-product");
-          div.innerHTML = `
-            <div class="product-img">
-              <img src="${product.image}" alt="">
+  if (!productContainer) return;
+
+  showLoader();
+  fetch("product.json")
+    .then(res => res.json())
+    .then(products => {
+      products.forEach(product => {
+        const div = document.createElement("div");
+        div.classList.add("top-product");
+        div.innerHTML = `
+          <div class="product-img">
+            <img src="${product.image}" alt="">
+          </div>
+          <div class="details">
+            <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
+            <p>${product.name}</p>
+            <p>₹${product.price} <span class="dis">₹${product.original}</span> 
+            <span class="savings">${product.discount} OFF</span></p>
+            <div class="atc">
+              <button class="add-to-cart" data-id="${product.id}">
+                Add to cart <i class="fa-solid fa-cart-shopping"></i>
+              </button>
+              <button class="buy-now" data-id="${product.id}">Buy Now</button>
             </div>
-            <div class="details">
-              <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
-              <p>${product.name}</p>
-              <p>₹${product.price} <span class="dis">₹${product.original}</span> 
-              <span class="savings">${product.discount} OFF</span></p>
-              <div class="atc">
-                <button class="add-to-cart" data-id="${product.id}">
-                  Add to cart <i class="fa-solid fa-cart-shopping"></i>
-                </button>
-                <button class="buy-now" data-id="${product.id}">Buy Now</button>
-              </div>
-            </div>
-          `;
-          productContainer.appendChild(div);
-        });
-
-        hideLoader();
-
-        // ===== Add to Cart Event =====
-        document.querySelectorAll(".add-to-cart").forEach(button => {
-          button.addEventListener("click", () => {
-            const id = parseInt(button.dataset.id);
-            const productToAdd = products.find(p => p.id === id);
-            addToCart(productToAdd);
-            showAlert("success", `${productToAdd.name} added to cart!`);
-          });
-        });
-
-        // ===== Buy Now Event =====
-        document.querySelectorAll(".buy-now").forEach(button => {
-          button.addEventListener("click", () => {
-            const id = parseInt(button.dataset.id);
-            const productToBuy = products.find(p => p.id === id);
-            showLoader();
-            addToCart(productToBuy);
-            setTimeout(() => {
-              window.location.href = "cart.html";
-            }, 1200);
-          });
-        });
-      })
-      .catch(() => {
-        hideLoader();
-        showAlert("error", "Failed to load products!");
+          </div>
+        `;
+        productContainer.appendChild(div);
       });
-  }
+
+      hideLoader();
+
+      // ===== Add to Cart Event =====
+      document.querySelectorAll(".add-to-cart").forEach(button => {
+        button.addEventListener("click", () => {
+          const id = parseInt(button.dataset.id);
+          const productToAdd = products.find(p => p.id === id);
+          if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
+          showAlert("success", `${productToAdd.name} added to cart!`);
+        });
+      });
+
+      // ===== Buy Now Event =====
+      document.querySelectorAll(".buy-now").forEach(button => {
+        button.addEventListener("click", () => {
+          const id = parseInt(button.dataset.id);
+          const productToBuy = products.find(p => p.id === id);
+          showLoader();
+          if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
+          setTimeout(() => {
+            window.location.href = "cart.html";
+          }, 1200);
+        });
+      });
+    })
+    .catch(() => {
+      hideLoader();
+      showAlert("error", "Failed to load products!");
+    });
 
   // ===== Login Button Toggle =====
   const loginBtn = document.getElementById("loginBtn");
@@ -135,22 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ===== Add to Cart =====
-function addToCart(product) {
-  const existing = cart.find(item => item.id === product.id);
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({ ...product, qty: 1 });
-  }
-  saveCart();
-}
-
 // ===== Nav Toggles =====
 function hideelement() {
   document.querySelector(".nav-2").classList.toggle("show");
 }
-
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
@@ -191,8 +169,5 @@ function showAlert(type, message) {
   msg.innerText = message;
 
   overlay.style.display = "flex";
-
-  okBtn.onclick = () => {
-    overlay.style.display = "none";
-  };
+  okBtn.onclick = () => (overlay.style.display = "none");
 }
