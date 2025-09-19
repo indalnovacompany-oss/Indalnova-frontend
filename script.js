@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else {
         localStorage.removeItem("username");
         localStorage.removeItem("isLoggedIn");
-        if (loginBtn) loginBtn.style.display = "inline-block";
+        if (loginBtn) loginBtn.style.display = "none";
       }
     } catch (err) {
       console.error(err);
@@ -160,3 +160,4 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
+
