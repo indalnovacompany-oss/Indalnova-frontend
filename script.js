@@ -80,8 +80,14 @@ document.addEventListener("DOMContentLoaded", () => {
           button.addEventListener("click", () => {
             const id = parseInt(button.dataset.id);
             const productToBuy = products.find(p => p.id === id);
+
+            // Show loader immediately
+            showLoader();
+
+            // Add product to cart
             addToCart(productToBuy);
-            showAlert("info", `Redirecting to cart for ${productToBuy.name}...`);
+
+            // Delay before redirect to cart page
             setTimeout(() => {
               window.location.href = "cart.html";
             }, 1200);
@@ -99,6 +105,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (loginBtn) {
     const { email, isLoggedIn } = getCurrentUser();
     loginBtn.style.display = email && isLoggedIn ? "none" : "flex";
+  }
+
+  // ===== If cart.html page, hide loader after load =====
+  if (window.location.pathname.includes("cart.html")) {
+    hideLoader();
   }
 });
 
@@ -182,6 +193,5 @@ function showCustomAlert(message) {
 function closeCustomAlert() {
   document.getElementById("customAlert").style.display = "none";
 }
-
 
 
