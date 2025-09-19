@@ -1,3 +1,4 @@
+
 // ===== Loader =====
 function showLoader() {
   const loader = document.getElementById("loadingOverlay");
@@ -104,6 +105,9 @@ function renderCart() {
 
   attachEvents();
   updateTotal();
+
+  // Hide loader after render is done
+  hideLoader();
 }
 
 // ===== Update Total =====
@@ -124,8 +128,6 @@ function attachEvents() {
       if (product) product.qty += 1;
       saveCart();
       renderCart();
-      hideLoader();
-      // ALERT REMOVED
     });
   });
 
@@ -138,7 +140,6 @@ function attachEvents() {
       if (product) {
         if (product.qty > 1) {
           product.qty -= 1;
-          // ALERT REMOVED
         } else {
           cart = cart.filter(p => p.id !== id);
           showAlert("success", `${product.name} removed from cart`);
@@ -146,7 +147,6 @@ function attachEvents() {
         saveCart();
         renderCart();
       }
-      hideLoader();
     });
   });
 
@@ -159,7 +159,6 @@ function attachEvents() {
       cart = cart.filter(p => p.id !== id);
       saveCart();
       renderCart();
-      hideLoader();
       showAlert("success", `${product.name} removed from cart`);
     });
   });
@@ -207,7 +206,9 @@ function addToCart(newItem) {
 
 // ===== Init =====
 window.addEventListener("load", () => {
-  hideLoader();
-  renderCart();
+  showLoader();
+  // Delay slightly to show loader before render
+  setTimeout(() => {
+    renderCart();
+  }, 400);
 });
-
