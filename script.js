@@ -3,6 +3,7 @@ function showLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
+
 function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -21,7 +22,8 @@ let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 async function verifyUser(silent = false) {
   if (!currentUserEmail || !isLoggedIn) return false;
 
-  showLoader();
+  showLoader(); // Show loader while checking database
+
   try {
     const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
     const data = await res.json();
@@ -33,37 +35,37 @@ async function verifyUser(silent = false) {
       localStorage.removeItem("cart_" + currentUserEmail);
 
       if (!silent) showAlert("error", "Your account was deleted. Please log in again.");
-      setTimeout(() => {
-        window.location.href = "login.html";
-      }, 1500);
+      if (!silent) setTimeout(() => { window.location.href = "login.html"; }, 1500);
       return false;
     }
+
     return true;
   } catch (err) {
     console.error("User verification failed:", err);
     if (!silent) showAlert("error", "Unable to verify account. Try again later.");
     return false;
   } finally {
-    hideLoader();
+    hideLoader(); // Hide loader after verification
   }
 }
 
 // ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
   const loginBtn = document.getElementById("loginBtn");
+
   const { email, isLoggedIn } = getCurrentUser();
 
   if (email && isLoggedIn) {
-    // Hide login button immediately
+    // User is logged in → hide login button
     if (loginBtn) loginBtn.style.display = "none";
 
-    // Verify silently with DB
+    // Silently verify user in DB
     await verifyUser(true);
   } else {
+    // User not logged in → show login button
     if (loginBtn) loginBtn.style.display = "flex";
   }
 
-  // Load products
   const productContainer = document.querySelector(".product-container");
   if (!productContainer) return;
 
@@ -101,7 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         button.addEventListener("click", () => {
           const id = parseInt(button.dataset.id);
           const productToAdd = products.find(p => p.id === id);
-          if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
+          if (typeof addToCart === "function") addToCart(productToAdd);
           showAlert("success", `${productToAdd.name} added to cart!`);
         });
       });
@@ -112,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const id = parseInt(button.dataset.id);
           const productToBuy = products.find(p => p.id === id);
           showLoader();
-          if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
+          if (typeof addToCart === "function") addToCart(productToBuy);
           setTimeout(() => {
             window.location.href = "cart.html";
           }, 1200);
@@ -123,6 +125,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       hideLoader();
       showAlert("error", "Failed to load products!");
     });
+
+  // ===== If cart.html page, hide loader after load =====
+  if (window.location.pathname.includes("cart.html")) {
+    hideLoader();
+  }
 });
 
 // ===== Nav Toggles =====
