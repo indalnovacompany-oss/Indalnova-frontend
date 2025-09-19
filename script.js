@@ -3,7 +3,6 @@ function showLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
-
 function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -18,12 +17,11 @@ function getCurrentUser() {
 
 let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 
-// ===== Verify User From DB (Silent) =====
-async function verifyUser(silent = true) {
+// ===== Verify User From DB =====
+async function verifyUser(silent = false) {
   if (!currentUserEmail || !isLoggedIn) return false;
 
-  showLoader(); // Show loader while checking database
-
+  showLoader();
   try {
     const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
     const data = await res.json();
@@ -40,7 +38,6 @@ async function verifyUser(silent = true) {
       }, 1500);
       return false;
     }
-
     return true;
   } catch (err) {
     console.error("User verification failed:", err);
@@ -53,93 +50,85 @@ async function verifyUser(silent = true) {
 
 // ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
-  const { email, isLoggedIn } = getCurrentUser();
   const loginBtn = document.getElementById("loginBtn");
+  const { email, isLoggedIn } = getCurrentUser();
 
-  // Toggle login button based on localStorage status
-  if (loginBtn) loginBtn.style.display = email && isLoggedIn ? "none" : "flex";
-
-  // Silent verification for logged-in users
   if (email && isLoggedIn) {
-    const verified = await verifyUser(true);
-    if (!verified) {
-      // Already handled inside verifyUser
-      return;
-    }
+    // Hide login button immediately
+    if (loginBtn) loginBtn.style.display = "none";
+
+    // Verify silently with DB
+    await verifyUser(true);
+  } else {
+    if (loginBtn) loginBtn.style.display = "flex";
   }
 
+  // Load products
   const productContainer = document.querySelector(".product-container");
   if (!productContainer) return;
 
   showLoader();
-  try {
-    const res = await fetch("product.json");
-    const products = await res.json();
-
-    products.forEach(product => {
-      const div = document.createElement("div");
-      div.classList.add("top-product");
-      div.innerHTML = `
-        <div class="product-img">
-          <img src="${product.image}" alt="">
-        </div>
-        <div class="details">
-          <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
-          <p>${product.name}</p>
-          <p>₹${product.price} <span class="dis">₹${product.original}</span> 
-          <span class="savings">${product.discount} OFF</span></p>
-          <div class="atc">
-            <button class="add-to-cart" data-id="${product.id}">
-              Add to cart <i class="fa-solid fa-cart-shopping"></i>
-            </button>
-            <button class="buy-now" data-id="${product.id}">Buy Now</button>
+  fetch("product.json")
+    .then(res => res.json())
+    .then(products => {
+      products.forEach(product => {
+        const div = document.createElement("div");
+        div.classList.add("top-product");
+        div.innerHTML = `
+          <div class="product-img">
+            <img src="${product.image}" alt="">
           </div>
-        </div>
-      `;
-      productContainer.appendChild(div);
-    });
-
-    // ===== Add to Cart Event =====
-    document.querySelectorAll(".add-to-cart").forEach(button => {
-      button.addEventListener("click", () => {
-        const id = parseInt(button.dataset.id);
-        const productToAdd = products.find(p => p.id === id);
-        if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
-        showAlert("success", `${productToAdd.name} added to cart!`);
+          <div class="details">
+            <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
+            <p>${product.name}</p>
+            <p>₹${product.price} <span class="dis">₹${product.original}</span> 
+            <span class="savings">${product.discount} OFF</span></p>
+            <div class="atc">
+              <button class="add-to-cart" data-id="${product.id}">
+                Add to cart <i class="fa-solid fa-cart-shopping"></i>
+              </button>
+              <button class="buy-now" data-id="${product.id}">Buy Now</button>
+            </div>
+          </div>
+        `;
+        productContainer.appendChild(div);
       });
-    });
 
-    // ===== Buy Now Event =====
-    document.querySelectorAll(".buy-now").forEach(button => {
-      button.addEventListener("click", () => {
-        const id = parseInt(button.dataset.id);
-        const productToBuy = products.find(p => p.id === id);
-        showLoader();
-        if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
-        setTimeout(() => {
-          window.location.href = "cart.html";
-        }, 1200);
+      hideLoader();
+
+      // ===== Add to Cart Event =====
+      document.querySelectorAll(".add-to-cart").forEach(button => {
+        button.addEventListener("click", () => {
+          const id = parseInt(button.dataset.id);
+          const productToAdd = products.find(p => p.id === id);
+          if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
+          showAlert("success", `${productToAdd.name} added to cart!`);
+        });
       });
+
+      // ===== Buy Now Event =====
+      document.querySelectorAll(".buy-now").forEach(button => {
+        button.addEventListener("click", () => {
+          const id = parseInt(button.dataset.id);
+          const productToBuy = products.find(p => p.id === id);
+          showLoader();
+          if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
+          setTimeout(() => {
+            window.location.href = "cart.html";
+          }, 1200);
+        });
+      });
+    })
+    .catch(() => {
+      hideLoader();
+      showAlert("error", "Failed to load products!");
     });
-
-  } catch (err) {
-    console.error("Failed to load products:", err);
-    showAlert("error", "Failed to load products!");
-  } finally {
-    hideLoader();
-  }
-
-  // ===== If cart.html page, hide loader after load =====
-  if (window.location.pathname.includes("cart.html")) {
-    hideLoader();
-  }
 });
 
 // ===== Nav Toggles =====
 function hideelement() {
   document.querySelector(".nav-2").classList.toggle("show");
 }
-
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
