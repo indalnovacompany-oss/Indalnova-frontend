@@ -15,118 +15,119 @@ function getCurrentUser() {
   return { email, isLoggedIn };
 }
 
-// ===== Verify User From DB =====
-async function verifyUser(silent = true) {
-  const { email, isLoggedIn } = getCurrentUser();
-  if (!email || !isLoggedIn) return true; // Not logged in → continue
+let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 
-  showLoader();
+// ===== Verify User From DB =====
+async function verifyUser(silent = false) {
+  if (!currentUserEmail || !isLoggedIn) return false;
+
+  showLoader(); // Show loader while checking DB
   try {
-    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(email)}`);
+    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
     const data = await res.json();
 
     if (!data.success) {
       // User deleted → force logout
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("cart_" + email);
-
       if (!silent) showAlert("error", "Your account was deleted. Please log in again.");
-      setTimeout(() => {
-        window.location.href = "login.html";
-      }, 1500);
       return false;
     }
-    return true; // User verified
+    return true;
   } catch (err) {
     console.error("User verification failed:", err);
-    return true; // Allow page to continue even if verification fails
+    if (!silent) showAlert("error", "Unable to verify account. Try again later.");
+    return false;
   } finally {
     hideLoader();
   }
 }
 
-// ===== Load Products & Setup =====
-document.addEventListener("DOMContentLoaded", async () => {
-  const loginBtn = document.getElementById("loginBtn");
-
-  // Compute login status fresh
-  let { email, isLoggedIn } = getCurrentUser();
-
-  // Show login button first if user not logged in
-  if (!isLoggedIn) {
-    if (loginBtn) loginBtn.style.display = "flex";
-  }
-
-  // Only verify user if logged in
-  if (isLoggedIn) {
-    const verified = await verifyUser(true); // silent
-    if (verified && loginBtn) loginBtn.style.display = "none";
-  }
-
-  // Load products
+// ===== Load Products =====
+async function loadProducts() {
   const productContainer = document.querySelector(".product-container");
   if (!productContainer) return;
 
   showLoader();
-  fetch("product.json")
-    .then(res => res.json())
-    .then(products => {
-      products.forEach(product => {
-        const div = document.createElement("div");
-        div.classList.add("top-product");
-        div.innerHTML = `
-          <div class="product-img">
-            <img src="${product.image}" alt="">
+  try {
+    const res = await fetch("product.json");
+    const products = await res.json();
+
+    products.forEach(product => {
+      const div = document.createElement("div");
+      div.classList.add("top-product");
+      div.innerHTML = `
+        <div class="product-img">
+          <img src="${product.image}" alt="">
+        </div>
+        <div class="details">
+          <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
+          <p>${product.name}</p>
+          <p>₹${product.price} <span class="dis">₹${product.original}</span> 
+          <span class="savings">${product.discount} OFF</span></p>
+          <div class="atc">
+            <button class="add-to-cart" data-id="${product.id}">
+              Add to cart <i class="fa-solid fa-cart-shopping"></i>
+            </button>
+            <button class="buy-now" data-id="${product.id}">Buy Now</button>
           </div>
-          <div class="details">
-            <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
-            <p>${product.name}</p>
-            <p>₹${product.price} <span class="dis">₹${product.original}</span> 
-            <span class="savings">${product.discount} OFF</span></p>
-            <div class="atc">
-              <button class="add-to-cart" data-id="${product.id}">
-                Add to cart <i class="fa-solid fa-cart-shopping"></i>
-              </button>
-              <button class="buy-now" data-id="${product.id}">Buy Now</button>
-            </div>
-          </div>
-        `;
-        productContainer.appendChild(div);
-      });
-
-      hideLoader();
-
-      // Add to cart buttons
-      document.querySelectorAll(".add-to-cart").forEach(button => {
-        button.addEventListener("click", () => {
-          const id = parseInt(button.dataset.id);
-          const productToAdd = products.find(p => p.id === id);
-          if (typeof addToCart === "function") addToCart(productToAdd);
-          showAlert("success", `${productToAdd.name} added to cart!`);
-        });
-      });
-
-      // Buy now buttons
-      document.querySelectorAll(".buy-now").forEach(button => {
-        button.addEventListener("click", () => {
-          const id = parseInt(button.dataset.id);
-          const productToBuy = products.find(p => p.id === id);
-          showLoader();
-          if (typeof addToCart === "function") addToCart(productToBuy);
-          setTimeout(() => {
-            window.location.href = "cart.html";
-          }, 1200);
-        });
-      });
-    })
-    .catch(() => {
-      hideLoader();
-      showAlert("error", "Failed to load products!");
+        </div>
+      `;
+      productContainer.appendChild(div);
     });
 
-  // Hide loader on cart page
-  if (window.location.pathname.includes("cart.html")) hideLoader();
+    // ===== Add to Cart Event =====
+    document.querySelectorAll(".add-to-cart").forEach(button => {
+      button.addEventListener("click", () => {
+        const id = parseInt(button.dataset.id);
+        const productToAdd = products.find(p => p.id === id);
+        if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
+        showAlert("success", `${productToAdd.name} added to cart!`);
+      });
+    });
+
+    // ===== Buy Now Event =====
+    document.querySelectorAll(".buy-now").forEach(button => {
+      button.addEventListener("click", () => {
+        const id = parseInt(button.dataset.id);
+        const productToBuy = products.find(p => p.id === id);
+        showLoader();
+        if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
+        setTimeout(() => window.location.href = "cart.html", 1200);
+      });
+    });
+
+  } catch (err) {
+    console.error("Failed to load products:", err);
+    showAlert("error", "Failed to load products!");
+  } finally {
+    hideLoader();
+  }
+}
+
+// ===== DOMContentLoaded =====
+document.addEventListener("DOMContentLoaded", async () => {
+  const loginBtn = document.getElementById("loginBtn");
+  if (!loginBtn) return;
+
+  // Show login button by default
+  loginBtn.style.display = "flex";
+
+  const { email, isLoggedIn } = getCurrentUser();
+
+  if (isLoggedIn && email) {
+    const verified = await verifyUser(true); // silent check
+    if (verified) {
+      loginBtn.style.display = "none"; // hide if verified
+    } else {
+      loginBtn.style.display = "flex"; // show if verification fails
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("isLoggedIn");
+    }
+  }
+
+  // Load products after verification
+  loadProducts();
 });
 
 // ===== Nav Toggles =====
