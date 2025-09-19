@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (currentUser.includes("@")) body.email = currentUser;
       else body.phone = currentUser;
 
-      const res = await fetch("/api/checkUser", {
+      const res = await fetch("/api/checkuser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
@@ -175,4 +175,5 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
+
 
