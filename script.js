@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (currentUserEmail && isLoggedIn) {
     try {
-      const res = await fetch("/api/checkUser", {
+      const res = await fetch("/api/checkuser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: currentUserEmail })
@@ -180,3 +180,4 @@ function hideelement() {
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
+
