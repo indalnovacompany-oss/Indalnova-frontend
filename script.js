@@ -32,8 +32,36 @@ function saveCart() {
   }
 }
 
+// ===== Verify User From DB =====
+async function verifyUser() {
+  const { email, isLoggedIn } = getCurrentUser();
+  if (!email || !isLoggedIn) return;
+
+  try {
+    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(email)}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      // User deleted → force logout
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("cart_" + email);
+
+      showAlert("error", "Your account was deleted. Please log in again.");
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1500);
+    }
+  } catch (err) {
+    console.error("User verification failed:", err);
+  }
+}
+
 // ===== Load Products =====
 document.addEventListener("DOMContentLoaded", () => {
+  // Verify user on load
+  verifyUser();
+
   const productContainer = document.querySelector(".product-container");
   if (productContainer) {
     showLoader();
@@ -80,14 +108,8 @@ document.addEventListener("DOMContentLoaded", () => {
           button.addEventListener("click", () => {
             const id = parseInt(button.dataset.id);
             const productToBuy = products.find(p => p.id === id);
-
-            // Show loader immediately
             showLoader();
-
-            // Add product to cart
             addToCart(productToBuy);
-
-            // Delay before redirect to cart page
             setTimeout(() => {
               window.location.href = "cart.html";
             }, 1200);
@@ -136,22 +158,15 @@ function back() {
 // ===== Custom Alert =====
 function showAlert(type, message) {
   const overlay = document.getElementById("customAlert");
-  if (!overlay) {
-    console.error("Custom alert overlay not found!");
-    return;
-  }
+  if (!overlay) return;
 
   const icon = overlay.querySelector(".alert-icon");
   const title = overlay.querySelector(".alert-title");
   const msg = overlay.querySelector(".alert-message");
   const okBtn = overlay.querySelector(".alert-ok");
 
-  if (!icon || !title || !msg || !okBtn) {
-    console.error("Custom alert inner elements missing!");
-    return;
-  }
+  if (!icon || !title || !msg || !okBtn) return;
 
-  // Set alert type
   let iconClass = "fa-circle-exclamation";
   let color = "#ff4d4d";
   let titleText = "Alert";
@@ -181,17 +196,3 @@ function showAlert(type, message) {
     overlay.style.display = "none";
   };
 }
-
-// ===== Optional simpler alert calls =====
-function showCustomAlert(message) {
-  const alertBox = document.getElementById("customAlert");
-  const alertMessage = alertBox.querySelector(".alert-message");
-  alertMessage.textContent = message;
-  alertBox.style.display = "flex";
-}
-
-function closeCustomAlert() {
-  document.getElementById("customAlert").style.display = "none";
-}
-
-
