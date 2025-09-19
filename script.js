@@ -16,23 +16,22 @@ function getCurrentUser() {
   return { email, isLoggedIn };
 }
 
-let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
-
 // ===== Verify User From DB =====
-async function verifyUser(silent = false) {
-  if (!currentUserEmail || !isLoggedIn) return false;
+async function verifyUser(silent = true) {
+  const { email, isLoggedIn } = getCurrentUser();
+  if (!email || !isLoggedIn) return false;
 
-  showLoader(); // Show loader while checking database
+  showLoader();
 
   try {
-    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
+    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(email)}`);
     const data = await res.json();
 
     if (!data.success) {
       // User deleted → force logout
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("cart_" + currentUserEmail);
+      localStorage.removeItem("cart_" + email);
 
       if (!silent) showAlert("error", "Your account was deleted. Please log in again.");
       if (!silent) setTimeout(() => { window.location.href = "login.html"; }, 1500);
@@ -45,27 +44,28 @@ async function verifyUser(silent = false) {
     if (!silent) showAlert("error", "Unable to verify account. Try again later.");
     return false;
   } finally {
-    hideLoader(); // Hide loader after verification
+    hideLoader();
   }
 }
 
-// ===== Load Products =====
+// ===== DOMContentLoaded =====
 document.addEventListener("DOMContentLoaded", async () => {
   const loginBtn = document.getElementById("loginBtn");
-
   const { email, isLoggedIn } = getCurrentUser();
 
-  if (email && isLoggedIn) {
-    // User is logged in → hide login button
-    if (loginBtn) loginBtn.style.display = "none";
+  // Step 1: Immediately hide login button if logged in
+  if (loginBtn) loginBtn.style.display = email && isLoggedIn ? "none" : "flex";
 
-    // Silently verify user in DB
-    await verifyUser(true);
-  } else {
-    // User not logged in → show login button
-    if (loginBtn) loginBtn.style.display = "flex";
+  // Step 2: Silently verify user in DB (no alert if silent)
+  if (email && isLoggedIn) {
+    const valid = await verifyUser(true);
+    if (!valid) {
+      // If verification fails, show login button
+      if (loginBtn) loginBtn.style.display = "flex";
+    }
   }
 
+  // ===== Load Products =====
   const productContainer = document.querySelector(".product-container");
   if (!productContainer) return;
 
