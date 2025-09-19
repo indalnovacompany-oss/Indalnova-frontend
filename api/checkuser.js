@@ -6,6 +6,7 @@ const CONNECTION_STRING =
 
 let isConnected = false;
 
+// Connect to MongoDB
 async function connectDB() {
   if (isConnected) return;
   if (mongoose.connection.readyState >= 1) {
@@ -22,6 +23,7 @@ async function connectDB() {
   }
 }
 
+// Clean phone number to match DB format
 function cleanPhone(phone) {
   phone = phone.replace(/\D/g, "");
   if (phone.startsWith("91") && phone.length > 10) phone = phone.slice(2);
@@ -29,6 +31,7 @@ function cleanPhone(phone) {
   return phone;
 }
 
+// User Schema
 const userSchema = new mongoose.Schema({
   name: String,
   email: String,
@@ -37,9 +40,10 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
+// API Handler
 export default async function handler(req, res) {
   if (req.method !== "GET") {
-    return res.status(405).json({ success: false, user: null, message: "Method not allowed" });
+    return res.status(405).json({ success: false, message: "Method not allowed" });
   }
 
   try {
@@ -47,7 +51,7 @@ export default async function handler(req, res) {
 
     const { identifier } = req.query;
     if (!identifier) {
-      return res.status(400).json({ success: false, user: null, message: "Identifier is required" });
+      return res.status(400).json({ success: false, message: "Identifier is required" });
     }
 
     let query = {};
@@ -56,21 +60,22 @@ export default async function handler(req, res) {
     } else {
       const cleaned = cleanPhone(identifier);
       if (!/^[0-9]{10}$/.test(cleaned)) {
-        return res.status(400).json({ success: false, user: null, message: "Invalid phone number" });
+        return res.status(400).json({ success: false, message: "Invalid phone number" });
       }
       query.phone = cleaned;
     }
 
     const user = await User.findOne(query).lean();
-    console.log(`CheckUser: identifier=${identifier}, user found=${!!user}`);
 
     if (!user) {
-      return res.status(200).json({ success: false, user: null, message: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     return res.status(200).json({ success: true, user });
+
   } catch (err) {
     console.error("CheckUser error:", err);
-    return res.status(500).json({ success: false, user: null, message: "Server error. Try again later." });
+    return res.status(500).json({ success: false, message: "Server error. Try again later." });
   }
 }
+
