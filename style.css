@@ -857,7 +857,7 @@ input {
 
 .custom-alert-content {
   background: #fff;
-  padding: 20px 30px;
+  padding: 20px 20px;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
   text-align: center;
@@ -897,4 +897,5 @@ input {
 @keyframes scrollRight {
   0% { transform: translateX(-50%); }
   100% { transform: translateX(0); }
+
 }
