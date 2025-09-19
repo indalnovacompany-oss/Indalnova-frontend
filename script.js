@@ -3,6 +3,7 @@ function showLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
+
 function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -15,19 +16,22 @@ function getCurrentUser() {
   return { email, isLoggedIn };
 }
 
+let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
+
 // ===== Verify User From DB =====
 async function verifyUser(silent = false) {
-  const { email, isLoggedIn } = getCurrentUser();
-  if (!email || !isLoggedIn) return false;
+  if (!currentUserEmail || !isLoggedIn) return false;
 
-  showLoader(); // show loader while checking
+  showLoader(); // Show loader while checking database
   try {
-    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(email)}`);
+    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
     const data = await res.json();
+
     if (!data.success) {
       // User deleted → force logout
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("cart_" + currentUserEmail);
       if (!silent) showAlert("error", "Your account was deleted. Please log in again.");
       return false;
     }
@@ -37,7 +41,7 @@ async function verifyUser(silent = false) {
     if (!silent) showAlert("error", "Unable to verify account. Try again later.");
     return false;
   } finally {
-    hideLoader();
+    hideLoader(); // Hide loader after verification
   }
 }
 
@@ -74,24 +78,26 @@ async function loadProducts() {
       productContainer.appendChild(div);
     });
 
-    // Add to cart event
+    // ===== Add to Cart Event =====
     document.querySelectorAll(".add-to-cart").forEach(button => {
       button.addEventListener("click", () => {
         const id = parseInt(button.dataset.id);
         const productToAdd = products.find(p => p.id === id);
-        if (typeof addToCart === "function") addToCart(productToAdd);
+        if (typeof addToCart === "function") addToCart(productToAdd); // from cart.js
         showAlert("success", `${productToAdd.name} added to cart!`);
       });
     });
 
-    // Buy now event
+    // ===== Buy Now Event =====
     document.querySelectorAll(".buy-now").forEach(button => {
       button.addEventListener("click", () => {
         const id = parseInt(button.dataset.id);
         const productToBuy = products.find(p => p.id === id);
         showLoader();
-        if (typeof addToCart === "function") addToCart(productToBuy);
-        setTimeout(() => window.location.href = "cart.html", 1200);
+        if (typeof addToCart === "function") addToCart(productToBuy); // from cart.js
+        setTimeout(() => {
+          window.location.href = "cart.html";
+        }, 1200);
       });
     });
 
@@ -108,25 +114,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   const loginBtn = document.getElementById("loginBtn");
   if (!loginBtn) return;
 
-  // Default: show login button
-  loginBtn.style.display = "flex";
-
   const { email, isLoggedIn } = getCurrentUser();
 
   if (isLoggedIn && email) {
-    const verified = await verifyUser(true); // silent verification
-    if (verified) {
-      // Verified → hide login button
-      loginBtn.style.display = "none";
-    } else {
-      // Verification failed → force login
-      loginBtn.style.display = "flex";
+    // Hide button immediately for logged-in user
+    loginBtn.style.display = "none";
+
+    // Verify silently in background
+    const verified = await verifyUser(true); // silent = true
+    if (!verified) {
+      // Verification failed → logout
       localStorage.removeItem("currentUser");
       localStorage.removeItem("isLoggedIn");
+      loginBtn.style.display = "flex"; // show login button
+      console.warn("User verification failed silently.");
     }
+  } else {
+    // Not logged in → show login button
+    loginBtn.style.display = "flex";
   }
 
-  // Load products
+  // Load products after verification check
   loadProducts();
 });
 
