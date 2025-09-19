@@ -8,9 +8,20 @@ let isConnected = false;
 
 async function connectDB() {
   if (isConnected) return;
-  if (mongoose.connection.readyState >= 1) { isConnected = true; return; }
+  if (mongoose.connection.readyState >= 1) {
+    isConnected = true;
+    return;
+  }
   await mongoose.connect(CONNECTION_STRING, { maxPoolSize: 10 });
   isConnected = true;
+}
+
+// Clean phone number to match DB format
+function cleanPhone(phone) {
+  phone = phone.replace(/\D/g, "");
+  if (phone.startsWith("91") && phone.length > 10) phone = phone.slice(2);
+  if (phone.startsWith("0") && phone.length > 10) phone = phone.slice(1);
+  return phone;
 }
 
 const userSchema = new mongoose.Schema({
@@ -38,7 +49,10 @@ export default async function handler(req, res) {
     if (identifier.includes("@")) {
       query.email = identifier.toLowerCase();
     } else {
-      query.phone = identifier;
+      query.phone = cleanPhone(identifier);
+      if (!/^[0-9]{10}$/.test(query.phone)) {
+        return res.status(400).json({ success: false, message: "Invalid phone number" });
+      }
     }
 
     const user = await User.findOne(query).lean();
@@ -47,7 +61,6 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({ success: true, user });
-
   } catch (err) {
     console.error("CheckUser error:", err);
     return res.status(500).json({ success: false, message: "Server error" });
