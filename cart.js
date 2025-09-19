@@ -3,7 +3,6 @@ function showLoader() {
   const loader = document.getElementById("loadingOverlay");
   if (loader) loader.style.display = "flex";
 }
-
 function hideLoader() {
   const loader = document.getElementById("loadingOverlay");
   if (loader) loader.style.display = "none";
@@ -43,22 +42,13 @@ function showAlert(type, message) {
   msg.innerText = message;
   overlay.style.display = "flex";
 
-  okBtn.onclick = () => {
-    overlay.style.display = "none";
-  };
+  okBtn.onclick = () => (overlay.style.display = "none");
 }
 
 // ===== Current User & Cart =====
-const currentUserRaw = localStorage.getItem("currentUser") || null;
-const cartKey = currentUserRaw ? "cart_" + currentUserRaw : "guestCart";
+const currentUser = localStorage.getItem("username") || "guest";
+const cartKey = "cart_" + currentUser;
 let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
-
-// ===== Identify User (email or phone) =====
-function getUserIdentifier() {
-  if (!currentUserRaw) return null;
-  if (/^[0-9]{10}$/.test(currentUserRaw)) return { loginId: currentUserRaw };
-  return { email: currentUserRaw };
-}
 
 // ===== Save Cart =====
 function saveCart() {
@@ -131,12 +121,8 @@ function attachEvents() {
       const id = parseInt(btn.closest(".product-card").dataset.id);
       const product = cart.find(p => p.id === id);
       if (product) {
-        if (product.qty > 1) {
-          product.qty -= 1;
-        } else {
-          cart = cart.filter(p => p.id !== id);
-          showAlert("success", `${product.name} removed from cart`);
-        }
+        if (product.qty > 1) product.qty -= 1;
+        else cart = cart.filter(p => p.id !== id);
         saveCart();
         renderCart();
       }
@@ -160,7 +146,7 @@ function attachEvents() {
 const checkoutBtn = document.querySelector(".checkout-btn");
 if (checkoutBtn) {
   checkoutBtn.addEventListener("click", () => {
-    if (!currentUserRaw) {
+    if (currentUser === "guest") {
       showAlert("error", "Please login first.");
       setTimeout(() => window.location.href = "login.html", 1200);
       return;
@@ -172,8 +158,9 @@ if (checkoutBtn) {
 
     showLoader();
     const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const checkoutData = { ...getUserIdentifier(), cart, total, timestamp: new Date().toISOString() };
+    const checkoutData = { user: currentUser, cart, total, timestamp: new Date().toISOString() };
     localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+
     setTimeout(() => {
       hideLoader();
       showAlert("success", "Proceeding to address page...");
@@ -182,50 +169,10 @@ if (checkoutBtn) {
   });
 }
 
-// ===== Add to Cart =====
-function addToCart(newItem) {
-  const existing = cart.find(p => p.id === newItem.id);
-  if (existing) {
-    existing.qty = (existing.qty || 0) + (newItem.qty || 1);
-  } else {
-    cart.push({ ...newItem, qty: newItem.qty || 1 });
-  }
-  saveCart();
-  renderCart();
-  showAlert("success", `${newItem.name} added to cart`);
-}
-
 // ===== Init =====
 window.addEventListener("load", () => {
   showLoader();
-
-  if (currentUserRaw) {
-    // POST check to backend (email or phone)
-    const body = currentUserRaw.includes("@") ? { email: currentUserRaw } : { phone: currentUserRaw };
-    fetch("/api/checkUser", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (!data.exists) {
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem(cartKey);
-          showAlert("error", "Your account no longer exists. Please sign up again.");
-          setTimeout(() => window.location.href = "login.html", 1500);
-          return;
-        }
-        // User exists → render cart
-        renderCart();
-      })
-      .catch(() => {
-        hideLoader();
-        showAlert("error", "Unable to verify account. Try again later.");
-      });
-  } else {
-    // Guest user → render cart
-    renderCart();
-  }
+  renderCart();
 });
+
 
