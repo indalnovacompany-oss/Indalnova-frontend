@@ -10,12 +10,12 @@ function hideLoader() {
 
 // ===== Current User & Login Status =====
 function getCurrentUser() {
-  const email = localStorage.getItem("username") || null; // email/phone stored
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true"; // ✅ check correct key
-  return { email, isLoggedIn };
+  const currentUser = localStorage.getItem("currentUser") || null; // can be email or phone
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  return { currentUser, isLoggedIn };
 }
 
-let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
+let { currentUser, isLoggedIn } = getCurrentUser();
 
 // ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
@@ -79,33 +79,48 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
   }
 
-  // ===== Login Button Toggle (with backend check) =====
+  // ===== Login Button Toggle (email or phone) =====
   const loginBtn = document.getElementById("loginBtn");
 
-  // initially hide login button to avoid flash
-  if (loginBtn) loginBtn.style.display = "none";
+  if (loginBtn) loginBtn.style.display = "none"; // hide initially to avoid flash
 
-  if (currentUserEmail && isLoggedIn) {
+  if (currentUser && isLoggedIn) {
     try {
-      const res = await fetch("/api/checkuser", {
+      const body = {};
+      if (currentUser.includes("@")) body.email = currentUser;
+      else body.phone = currentUser;
+
+      const res = await fetch("/api/checkUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: currentUserEmail })
+        body: JSON.stringify(body)
       });
       const data = await res.json();
+
       if (data.exists) {
-        if (loginBtn) loginBtn.style.display = "none";
+        if (loginBtn) loginBtn.style.display = "none"; // hide login button
       } else {
-        localStorage.removeItem("username");
+        localStorage.removeItem("currentUser");
         localStorage.removeItem("isLoggedIn");
-        if (loginBtn) loginBtn.style.display = "none";
+        if (loginBtn) loginBtn.style.display = "inline-block"; // show login button
       }
     } catch (err) {
       console.error(err);
-      if (loginBtn) loginBtn.style.display = "inline-block";
+      if (loginBtn) loginBtn.style.display = "inline-block"; // show login on error
     }
   } else {
-    if (loginBtn) loginBtn.style.display = "inline-block";
+    if (loginBtn) loginBtn.style.display = "inline-block"; // show login if not logged in
+  }
+
+  // ===== Logout Button (optional) =====
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("isLoggedIn");
+      if (currentUser) localStorage.removeItem("cart_" + currentUser);
+      location.reload();
+    });
   }
 
   // ===== If cart.html page, hide loader after load =====
@@ -160,5 +175,4 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
-
 
