@@ -3,7 +3,6 @@ function showLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
-
 function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -12,33 +11,36 @@ function hideLoader() {
 // ===== Current User & Login Status =====
 function getCurrentUser() {
   const email = localStorage.getItem("currentUser") || null;
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const isLoggedIn = localStorage.getItem("userLoggedIn") === "true"; // <-- updated key
   return { email, isLoggedIn };
 }
 
+let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
+
 // ===== Verify User From DB =====
 async function verifyUser(silent = true) {
-  const { email, isLoggedIn } = getCurrentUser();
-  if (!email || !isLoggedIn) return false;
+  if (!currentUserEmail || !isLoggedIn) return false; // No verification needed
 
-  showLoader();
+  showLoader(); // Show loader while checking DB
 
   try {
-    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(email)}`);
+    const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
     const data = await res.json();
 
     if (!data.success) {
       // User deleted → force logout
       localStorage.removeItem("currentUser");
-      localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("cart_" + email);
+      localStorage.removeItem("userLoggedIn");
+      localStorage.removeItem("cart_" + currentUserEmail);
 
       if (!silent) showAlert("error", "Your account was deleted. Please log in again.");
-      if (!silent) setTimeout(() => { window.location.href = "login.html"; }, 1500);
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1500);
       return false;
     }
 
-    return true;
+    return true; // User verified
   } catch (err) {
     console.error("User verification failed:", err);
     if (!silent) showAlert("error", "Unable to verify account. Try again later.");
@@ -48,24 +50,24 @@ async function verifyUser(silent = true) {
   }
 }
 
-// ===== DOMContentLoaded =====
+// ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
   const loginBtn = document.getElementById("loginBtn");
-  const { email, isLoggedIn } = getCurrentUser();
 
-  // Step 1: Immediately hide login button if logged in
+  // Check login status first
+  const { email, isLoggedIn } = getCurrentUser();
   if (loginBtn) loginBtn.style.display = email && isLoggedIn ? "none" : "flex";
 
-  // Step 2: Silently verify user in DB (no alert if silent)
-  if (email && isLoggedIn) {
-    const valid = await verifyUser(true);
+  // Verify user silently if logged in
+  if (isLoggedIn) {
+    const valid = await verifyUser(true); // silent verification
     if (!valid) {
-      // If verification fails, show login button
       if (loginBtn) loginBtn.style.display = "flex";
+    } else {
+      if (loginBtn) loginBtn.style.display = "none";
     }
   }
 
-  // ===== Load Products =====
   const productContainer = document.querySelector(".product-container");
   if (!productContainer) return;
 
@@ -126,7 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       showAlert("error", "Failed to load products!");
     });
 
-  // ===== If cart.html page, hide loader after load =====
+  // ===== Hide loader if on cart.html =====
   if (window.location.pathname.includes("cart.html")) {
     hideLoader();
   }
@@ -178,5 +180,4 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
-
 
