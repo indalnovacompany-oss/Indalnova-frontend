@@ -18,10 +18,10 @@ function getCurrentUser() {
 let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 
 // ===== Verify User From DB =====
-async function verifyUser() {
-  if (!currentUserEmail || !isLoggedIn) return false; // If not logged in, skip DB check
+async function verifyUser(silent = true) {
+  if (!currentUserEmail || !isLoggedIn) return false; // Not logged in → skip DB
 
-  showLoader(); // Show loader while checking database
+  showLoader(); // Show loader while checking DB
   try {
     const res = await fetch(`/api/checkUser?identifier=${encodeURIComponent(currentUserEmail)}`);
     const data = await res.json();
@@ -32,37 +32,36 @@ async function verifyUser() {
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("cart_" + currentUserEmail);
 
-      showAlert("error", "Your account was deleted. Please log in again.");
+      if (!silent) showAlert("error", "Your account was deleted. Please log in again.");
       setTimeout(() => {
         window.location.href = "login.html";
       }, 1500);
       return false;
     }
-    return true; // User verified successfully
+    return true; // User verified
   } catch (err) {
     console.error("User verification failed:", err);
-    showAlert("error", "Unable to verify account. Try again later.");
+    if (!silent) showAlert("error", "Unable to verify account. Try again later.");
     return false;
   } finally {
-    hideLoader(); // Hide loader after verification
+    hideLoader();
   }
 }
 
 // ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
-  const { email, isLoggedIn } = getCurrentUser();
+  // Silent check: don't show alert on first visit
+  const userValid = await verifyUser(true);
 
+  const { email, isLoggedIn } = getCurrentUser();
   const loginBtn = document.getElementById("loginBtn");
-  if (!isLoggedIn) {
-    if (loginBtn) loginBtn.style.display = "flex"; // Show login button if user not logged in
-    return; // Do not proceed further
+
+  if (!isLoggedIn || !userValid) {
+    if (loginBtn) loginBtn.style.display = "flex"; // Show login button
+    return; // Stop further product loading
   }
 
-  // User is logged in according to localStorage → verify DB
-  const userValid = await verifyUser();
-  if (!userValid) return; // Stop if DB check failed
-
-  if (loginBtn) loginBtn.style.display = "none"; // Hide login button if logged in & valid
+  if (loginBtn) loginBtn.style.display = "none"; // Hide login button
 
   const productContainer = document.querySelector(".product-container");
   if (!productContainer) return;
@@ -176,4 +175,5 @@ function showAlert(type, message) {
   overlay.style.display = "flex";
   okBtn.onclick = () => (overlay.style.display = "none");
 }
+
 
