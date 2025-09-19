@@ -19,6 +19,8 @@ function showAlert(type, message) {
   const msg = overlay.querySelector(".alert-message");
   const okBtn = overlay.querySelector(".alert-ok");
 
+  if (!icon || !title || !msg || !okBtn) return;
+
   let iconClass = "fa-circle-exclamation";
   let color = "#ff4d4d";
   let titleText = "Alert";
@@ -48,16 +50,16 @@ function showAlert(type, message) {
 
 // ===== Current User & Login Status =====
 function getCurrentUser() {
-  const email = localStorage.getItem("username") || null;
+  const user = localStorage.getItem("username") || null; // email or phone
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  return { email, isLoggedIn };
+  return { user, isLoggedIn };
 }
 
-let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
+let { user: currentUserEmail, isLoggedIn } = getCurrentUser();
 const currentUser = currentUserEmail || "guest";
 const cartKey = "cart_" + currentUser;
 
-// ===== Add to Cart =====
+// ===== Cart Functions =====
 function addToCart(newItem) {
   let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
   const existing = cart.find(p => p.id === newItem.id);
@@ -149,10 +151,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       // Detect if phone or email
       const body = /^[0-9]{10}$/.test(currentUserEmail)
-        ? { phone: currentUserEmail }   // phone
-        : { email: currentUserEmail };  // email
+        ? { phone: currentUserEmail }
+        : { email: currentUserEmail };
 
-      const res = await fetch("/api/checkuser", {
+      const res = await fetch("/api/checkUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
@@ -161,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const data = await res.json();
 
       if (data.exists) {
-        if (loginBtn) loginBtn.style.display = "none";  // hide login
+        if (loginBtn) loginBtn.style.display = "none";
       } else {
         localStorage.removeItem("username");
         localStorage.removeItem("isLoggedIn");
