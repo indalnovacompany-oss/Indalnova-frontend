@@ -1,11 +1,11 @@
-// ===== Loader Functions =====
+// ===== Loader =====
 function showLoader() {
-  const overlay = document.getElementById("loadingOverlay");
-  if (overlay) overlay.style.display = "flex";
+  const loader = document.getElementById("loadingOverlay");
+  if (loader) loader.style.display = "flex";
 }
 function hideLoader() {
-  const overlay = document.getElementById("loadingOverlay");
-  if (overlay) overlay.style.display = "none";
+  const loader = document.getElementById("loadingOverlay");
+  if (loader) loader.style.display = "none";
 }
 
 // ===== Custom Alert =====
@@ -17,8 +17,6 @@ function showAlert(type, message) {
   const title = overlay.querySelector(".alert-title");
   const msg = overlay.querySelector(".alert-message");
   const okBtn = overlay.querySelector(".alert-ok");
-
-  if (!icon || !title || !msg || !okBtn) return;
 
   let iconClass = "fa-circle-exclamation";
   let color = "#ff4d4d";
@@ -47,160 +45,141 @@ function showAlert(type, message) {
   okBtn.onclick = () => (overlay.style.display = "none");
 }
 
-// ===== Current User & Login Helpers =====
-function getCurrentUser() {
-  const email = localStorage.getItem("currentUser") || null; 
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  return { email, isLoggedIn };
-}
-
-function setLoginSession(userEmail) {
-  localStorage.setItem("currentUser", userEmail);
-  localStorage.setItem("isLoggedIn", "true");
-}
-
-function clearLoginSession() {
-  localStorage.removeItem("currentUser");
-  localStorage.removeItem("isLoggedIn");
-}
-
-let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
+// ===== Current User & Cart =====
+const currentUserEmail = localStorage.getItem("currentUser") || null;
+const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 const currentUser = currentUserEmail || "guest";
 const cartKey = "cart_" + currentUser;
+let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
 
-// ===== Cart Functions =====
-function addToCart(newItem) {
-  let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
-  const existing = cart.find(p => p.id === newItem.id);
-  if (existing) {
-    existing.qty = (existing.qty || 0) + (newItem.qty || 1);
-  } else {
-    cart.push({ ...newItem, qty: newItem.qty || 1 });
-  }
+// ===== Save Cart =====
+function saveCart() {
   localStorage.setItem(cartKey, JSON.stringify(cart));
-  showAlert("success", `${newItem.name} added to cart!`);
 }
 
-// ===== Load Products =====
-document.addEventListener("DOMContentLoaded", async () => {
-  const productContainer = document.querySelector(".product-container");
-  if (!productContainer) return;
+// ===== Render Cart =====
+function renderCart() {
+  const container = document.querySelector(".cart-container");
+  if (!container) return;
+  container.innerHTML = "";
 
-  showLoader();
-
-  try {
-    const res = await fetch("product.json");
-    const products = await res.json();
-
-    products.forEach(product => {
-      const div = document.createElement("div");
-      div.classList.add("top-product");
-      div.innerHTML = `
-        <div class="product-img">
-          <img src="${product.image}" alt="">
-        </div>
-        <div class="details">
-          <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
-          <p>${product.name}</p>
-          <p>₹${product.price} <span class="dis">₹${product.original}</span> 
-          <span class="savings">${product.discount} OFF</span></p>
-          <div class="atc">
-            <button class="add-to-cart" data-id="${product.id}">Add to cart <i class="fa-solid fa-cart-shopping"></i></button>
-            <button class="buy-now" data-id="${product.id}">Buy Now</button>
-          </div>
-        </div>
-      `;
-      productContainer.appendChild(div);
-    });
-
+  if (cart.length === 0) {
+    container.innerHTML = `<p class="empty-cart" style="text-align:center; padding:20px;">Your cart is empty</p>`;
     hideLoader();
-
-    // ===== Add to Cart Event =====
-    document.querySelectorAll(".add-to-cart").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = parseInt(btn.dataset.id);
-        const product = products.find(p => p.id === id);
-        addToCart(product);
-      });
-    });
-
-    // ===== Buy Now Event =====
-    document.querySelectorAll(".buy-now").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = parseInt(btn.dataset.id);
-        const product = products.find(p => p.id === id);
-
-        addToCart(product);
-
-        localStorage.setItem("checkoutData", JSON.stringify({
-          items: [product],
-          total: product.price,
-          timestamp: new Date().toISOString(),
-          user: currentUserEmail || "guest"
-        }));
-
-        window.location.href = "cart.html";
-      });
-    });
-
-  } catch (err) {
-    hideLoader();
-    showAlert("error", "Failed to load products!");
-    console.error(err);
+    return;
   }
 
-  // ===== Login Button Toggle =====
-  const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn) {
-    loginBtn.style.display = "none"; // Hide by default
+  cart.forEach(item => {
+    const discountPercent = Math.round(((item.original - item.price) / item.original) * 100);
+    const div = document.createElement("div");
+    div.classList.add("product-card");
+    div.dataset.id = item.id;
+    div.innerHTML = `
+      <img src="${item.image}" alt="" class="product-image">
+      <div class="product-info">
+        <h3 class="product-name">${item.name}</h3>
+        <p class="product-mrp">MRP: <span class="strike">₹${item.original}</span></p>
+        <p class="product-price">₹${item.price} <span class="savings">${discountPercent}% OFF</span></p>
+        <p class="free-shipping">Free Shipping</p>
+        <div class="quantity">
+          <button class="decrease">-</button>
+          <span class="qty">${item.qty}</span>
+          <button class="increase">+</button>
+        </div>
+      </div>
+      <span class="remove-btn"><i class="fa fa-trash"></i></span>
+    `;
+    container.appendChild(div);
+  });
 
-    if (currentUserEmail && isLoggedIn) {
-      (async () => {
-        try {
-          const body = /^[0-9]{10}$/.test(currentUserEmail)
-            ? { phone: currentUserEmail }
-            : { email: currentUserEmail };
+  attachEvents();
+  updateTotal();
+  hideLoader();
+}
 
-          const res = await fetch("/api/checkUser", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
-          });
+// ===== Update Total =====
+function updateTotal() {
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const totalElem = document.querySelector(".total-text");
+  if (totalElem) totalElem.innerText = "Total: ₹" + total;
+}
 
-          const data = await res.json();
+// ===== Attach Events =====
+function attachEvents() {
+  document.querySelectorAll(".increase").forEach(btn => {
+    btn.addEventListener("click", () => {
+      showLoader();
+      const id = parseInt(btn.closest(".product-card").dataset.id);
+      const product = cart.find(p => p.id === id);
+      if (product) product.qty += 1;
+      saveCart();
+      renderCart();
+    });
+  });
 
-          if (data.exists) {
-            // User exists: keep hidden
-            loginBtn.style.display = "none";
-          } else {
-            // User does not exist: clear and show
-            clearLoginSession();
-            loginBtn.style.display = "inline-block";
-          }
-        } catch (err) {
-          // On error, clear session
-          clearLoginSession();
-          loginBtn.style.display = "inline-block";
-        }
-      })();
-    } else {
-      // No user: show login
-      loginBtn.style.display = "inline-block";
+  document.querySelectorAll(".decrease").forEach(btn => {
+    btn.addEventListener("click", () => {
+      showLoader();
+      const id = parseInt(btn.closest(".product-card").dataset.id);
+      const product = cart.find(p => p.id === id);
+      if (product) {
+        if (product.qty > 1) product.qty -= 1;
+        else cart = cart.filter(p => p.id !== id);
+        saveCart();
+        renderCart();
+      }
+    });
+  });
+
+  document.querySelectorAll(".remove-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      showLoader();
+      const id = parseInt(btn.closest(".product-card").dataset.id);
+      const product = cart.find(p => p.id === id);
+      cart = cart.filter(p => p.id !== id);
+      saveCart();
+      renderCart();
+      showAlert("success", `${product.name} removed from cart`);
+    });
+  });
+}
+
+// ===== Add to Cart =====
+function addToCart(newItem) {
+  const existing = cart.find(p => p.id === newItem.id);
+  if (existing) existing.qty = (existing.qty || 0) + (newItem.qty || 1);
+  else cart.push({ ...newItem, qty: newItem.qty || 1 });
+  saveCart();
+  renderCart();
+  showAlert("success", `${newItem.name} added to cart`);
+}
+
+// ===== Checkout Button =====
+const checkoutBtn = document.querySelector(".checkout-btn");
+if (checkoutBtn) {
+  checkoutBtn.addEventListener("click", () => {
+    if (!currentUserEmail || !isLoggedIn) {
+      showAlert("error", "Please login first.");
+      setTimeout(() => window.location.href = "login.html", 1200);
+      return;
     }
-  }
-  
-  if (window.location.pathname.includes("cart.html")) {
-    hideLoader();
-  }
+
+    if (cart.length === 0) {
+      showAlert("error", "Cart is empty!");
+      return;
+    }
+
+    // Save cart to localStorage for address.html
+    localStorage.setItem("checkoutCart", JSON.stringify(cart));
+
+    // Redirect to address page
+    window.location.href = "adress.html";
+  });
+}
+
+// ===== Init =====
+window.addEventListener("load", () => {
+  renderCart();
 });
-
-// ===== Nav Toggles =====
-function hideelement() {
-  document.querySelector(".nav-2").classList.toggle("show");
-}
-function back() {
-  document.querySelector(".nav-2").classList.remove("show");
-}
-
 
 
