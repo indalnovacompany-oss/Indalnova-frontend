@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             ? { phone: currentUserEmail }
             : { email: currentUserEmail };
 
-          const res = await fetch("/api/checkUser", {
+          const res = await fetch("/api/checkuser", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body)
@@ -201,4 +201,5 @@ function hideelement() {
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
+
 
