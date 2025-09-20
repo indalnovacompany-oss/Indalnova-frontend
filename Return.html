@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="media.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chong+Modern&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <title>Return Policy</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #trackorders {
+            margin-top: 20px;
+            padding: 20px 30px;
+            color: brown;
+            font-size: 25px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input {
+            width: 50%;
+        }
+
+        .policy-intro {
+            padding: 20px;
+            font-size: 17px;
+            color: black;
+        }
+
+        .rules {
+            padding: 20px;
+            gap: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2 {
+            font-size: 25px;
+            color: brown;
+        }
+
+        /* Minimal media query for Order ID + Upload + Button */
+        @media (max-width: 768px) {
+            section[style*="display: flex"] {
+                flex-direction: column !important;
+                width: 90% !important;
+                margin: 20px auto !important;
+            }
+
+            section[style*="display: flex"] input,
+            section[style*="display: flex"] button {
+                width: 100% !important;
+                margin-bottom: 10px !important;
+            }
+
+            section[style*="display: flex"] input[type="file"] {
+                padding: 10px !important;
+            }
+        }
+
+        /* Custom Alert Styles */
+        #customAlert {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        #customAlert .alert-box {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            text-align: center;
+            width: 300px;
+            position: relative;
+        }
+
+        #customAlert .alert-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        #customAlert .alert-title {
+            margin: 10px 0;
+            font-size: 20px;
+        }
+
+        #customAlert .alert-message {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        #customAlert .alert-ok {
+            padding: 10px 20px;
+            background: brown;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="heading1">
+            <h4>Click here to Explore our Products.</h4>
+        </div>
+    </section>
+    <section>
+        <div class="navbar">
+            <div class="logo">Indalnova</div>
+            <div class="options">
+                <!-- Hamburger menu -->
+                <span id="Back" onclick="window.location.href='index.html'">
+                    <i class="fa-solid fa-left-long" style="color: brown;"></i>
+            </div>
+
+        </div>
+        </div>
+    </section>
+    <section>
+        <div class="nav-2" aria-hidden="true">
+            <div class="skincare"><a href="skincare.html">Skine Care</a></div>
+            <div class="perfume"><a href="perfume.html">Perfume</a></div>
+            <div class="New"><a href="Newproduct.html">New products</a></div>
+            <div class="track"><a href="trem&condition.html">Track order</a></div>
+            <div class="helpline"><a href="contactus.html">Contact US</a></div>
+            <div class="backbtn"><button onclick="back()">Back</button></div>
+        </div>
+    </section>
+    <section>
+        <h2 id="trackorders">Return Policy</h2>
+    </section>
+    <!-- Inline Order ID + Upload + Submit -->
+    <section
+        style="margin:auto; display: flex; align-items: center; gap: 10px; font-family: 'Poppins', sans-serif; width: 50%;">
+        <input type="text" id="orderId" name="orderId" placeholder="Enter Order ID"
+            style="padding: 10px; font-size: 16px; flex:1; border:1px solid #ccc; border-radius:5px;" />
+        <input type="file" id="unboxingVideo" name="unboxingVideo" accept="video/*"
+            style="padding: 5px; font-size: 16px; width: 30%;" />
+        <button id="submitBtn"
+            style="padding: 10px 20px; font-size: 16px; background: brown; color: white; border:none; border-radius:5px; cursor:pointer;">
+            Submit
+        </button>
+    </section>
+
+    <p id="formMessage" style="margin-top:10px; color:brown; display: flex; justify-content: center;"></p>
+    <!-- Custom Alert -->
+    <div id="customAlert">
+        <div class="alert-box">
+            <i class="fa-solid fa-circle-exclamation alert-icon"></i>
+            <h3 class="alert-title">Alert</h3>
+            <p class="alert-message">Message</p>
+            <button class="alert-ok">OK</button>
+        </div>
+    </div>
+    <section>
+        <div class="policy-intro">
+
+            <p>At <b>Indalnova</b>, we want to ensure our customers receive their products in perfect condition. Please
+                read
+                our
+                policy carefully before initiating a return or refund request.</p>
+        </div>
+        <div class="rules">
+            <h2>1. Eligibility for Returns</h2>
+            <p>Returns and refunds are only accepted for products that are defective, damaged, or incorrect.</p>
+            <p>To initiate a return or refund, you must provide a clear unboxing video showing:</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>The product as received</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Any visible damages or
+                defects</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>The original packaging</p>
+
+            <h2>2. How to Initiate a Return</h2>
+            <p>1. Contact our support team within 7 days of delivery.</p>
+            <p>2. Provide your Order ID and submit the unboxing video.</p>
+            <p>3. Our team will review the video and confirm if your return is eligible.</p>
+            <p>4. If approved, we will provide instructions for returning the product.</p>
+
+            <h2>3. Refund Process</h2>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Refunds are processed only
+                after the product is received and verified according to the unboxing video.</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Refunds will be made to the
+                original payment method within 7–10 business days of verification and approval.</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Shipping charges for returns
+                are non-refundable unless explicitly stated otherwise.</p>
+
+            <h2>4. Non-Returnable Items</h2>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Products without an unboxing
+                video.</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Items damaged due to misuse,
+                negligence, or mishandling.</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Items returned after the
+                7-day return window.</p>
+
+            <h2>5. Important Notes</h2>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Keep the product in its
+                original packaging until the return process is completed.</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Make sure your unboxing
+                video clearly shows the condition of the product and packaging.</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Requests without a video
+                will not be entertained.</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>All return, refund, and
+                dispute requests must be submitted online. Offline requests will not be entertained.</p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>Any attempt to manipulate or
+                falsify unboxing videos will be considered fraudulent and may lead to denial of refund and legal action.
+            </p>
+            <p><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 8px;"></i>By making a purchase, you
+                agree to this Return & Refund Policy and its terms.</p>
+
+            <h2>6. Contact Us</h2>
+            <p>For any return or refund requests, email us at: <strong>supportindalnova@gmail.com</strong>.</p>
+            <p>Include your Order ID and unboxing video for faster processing.</p>
+            <p>We are committed to providing you with the best service. Following these guidelines ensures a smooth
+                return or refund process.</p>
+
+            <h2>Legal Jurisdiction:</h2>
+            <p>Any and all disputes, claims, or controversies arising out of or relating to purchases, products,
+                returns, refunds, or any other matter connected with Indalnova shall be subject to the exclusive
+                jurisdiction of the courts in Uttar Pradesh (UP), India, and will be resolved in accordance with Indian
+                law.</p>
+        </div>
+
+
+    </section>
+    <section>
+        <footer>
+            <div class="footer">
+                <div class="Links">
+
+                    <div class="up">
+                        <div><a href="skincare.html">Skincare</a></div>
+                        <div><a href="perfume.html">Perfume</a></div>
+                        <div><a href="Newproduct.html">New Products</a></div>
+                    </div>
+                    <div class="mid">
+                        <div><a href="trem&condition.html">Track Order</a></div>
+                        <div><a href="#">Order in Bulk</a></div>
+                        <div><a href="contactus.html">Contact us</a></div>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <div class="icon">
+                        <i class="fa-brands fa-facebook"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="footer-legal">
+                        <p>&copy; <span id="year">2025</span> IndalNova. All Rights Reserved.</p>
+                    </div>
+
+                    <div class="developer">
+                        <p>Made with ❤️ by <a href="https://shivamportfoliyo.netlify.app/" target="_blank">Shivam</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+    </section>
+    <script>
+        // ===== Custom Alert Function =====
+        function showAlert(type, message) {
+            const overlay = document.getElementById("customAlert");
+            const icon = overlay.querySelector(".alert-icon");
+            const title = overlay.querySelector(".alert-title");
+            const msg = overlay.querySelector(".alert-message");
+            const okBtn = overlay.querySelector(".alert-ok");
+
+            if (!overlay || !icon || !title || !msg || !okBtn) return;
+
+            let iconClass = "fa-circle-exclamation";
+            let color = "#ff4d4d";
+            let titleText = "Alert";
+
+            if (type === "success") {
+                iconClass = "fa-circle-check";
+                color = "#28a745";
+                titleText = "Success";
+            } else if (type === "error") {
+                iconClass = "fa-circle-xmark";
+                color = "#ff4d4d";
+                titleText = "Error";
+            } else if (type === "info") {
+                iconClass = "fa-circle-info";
+                color = "#007bff";
+                titleText = "Info";
+            }
+
+            icon.className = `fa-solid ${iconClass} alert-icon`;
+            icon.style.color = color;
+            title.innerText = titleText;
+            msg.innerText = message;
+            overlay.style.display = "flex";
+
+            okBtn.onclick = () => (overlay.style.display = "none");
+        }
+
+        // ===== Video Submission Validation =====
+        const submitBtn = document.getElementById('submitBtn');
+
+        submitBtn.addEventListener('click', function () {
+            const orderId = document.getElementById('orderId').value.trim();
+            const videoFile = document.getElementById('unboxingVideo').files[0];
+
+            if (!orderId || !videoFile) {
+                showAlert("error", "Please enter your Order ID and upload your video.");
+                return;
+            }
+
+            const maxSize = 50 * 1024 * 1024; // 50MB
+            if (videoFile.size > maxSize) {
+                showAlert("error", "Video exceeds maximum size of 50MB.");
+                return;
+            }
+
+            // Optional: Check file type
+            const allowedTypes = ["video/mp4", "video/avi", "video/mov", "video/mkv"];
+            if (!allowedTypes.includes(videoFile.type)) {
+                showAlert("error", "Only MP4, AVI, MOV, or MKV videos are allowed.");
+                return;
+            }
+
+            // Optional: Add video duration check if needed
+            // let video = document.createElement("video");
+            // video.preload = "metadata";
+            // video.onloadedmetadata = function () {
+            //     window.URL.revokeObjectURL(video.src);
+            //     if (video.duration > 300) { // example: max 5 minutes
+            //         showAlert("error", "Video exceeds maximum duration of 5 minutes.");
+            //         return;
+            //     }
+            // };
+            // video.src = URL.createObjectURL(videoFile);
+
+            showAlert("success", "Your video has been submitted successfully! Our team will review it shortly.");
+
+            // Reset input fields
+            document.getElementById('orderId').value = '';
+            document.getElementById('unboxingVideo').value = '';
+        });
+
+        // ===== Back Button Function =====
+        function back() {
+            document.querySelector(".nav-2").classList.remove("show");
+        }
+    </script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
