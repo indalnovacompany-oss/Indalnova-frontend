@@ -3,6 +3,7 @@ function showLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
+
 function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -44,19 +45,16 @@ function showAlert(type, message) {
   msg.innerText = message;
   overlay.style.display = "flex";
 
-  okBtn.onclick = () => (overlay.style.display = "none");
+  okBtn.onclick = () => {
+    overlay.style.display = "none";
+  };
 }
 
-// ===== Current User & Login Status =====
-function getCurrentUser() {
-  const email = localStorage.getItem("currentUser") || null; // email/phone stored
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  return { email, isLoggedIn };
-}
-
-let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
-const currentUser = currentUserEmail || "guest";
-const cartKey = "cart_" + currentUser;
+// ===== Current User & Cart Setup =====
+const currentUserRaw = localStorage.getItem("currentUser") || null;
+const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+const currentUser = currentUserRaw || "guest";
+const cartKey = currentUserRaw ? "cart_" + currentUserRaw : "guestCart";
 
 // ===== Cart Functions =====
 function addToCart(newItem) {
@@ -120,8 +118,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const id = parseInt(btn.dataset.id);
         const product = products.find(p => p.id === id);
 
-        addToCart(product); // Add to cart for consistency
+        // Add to cart for consistency
+        addToCart(product);
 
+        // Save single item for checkout
         localStorage.setItem("checkoutData", JSON.stringify({
           items: [product],
           total: product.price,
@@ -129,6 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           user: currentUser
         }));
 
+        // Redirect to cart page
         window.location.href = "cart.html";
       });
     });
@@ -142,14 +143,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ===== Login Button Toggle =====
   const loginBtn = document.getElementById("loginBtn");
   if (loginBtn) {
-    loginBtn.style.display = "none"; // hide by default
+    loginBtn.style.display = "inline-block"; // default
 
-    if (currentUserEmail && isLoggedIn) {
+    if (currentUserRaw && isLoggedIn) {
       (async () => {
         try {
-          const body = /^[0-9]{10}$/.test(currentUserEmail)
-            ? { phone: currentUserEmail }
-            : { email: currentUserEmail };
+          const body = /^[0-9]{10}$/.test(currentUserRaw)
+            ? { phone: currentUserRaw }
+            : { email: currentUserRaw };
 
           const res = await fetch("/api/checkUser", {
             method: "POST",
@@ -160,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const data = await res.json();
 
           if (data.exists) {
-            loginBtn.style.display = "none";
+            loginBtn.style.display = "none"; // hide if user exists
           } else {
             localStorage.removeItem("currentUser");
             localStorage.removeItem("isLoggedIn");
@@ -171,8 +172,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           loginBtn.style.display = "inline-block";
         }
       })();
-    } else {
-      loginBtn.style.display = "inline-block";
     }
   }
 
