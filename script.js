@@ -3,7 +3,6 @@ function showLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
-
 function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -18,8 +17,6 @@ function showAlert(type, message) {
   const title = overlay.querySelector(".alert-title");
   const msg = overlay.querySelector(".alert-message");
   const okBtn = overlay.querySelector(".alert-ok");
-
-  if (!icon || !title || !msg || !okBtn) return;
 
   let iconClass = "fa-circle-exclamation";
   let color = "#ff4d4d";
@@ -49,12 +46,17 @@ function showAlert(type, message) {
 }
 
 // ===== Current User & Login Status =====
-const currentUserRaw = localStorage.getItem("currentUser") || null;
-const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-const currentUser = currentUserRaw || "guest";
+function getCurrentUser() {
+  const email = localStorage.getItem("currentUser") || null;
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  return { email, isLoggedIn };
+}
+
+let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
+const currentUser = currentUserEmail || "guest";
 const cartKey = "cart_" + currentUser;
 
-// ===== Add to Cart =====
+// ===== Cart Functions =====
 function addToCart(newItem) {
   let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
   const existing = cart.find(p => p.id === newItem.id);
@@ -67,9 +69,10 @@ function addToCart(newItem) {
   showAlert("success", `${newItem.name} added to cart!`);
 }
 
-// ===== Load Products =====
+// ===== Load Products and Setup Events =====
 document.addEventListener("DOMContentLoaded", async () => {
   const productContainer = document.querySelector(".product-container");
+  const loginBtn = document.getElementById("loginBtn");
   if (!productContainer) return;
 
   showLoader();
@@ -136,16 +139,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ===== Login Button Toggle =====
-  const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn) loginBtn.style.display = "none";
+  if (loginBtn) loginBtn.style.display = "inline-block";
 
-  if (currentUserRaw && isLoggedIn) {
+  if (currentUserEmail && isLoggedIn) {
     (async () => {
       try {
-        const body = /^[0-9]{10}$/.test(currentUserRaw)
-          ? { phone: currentUserRaw }
-          : { email: currentUserRaw };
-
+        const body = { email: currentUserEmail };
         const res = await fetch("/api/checkUser", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -157,7 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
           data = JSON.parse(text);
         } catch (e) {
-          console.error("Failed to parse JSON from /api/checkuser:", text);
+          console.error("Failed to parse JSON from /api/checkUser:", text);
           data = { exists: false };
         }
 
@@ -173,8 +172,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginBtn.style.display = "inline-block";
       }
     })();
-  } else {
-    if (loginBtn) loginBtn.style.display = "inline-block";
   }
 
   // ===== Hide loader for cart page =====
@@ -190,6 +187,5 @@ function hideelement() {
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
-
 
 
