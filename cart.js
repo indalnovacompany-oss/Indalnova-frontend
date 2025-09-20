@@ -173,7 +173,7 @@ if (checkoutBtn) {
     localStorage.setItem("checkoutCart", JSON.stringify(cart));
 
     // Redirect to address page
-    window.location.href = "address.html";
+    window.location.href = "adress.html";
   });
 }
 
@@ -181,4 +181,5 @@ if (checkoutBtn) {
 window.addEventListener("load", () => {
   renderCart();
 });
+
 
