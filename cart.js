@@ -157,7 +157,7 @@ function addToCart(newItem) {
 // ===== Checkout Button =====
 const checkoutBtn = document.querySelector(".checkout-btn");
 if (checkoutBtn) {
-  checkoutBtn.addEventListener("click", async () => {
+  checkoutBtn.addEventListener("click", () => {
     if (!currentUserEmail || !isLoggedIn) {
       showAlert("error", "Please login first.");
       setTimeout(() => window.location.href = "login.html", 1200);
@@ -169,86 +169,11 @@ if (checkoutBtn) {
       return;
     }
 
-    showLoader();
+    // Save cart to localStorage for address.html
+    localStorage.setItem("checkoutCart", JSON.stringify(cart));
 
-    // Get shipping details from form
-    const shippingDetails = {
-      name: document.getElementById("name")?.value,
-      phone: document.getElementById("phone")?.value,
-      address1: document.getElementById("address1")?.value,
-      address2: document.getElementById("address2")?.value,
-      city: document.getElementById("city")?.value,
-      state: document.getElementById("state")?.value,
-      pin: document.getElementById("pin")?.value,
-      notes: document.getElementById("notes")?.value
-    };
-
-    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || "COD";
-
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          cart,
-          shippingDetails,
-          paymentMethod,
-          email: currentUserEmail || "guest"
-        })
-      });
-      const data = await res.json();
-
-      if (!data.success) {
-        hideLoader();
-        showAlert("error", data.message || "Checkout failed");
-        return;
-      }
-
-      if (data.step === "checkout" && paymentMethod === "ONLINE") {
-        // Razorpay payment
-        const options = {
-          key: data.key,
-          amount: data.amount,
-          currency: data.currency,
-          order_id: data.orderId,
-          handler: async function (response) {
-            const saveRes = await fetch("/api/checkout", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                cart,
-                shippingDetails,
-                paymentMethod,
-                email: currentUserEmail || "guest",
-                paymentId: response.razorpay_payment_id,
-                paymentSignature: response.razorpay_signature
-              })
-            });
-            const saveData = await saveRes.json();
-            if (saveData.success) {
-              showAlert("success", "Payment successful and order placed!");
-              localStorage.removeItem(cartKey);
-              setTimeout(() => window.location.href = `order-success.html?orderId=${saveData.data[0].order_id}`, 1000);
-            } else showAlert("error", saveData.message || "Payment save failed");
-          },
-          prefill: { name: shippingDetails.name, email: currentUserEmail, contact: shippingDetails.phone },
-          theme: { color: "#28a745" }
-        };
-        const rzp = new Razorpay(options);
-        rzp.open();
-        hideLoader();
-      } else if (data.step === "saved") {
-        // COD order saved
-        showAlert("success", "Order placed successfully (COD)!");
-        localStorage.removeItem(cartKey);
-        setTimeout(() => window.location.href = `order-success.html?orderId=${data.data[0].order_id}`, 1000);
-        hideLoader();
-      }
-    } catch (err) {
-      hideLoader();
-      console.error(err);
-      showAlert("error", "Checkout failed. Try again.");
-    }
+    // Redirect to address page
+    window.location.href = "address.html";
   });
 }
 
@@ -256,5 +181,4 @@ if (checkoutBtn) {
 window.addEventListener("load", () => {
   renderCart();
 });
-
 
