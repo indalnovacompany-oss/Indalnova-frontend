@@ -18,6 +18,8 @@ function showAlert(type, message) {
   const msg = overlay.querySelector(".alert-message");
   const okBtn = overlay.querySelector(".alert-ok");
 
+  if (!icon || !title || !msg || !okBtn) return;
+
   let iconClass = "fa-circle-exclamation";
   let color = "#ff4d4d";
   let titleText = "Alert";
@@ -47,7 +49,7 @@ function showAlert(type, message) {
 
 // ===== Current User & Login Status =====
 function getCurrentUser() {
-  const email = localStorage.getItem("currentUser") || null;
+  const email = localStorage.getItem("currentUser") || null; // email/phone stored
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   return { email, isLoggedIn };
 }
@@ -69,10 +71,9 @@ function addToCart(newItem) {
   showAlert("success", `${newItem.name} added to cart!`);
 }
 
-// ===== Load Products and Setup Events =====
+// ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
   const productContainer = document.querySelector(".product-container");
-  const loginBtn = document.getElementById("loginBtn");
   if (!productContainer) return;
 
   showLoader();
@@ -119,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const id = parseInt(btn.dataset.id);
         const product = products.find(p => p.id === id);
 
-        addToCart(product);
+        addToCart(product); // Add to cart for consistency
 
         localStorage.setItem("checkoutData", JSON.stringify({
           items: [product],
@@ -139,39 +140,40 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ===== Login Button Toggle =====
-  if (loginBtn) loginBtn.style.display = "inline-block";
+  const loginBtn = document.getElementById("loginBtn");
+  if (loginBtn) {
+    loginBtn.style.display = "none"; // hide by default
 
-  if (currentUserEmail && isLoggedIn) {
-    (async () => {
-      try {
-        const body = { email: currentUserEmail };
-        const res = await fetch("/api/checkuser", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
-        });
-
-        let data;
-        const text = await res.text();
+    if (currentUserEmail && isLoggedIn) {
+      (async () => {
         try {
-          data = JSON.parse(text);
-        } catch (e) {
-          console.error("Failed to parse JSON from /api/checkUser:", text);
-          data = { exists: false };
-        }
+          const body = /^[0-9]{10}$/.test(currentUserEmail)
+            ? { phone: currentUserEmail }
+            : { email: currentUserEmail };
 
-        if (data.exists) {
-          loginBtn.style.display = "none";
-        } else {
-          localStorage.removeItem("currentUser");
-          localStorage.removeItem("isLoggedIn");
+          const res = await fetch("/api/checkUser", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+
+          const data = await res.json();
+
+          if (data.exists) {
+            loginBtn.style.display = "none";
+          } else {
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("isLoggedIn");
+            loginBtn.style.display = "inline-block";
+          }
+        } catch (err) {
+          console.error("Login check failed:", err);
           loginBtn.style.display = "inline-block";
         }
-      } catch (err) {
-        console.error("Login check failed:", err);
-        loginBtn.style.display = "inline-block";
-      }
-    })();
+      })();
+    } else {
+      loginBtn.style.display = "inline-block";
+    }
   }
 
   // ===== Hide loader for cart page =====
@@ -187,6 +189,7 @@ function hideelement() {
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
+
 
 
 
