@@ -3,7 +3,6 @@ function showLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "flex";
 }
-
 function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
@@ -50,12 +49,12 @@ function showAlert(type, message) {
 
 // ===== Current User & Login Status =====
 function getCurrentUser() {
-  const user = localStorage.getItem("currentUser") || null;
+  const email = localStorage.getItem("currentUser") || null; // email/phone stored
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  return { user, isLoggedIn };
+  return { email, isLoggedIn };
 }
 
-let { user: currentUserEmail, isLoggedIn } = getCurrentUser();
+let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 const currentUser = currentUserEmail || "guest";
 const cartKey = "cart_" + currentUser;
 
@@ -121,10 +120,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const id = parseInt(btn.dataset.id);
         const product = products.find(p => p.id === id);
 
-        // Add to cart for consistency
-        addToCart(product);
+        addToCart(product); // Add to cart for consistency
 
-        // Save single item for checkout
         localStorage.setItem("checkoutData", JSON.stringify({
           items: [product],
           total: product.price,
@@ -132,7 +129,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           user: currentUser
         }));
 
-        // Redirect to cart page
         window.location.href = "cart.html";
       });
     });
@@ -145,35 +141,39 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ===== Login Button Toggle =====
   const loginBtn = document.getElementById("loginBtn");
-  if (!loginBtn) return;
-  loginBtn.style.display = "none";
+  if (loginBtn) {
+    loginBtn.style.display = "none"; // hide by default
 
-  if (currentUserEmail && isLoggedIn) {
-    try {
-      const body = /^[0-9]{10}$/.test(currentUserEmail)
-        ? { phone: currentUserEmail }
-        : { email: currentUserEmail };
+    if (currentUserEmail && isLoggedIn) {
+      (async () => {
+        try {
+          const body = /^[0-9]{10}$/.test(currentUserEmail)
+            ? { phone: currentUserEmail }
+            : { email: currentUserEmail };
 
-      const res = await fetch("/api/checkUser", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
+          const res = await fetch("/api/checkUser", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
 
-      const data = await res.json();
-      if (data.exists) {
-        loginBtn.style.display = "none";
-      } else {
-        localStorage.removeItem("currentUser");
-        localStorage.removeItem("isLoggedIn");
-        loginBtn.style.display = "inline-block";
-      }
-    } catch (err) {
-      console.error(err);
+          const data = await res.json();
+
+          if (data.exists) {
+            loginBtn.style.display = "none";
+          } else {
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("isLoggedIn");
+            loginBtn.style.display = "inline-block";
+          }
+        } catch (err) {
+          console.error("Login check failed:", err);
+          loginBtn.style.display = "inline-block";
+        }
+      })();
+    } else {
       loginBtn.style.display = "inline-block";
     }
-  } else {
-    loginBtn.style.display = "inline-block";
   }
 
   // ===== Hide loader for cart page =====
