@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ===== Login Button Toggle =====
   const loginBtn = document.getElementById("loginBtn");
   if (loginBtn) {
-    loginBtn.style.display = "none"; 
+    loginBtn.style.display = "none"; // Hide by default
 
     if (currentUserEmail && isLoggedIn) {
       (async () => {
@@ -170,21 +170,25 @@ document.addEventListener("DOMContentLoaded", async () => {
           const data = await res.json();
 
           if (data.exists) {
+            // User exists: keep hidden
             loginBtn.style.display = "none";
           } else {
+            // User does not exist: clear and show
             clearLoginSession();
             loginBtn.style.display = "inline-block";
           }
         } catch (err) {
-          console.error("Login check failed:", err);
+          // On error, clear session
+          clearLoginSession();
           loginBtn.style.display = "inline-block";
         }
       })();
     } else {
+      // No user: show login
       loginBtn.style.display = "inline-block";
     }
   }
-
+  
   if (window.location.pathname.includes("cart.html")) {
     hideLoader();
   }
@@ -197,5 +201,4 @@ function hideelement() {
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
-
 
