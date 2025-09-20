@@ -50,7 +50,7 @@ function showAlert(type, message) {
 
 // ===== Current User & Login Status =====
 function getCurrentUser() {
-  const user = localStorage.getItem("username") || null; // email or phone
+  const user = localStorage.getItem("currentUser") || null;
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   return { user, isLoggedIn };
 }
@@ -145,11 +145,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ===== Login Button Toggle =====
   const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn) loginBtn.style.display = "none";
+  if (!loginBtn) return;
+  loginBtn.style.display = "none";
 
   if (currentUserEmail && isLoggedIn) {
     try {
-      // Detect if phone or email
       const body = /^[0-9]{10}$/.test(currentUserEmail)
         ? { phone: currentUserEmail }
         : { email: currentUserEmail };
@@ -161,21 +161,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       const data = await res.json();
-
       if (data.exists) {
-        if (loginBtn) loginBtn.style.display = "none";
+        loginBtn.style.display = "none";
       } else {
-        localStorage.removeItem("username");
+        localStorage.removeItem("currentUser");
         localStorage.removeItem("isLoggedIn");
-        if (loginBtn) loginBtn.style.display = "inline-block";
+        loginBtn.style.display = "inline-block";
       }
-
     } catch (err) {
       console.error(err);
-      if (loginBtn) loginBtn.style.display = "inline-block";
+      loginBtn.style.display = "inline-block";
     }
   } else {
-    if (loginBtn) loginBtn.style.display = "inline-block";
+    loginBtn.style.display = "inline-block";
   }
 
   // ===== Hide loader for cart page =====
@@ -188,8 +186,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 function hideelement() {
   document.querySelector(".nav-2").classList.toggle("show");
 }
-
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
+
 
