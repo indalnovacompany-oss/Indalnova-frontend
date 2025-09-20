@@ -46,8 +46,9 @@ function showAlert(type, message) {
 }
 
 // ===== Current User & Cart =====
-const currentUser = localStorage.getItem("username") || "guest";
+const currentUserEmail = localStorage.getItem("currentUser") || null;
 const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+const currentUser = currentUserEmail || "guest";
 const cartKey = "cart_" + currentUser;
 let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
 
@@ -157,7 +158,7 @@ function addToCart(newItem) {
 const checkoutBtn = document.querySelector(".checkout-btn");
 if (checkoutBtn) {
   checkoutBtn.addEventListener("click", async () => {
-    if (!currentUser || currentUser === "guest" || !isLoggedIn) {
+    if (!currentUserEmail || !isLoggedIn) {
       showAlert("error", "Please login first.");
       setTimeout(() => window.location.href = "login.html", 1200);
       return;
@@ -192,7 +193,7 @@ if (checkoutBtn) {
           cart,
           shippingDetails,
           paymentMethod,
-          email: currentUser
+          email: currentUserEmail || "guest"
         })
       });
       const data = await res.json();
@@ -218,7 +219,7 @@ if (checkoutBtn) {
                 cart,
                 shippingDetails,
                 paymentMethod,
-                email: currentUser,
+                email: currentUserEmail || "guest",
                 paymentId: response.razorpay_payment_id,
                 paymentSignature: response.razorpay_signature
               })
@@ -230,7 +231,7 @@ if (checkoutBtn) {
               setTimeout(() => window.location.href = `order-success.html?orderId=${saveData.data[0].order_id}`, 1000);
             } else showAlert("error", saveData.message || "Payment save failed");
           },
-          prefill: { name: shippingDetails.name, email: currentUser, contact: shippingDetails.phone },
+          prefill: { name: shippingDetails.name, email: currentUserEmail, contact: shippingDetails.phone },
           theme: { color: "#28a745" }
         };
         const rzp = new Razorpay(options);
