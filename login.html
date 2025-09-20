@@ -365,7 +365,7 @@
           document.getElementById("login-btn").textContent = "Verify OTP";
           document.getElementById("login-resend-btn").disabled = false;
           loginStep = "verify";
-          showAlert("success", "OTP has been sent to your WhatsApp number!");
+          showAlert("success", "OTP has been sent to your Number!");
         } else showAlert("error", data.message);
       } else {
         if (!otp) return showAlert("error", "Enter OTP");
@@ -444,3 +444,4 @@
 </body>
 
 </html>
+
