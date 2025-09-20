@@ -60,14 +60,17 @@ function saveCart() {
 // ===== Render Cart =====
 function renderCart() {
   const container = document.querySelector(".cart-container");
+  const totalElem = document.querySelector(".total-text");
   if (!container) return;
   container.innerHTML = "";
 
   if (cart.length === 0) {
     container.innerHTML = `<p class="empty-cart" style="text-align:center; padding:20px;">Your cart is empty</p>`;
+    if (totalElem) totalElem.innerText = "Total: ₹0";
     hideLoader();
     return;
   }
+  if (totalElem) totalElem.style.display = "block";
 
   cart.forEach(item => {
     const discountPercent = Math.round(((item.original - item.price) / item.original) * 100);
@@ -99,9 +102,14 @@ function renderCart() {
 
 // ===== Update Total =====
 function updateTotal() {
-  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const totalElem = document.querySelector(".total-text");
-  if (totalElem) totalElem.innerText = "Total: ₹" + total;
+  if (!totalElem) return;
+  if (cart.length === 0) {
+    totalElem.innerText = "Total: ₹0";
+    return;
+  }
+  const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  totalElem.innerText = "Total: ₹" + total;
 }
 
 // ===== Attach Events =====
@@ -181,5 +189,4 @@ if (checkoutBtn) {
 window.addEventListener("load", () => {
   renderCart();
 });
-
 
