@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
           data = JSON.parse(text);
         } catch (e) {
-          console.error("Failed to parse JSON from /api/checkUser:", text);
+          console.error("Failed to parse JSON from /api/checkuser:", text);
           data = { exists: false };
         }
 
@@ -190,5 +190,6 @@ function hideelement() {
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
+
 
 
