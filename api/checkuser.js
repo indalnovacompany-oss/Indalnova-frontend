@@ -1,6 +1,5 @@
 import { MongoClient } from "mongodb";
 
-// MongoDB connection URI from Vercel environment variable
 const uri = process.env.MONGO_URI;
 
 let client;
@@ -18,29 +17,24 @@ export default async function handler(req, res) {
 
   try {
     const { email, phone } = req.body;
-
-    // If neither email nor phone provided, return exists: false
     if (!email && !phone) {
       return res.status(200).json({ exists: false });
     }
 
-    const conn = await clientPromise;
-    const db = conn.db("test");            // ✅ Your DB name
-    const users = db.collection("users");  // ✅ Your collection
+    const client = await clientPromise;
+    const db = client.db("test");           // DB name
+    const users = db.collection("users");   // collection name
 
-    // Build query dynamically
     const query = {};
     if (email) query.email = email;
     if (phone) query.phone = phone;
 
-    // Find user in MongoDB
     const user = await users.findOne(query);
-
-    // Return result
     return res.status(200).json({ exists: !!user });
   } catch (err) {
     console.error("MongoDB error:", err);
     return res.status(500).json({ error: "Database error" });
   }
 }
+
 
