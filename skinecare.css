@@ -144,7 +144,6 @@
 
   @media screen and (max-width:1024px) {
     .skincare-product-container {
-      flex-direction: column;
       gap: 50px;
       align-items: center;
     }
@@ -171,4 +170,5 @@
       width: auto;
       gap: 10px;
     }
+
   }
