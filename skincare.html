@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="skinecare.css">
+  <link rel="stylesheet" href="media.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chong+Modern&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <title>Indalnova | Skin Care</title>
+  <style>
+    /* Loader Overlay */
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(2px);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #loadingOverlay div {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid brown;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section>
+    <div class="heading1">
+      <h4>Click here to Explore our Products.</h4>
+    </div>
+  </section>
+
+  <section>
+    <div class="navbar">
+      <div class="logo">Skin care</div>
+      <div class="nav-links">
+        <a href="perfume.html">Perfume</a>
+        <a href="Trackorder.html">Track order</a>
+        <a href="#">Offers*</a>
+      </div>
+      <div class="options">
+        <span id="Back" onclick="window.location.href='index.html'"><i class="fa-solid fa-left-long"
+            style="color: brown;"></i></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="nav-2">
+      <div class="perfume"><a href="perfume.html">Perfume</a></div>
+      <div class="track"><a href="Trackorder.html">Track order</a></div>
+      <div class="return"><a href="Return.html">Return order</a></div>
+      <div class="backbtn" onclick="back()"><button>Back</button></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="skincare-product-container">
+
+    </div>
+  </section>
+  <section>
+    <footer>
+      <div class="footer">
+        <div class="Links">
+
+          <div class="up">
+            <div><a href="perfume.html">Perfume</a></div>
+            <div><a href="Newproduct.html">New Products</a></div>
+          </div>
+          <div class="mid">
+            <div><a href="Trackorder.html">Track Order</a></div>
+            <div><a href="Return.html">Return Order</a></div>
+            <div><a href="#">Order in Bulk</a></div>
+            <div><a href="contactus.html">Contact us</a></div>
+          </div>
+          <div class="down">
+            <div><a href="trem&condition.html">Term and Conditions</a></div>
+            <div><a href="Return.html">Refund rules</a></div>
+            <div><a href="privacypolicy.html">Privacy Policy</a></div>
+            <div><a href="aboutus.html">About Us</a></div>
+          </div>
+        </div>
+        <div class="social-links">
+          <div class="icon">
+            <i class="fa-brands fa-facebook"></i>
+          </div>
+          <div class="icon">
+            <i class="fa-brands fa-instagram"></i>
+          </div>
+          <div class="icon">
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+        </div>
+        <div class="bottom">
+          <div class="footer-legal">
+            <p>&copy; <span id="year">2025</span> IndalNova. All Rights Reserved.</p>
+          </div>
+
+          <div class="developer">
+            <p>Made with ❤️ by <a href="https://shivamportfoliyo.netlify.app/" target="_blank">Shivam</a>
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </footer>
+  </section>
+
+  <!-- Loader Overlay -->
+  <div id="loadingOverlay">
+    <div></div>
+  </div>
+
+  <script src="skinecare.js"></script>
+  <script>
+    // Show/Hide loader functions
+    function showLoader() { document.getElementById("loadingOverlay").style.display = "flex"; }
+    function hideLoader() { document.getElementById("loadingOverlay").style.display = "none"; }
+
+    // Wrap product fetch with loader
+    async function loadProducts() {
+      showLoader();
+      try {
+        // Assuming your skinecare.js fetches products from a JSON or API
+        if (typeof fetchSkincareProducts === "function") {
+          await fetchSkincareProducts();
+        }
+      } catch (err) {
+        console.error("Error loading products:", err);
+      } finally {
+        hideLoader();
+      }
+    }
+
+    // Run on page load
+    window.addEventListener("DOMContentLoaded", loadProducts);
+  </script>
+</body>
+
+</html>
