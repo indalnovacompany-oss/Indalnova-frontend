@@ -1,282 +1,297 @@
-  
-    html {
-      scroll-behavior: smooth;
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    color: #333;
+    padding-bottom: 80px;
+  }
+
+  body>section {
+    flex: unset !important;
+  }
+
+  body>section:not(:last-child) {
+    flex: unset !important;
+  }
+
+  .cart-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    margin-bottom: 150px;
+  }
+
+  .product-card {
+    display: flex;
+    width: 750px;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .product-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: #eee;
+  }
+
+  .free-shipping {
+    font-size: 12px;
+    color: brown;
+  }
+
+  .product-info {
+    flex: 1;
+    margin-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .product-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: brown;
+  }
+
+  .product-price {
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  .product-mrp {
+    font-size: 12px;
+    color: gray;
+  }
+
+  .strike {
+    text-decoration: line-through;
+    color: #777;
+  }
+
+  .savings {
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    height: 25px;
+  }
+
+  .quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 5px;
+  }
+
+  .quantity button {
+    border: none;
+    background: #eee;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .qty {
+    min-width: 25px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .remove-btn {
+    color: #d33;
+    cursor: pointer;
+    margin-left: auto;
+    font-size: 1.1rem;
+  }
+
+  .checkout-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .checkout-bar .total-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .checkout-bar .checkout-btn {
+    position: relative;
+    overflow: hidden;
+    background: brown;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .checkout-bar .checkout-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75px;
+    width: 50px;
+    height: 100%;
+    background: linear-gradient(120deg,
+        rgba(255, 255, 255, 0.6),
+        rgba(255, 255, 255, 0));
+    transform: skewX(-25deg);
+    animation: shinex 2.5s infinite;
+  }
+
+  @keyframes shinex {
+    0% {
+      left: -75px;
     }
 
-    body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      color: #333;
-      padding-bottom: 80px;
+    100% {
+      left: 125%;
     }
+  }
 
-    .cart-container {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      margin-bottom: 150px;
+  .checkout-bar .checkout-btn:hover {
+    background: #5c2a00;
+  }
+
+  .upi {
+    position: fixed;
+    bottom: 80px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .upi-det {
+    height: 50px;
+    width: 90%;
+    margin: auto;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 15px;
+    background-color: #b28c42;
+    color: white;
+  }
+
+  .coupn {
+    position: fixed;
+    bottom: 140px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .coupn-det {
+    width: 90%;
+    background: white;
+    border: 2px solid green;
+    border-radius: 15px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .coupn-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .coupon-items {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .coupon-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #eaf7ea;
+    padding: 8px 10px;
+    border-radius: 10px;
+    gap: 10px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+
+  .apply-coupon,
+  .apply {
+    height: 30px;
+    width: 100px;
+    border-radius: 20px;
+    background-color: brown;
+    color: white;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  #eyeSlash {
+    display: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    .checkout-bar .total-text {
+      font-size: 1rem;
     }
 
     .product-card {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #fff;
-      border-radius: 12px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    .product-image {
-      width: 120px;
-      height: 120px;
-      border-radius: 10px;
-      object-fit: cover;
-      background: #eee;
-    }
-    .free-shipping{
-      font-size: 12px;
-      color: brown;
-    }
-
-    .product-info {
-      flex: 1;
-      margin-left: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .product-name {
-      font-size: 15px;
-      font-weight: 600;
-      color: brown;
-    }
-
-    .product-price {
-      font-weight: 600;
-      font-size: 18px;
-    }
-
-    .product-mrp {
-      font-size: 12px;
-      color: gray;
-    }
-
-    .strike {
-      text-decoration: line-through;
-      color: #777;
-    }
-
-    .savings {
-      color: white;
-      font-size: 12px;
-      font-weight: 500;
-      height: 25px;
-    }
-
-    .quantity {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 5px;
-    }
-
-    .quantity button {
-      border: none;
-      background: #eee;
-      padding: 0.4rem 0.9rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .qty {
-      min-width: 25px;
-      text-align: center;
-      font-weight: 600;
-    }
-
-    .remove-btn {
-      color: #d33;
-      cursor: pointer;
-      margin-left: auto;
-      font-size: 1.1rem;
-    }
-
-    .checkout-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #fff;
-      border-top: 1px solid #ddd;
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .checkout-bar .total-text {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #333;
+      max-width: max-content;
+      width: auto;
     }
 
     .checkout-bar .checkout-btn {
-      position: relative;
-      overflow: hidden;
-      background: brown;
-      color: #fff;
-      padding: 0.8rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .checkout-bar .checkout-btn::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -75px;
-      width: 50px;
-      height: 100%;
-      background: linear-gradient(120deg,
-          rgba(255, 255, 255, 0.6),
-          rgba(255, 255, 255, 0));
-      transform: skewX(-25deg);
-      animation: shinex 2.5s infinite;
-    }
-
-    @keyframes shinex {
-      0% {
-        left: -75px;
-      }
-
-      100% {
-        left: 125%;
-      }
-    }
-
-    .checkout-bar .checkout-btn:hover {
-      background: #5c2a00;
-    }
-
-    .upi {
-      position: fixed;
-      bottom: 80px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      padding: 0.7rem 1.2rem;
     }
 
     .upi-det {
-      height: 50px;
-      width: 90%;
-      margin: auto;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 15px;
-      background-color: #b28c42;
-      color: white;
-    }
-
-    .coupn {
-      position: fixed;
-      bottom: 140px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      width: 95%;
+      padding: 10px;
+      font-size: 11px;
     }
 
     .coupn-det {
-      width: 90%;
-      background: white;
-      border: 2px solid green;
-      border-radius: 15px;
+      width: 95%;
       padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
     }
 
-    .coupn-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
+    input {
+      width: 80%;
     }
 
-    .coupon-items {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      margin-top: 10px;
+    .savings {
+      height: 25px;
     }
-
-    .coupon-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #eaf7ea;
-      padding: 8px 10px;
-      border-radius: 10px;
-      gap: 10px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-
-    .apply-coupon,
-    .apply {
-      height: 30px;
-      width: 100px;
-      border-radius: 20px;
-      background-color: brown;
-      color: white;
-      border: none;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    #eyeSlash {
-      display: none;
-    }
-
-    @media screen and (max-width: 768px) {
-      .checkout-bar .total-text {
-        font-size: 1rem;
-      }
-
-      .checkout-bar .checkout-btn {
-        padding: 0.7rem 1.2rem;
-      }
-
-      .upi-det {
-        width: 95%;
-        padding: 10px;
-        font-size: 11px;
-      }
-
-      .coupn-det {
-        width: 95%;
-        padding: 10px;
-      }
-
-      input {
-        width: 80%;
-      }
-      .savings{
-        height: 25px;
-      }
-    }
+  }
   
