@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <title> Indalnova | Return Policy</title>
+    <title>Indalnova | Return Policy</title>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -65,11 +65,12 @@
                 padding: 10px !important;
             }
         }
-        
+
         @media screen and (max-width: 440px) {
             p {
                 font-size: 15px;
             }
+        }
 
         /* Custom Alert Styles */
         #customAlert {
@@ -126,18 +127,19 @@
             <h4>Click here to Explore our Products.</h4>
         </div>
     </section>
+
     <section>
         <div class="navbar">
             <div class="logo">Indalnova</div>
             <div class="options">
-                <!-- Hamburger menu -->
+                <!-- Back button -->
                 <span id="Back" onclick="window.location.href='index.html'">
                     <i class="fa-solid fa-left-long" style="color: brown;"></i>
+                </span>
             </div>
-
-        </div>
         </div>
     </section>
+
     <section>
         <div class="nav-2" aria-hidden="true">
             <div class="skincare"><a href="skincare.html">Skine Care</a></div>
@@ -148,12 +150,13 @@
             <div class="backbtn"><button onclick="back()">Back</button></div>
         </div>
     </section>
+
     <section>
         <h2 id="trackorders">Return Policy</h2>
     </section>
+
     <!-- Inline Order ID + Upload + Submit -->
-    <section
-        style="margin:auto; display: flex; align-items: center; gap: 10px; font-family: 'Poppins', sans-serif; width: 50%;">
+    <section style="margin:auto; display: flex; align-items: center; gap: 10px; font-family: 'Poppins', sans-serif; width: 50%;">
         <input type="text" id="orderId" name="orderId" placeholder="Enter Order ID"
             style="padding: 10px; font-size: 16px; flex:1; border:1px solid #ccc; border-radius:5px;" />
         <input type="file" id="unboxingVideo" name="unboxingVideo" accept="video/*"
@@ -165,6 +168,7 @@
     </section>
 
     <p id="formMessage" style="margin-top:10px; color:brown; display: flex; justify-content: center;"></p>
+
     <!-- Custom Alert -->
     <div id="customAlert">
         <div class="alert-box">
@@ -174,13 +178,11 @@
             <button class="alert-ok">OK</button>
         </div>
     </div>
+
     <section>
         <div class="policy-intro">
-
             <p>At <b>Indalnova</b>, we want to ensure our customers receive their products in perfect condition. Please
-                read
-                our
-                policy carefully before initiating a return or refund request.</p>
+                read our policy carefully before initiating a return or refund request.</p>
         </div>
         <div class="rules">
             <h2>1. Eligibility for Returns</h2>
@@ -240,14 +242,12 @@
                 jurisdiction of the courts in Uttar Pradesh (UP), India, and will be resolved in accordance with Indian
                 law.</p>
         </div>
-
-
     </section>
+
     <section>
         <footer>
             <div class="footer">
                 <div class="Links">
-
                     <div class="up">
                         <div><a href="skincare.html">Skincare</a></div>
                         <div><a href="perfume.html">Perfume</a></div>
@@ -260,30 +260,22 @@
                     </div>
                 </div>
                 <div class="social-links">
-                    <div class="icon">
-                        <i class="fa-brands fa-facebook"></i>
-                    </div>
-                    <div class="icon">
-                        <i class="fa-brands fa-instagram"></i>
-                    </div>
-                    <div class="icon">
-                        <i class="fa-solid fa-envelope"></i>
-                    </div>
+                    <div class="icon"><i class="fa-brands fa-facebook"></i></div>
+                    <div class="icon"><i class="fa-brands fa-instagram"></i></div>
+                    <div class="icon"><i class="fa-solid fa-envelope"></i></div>
                 </div>
                 <div class="bottom">
                     <div class="footer-legal">
                         <p>&copy; <span id="year">2025</span> IndalNova. All Rights Reserved.</p>
                     </div>
-
                     <div class="developer">
-                        <p>Made with ❤️ by <a href="https://shivamportfoliyo.netlify.app/" target="_blank">Shivam</a>
-                        </p>
+                        <p>Made with ❤️ by <a href="https://shivamportfoliyo.netlify.app/" target="_blank">Shivam</a></p>
                     </div>
-
                 </div>
             </div>
         </footer>
     </section>
+
     <script>
         // ===== Custom Alert Function =====
         function showAlert(type, message) {
@@ -320,6 +312,11 @@
             overlay.style.display = "flex";
 
             okBtn.onclick = () => (overlay.style.display = "none");
+
+            // Auto close after 4 seconds
+            setTimeout(() => {
+                overlay.style.display = "none";
+            }, 4000);
         }
 
         // ===== Video Submission Validation =====
@@ -340,24 +337,11 @@
                 return;
             }
 
-            // Optional: Check file type
             const allowedTypes = ["video/mp4", "video/avi", "video/mov", "video/mkv"];
             if (!allowedTypes.includes(videoFile.type)) {
                 showAlert("error", "Only MP4, AVI, MOV, or MKV videos are allowed.");
                 return;
             }
-
-            // Optional: Add video duration check if needed
-            // let video = document.createElement("video");
-            // video.preload = "metadata";
-            // video.onloadedmetadata = function () {
-            //     window.URL.revokeObjectURL(video.src);
-            //     if (video.duration > 300) { // example: max 5 minutes
-            //         showAlert("error", "Video exceeds maximum duration of 5 minutes.");
-            //         return;
-            //     }
-            // };
-            // video.src = URL.createObjectURL(videoFile);
 
             showAlert("success", "Your video has been submitted successfully! Our team will review it shortly.");
 
@@ -374,6 +358,4 @@
 
     <script src="script.js"></script>
 </body>
-
-
 </html>
