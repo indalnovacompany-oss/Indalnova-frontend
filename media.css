@@ -210,10 +210,11 @@
 .footer{
   height:260px;
 }
-.footer-legal{
-  font-size:10px;
+    .footer-legal p{
+  font-size:10px !important;
 }
-.developer{
-  font-size: 9px;
+.developer p{
+  font-size: 9px !important;
 }
+
 }
