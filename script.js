@@ -7,6 +7,28 @@ function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
 }
+// ===== Show Loader on Navigation Links =====
+document.addEventListener("DOMContentLoaded", () => {
+  const navLinks = document.querySelectorAll("a");
+
+  navLinks.forEach(link => {
+    link.addEventListener("click", e => {
+      const href = link.getAttribute("href");
+
+      // Prevent loader on in-page anchors or empty links
+      if (!href || href.startsWith("#")) return;
+
+      // Show loader before navigating
+      showLoader();
+
+      // Small delay so loader shows before redirect
+      setTimeout(() => {
+        window.location.href = href;
+      }, 400); // adjust delay as needed
+    });
+  });
+});
+
 
 // ===== Custom Alert =====
 function showAlert(type, message) {
@@ -201,5 +223,6 @@ function hideelement() {
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
+
 
 
