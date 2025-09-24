@@ -262,6 +262,7 @@ input {
   gap: 50px;
   overflow: hidden;
   background-color: rgb(247, 244, 239);
+   font-family: 'Poppins', sans-serif;
 }
 
 .cod,
@@ -1002,4 +1003,5 @@ body>section:not(:last-child) {
     padding: 6px 14px;
     font-size: 13px;
   }
+
 }
