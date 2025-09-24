@@ -578,7 +578,6 @@ input {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  overflow-x: auto;
   gap: 25px;
 }
 
@@ -627,7 +626,7 @@ input {
   line-height: 2;
   font-size: 16px;
   margin-left: 40px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Great Vibes', cursive;
 }
 
 .founder-img {
@@ -1005,3 +1004,4 @@ body>section:not(:last-child) {
   }
 
 }
+
