@@ -56,7 +56,7 @@ showSlide(currentIndex);
 setInterval(() => {
     currentIndex = (currentIndex + 1) % slides.length;
     showSlide(currentIndex);
-}, 3000);
+}, 5000);
 // ===== Custom Alert =====
 function showAlert(type, message) {
   const overlay = document.getElementById("customAlert");
@@ -248,4 +248,5 @@ function hideelement() {
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
+
 
