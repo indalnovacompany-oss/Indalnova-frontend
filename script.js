@@ -36,6 +36,27 @@ function hideLoader() {
         startSlider();
       });
     });
+
+//hero-slider//
+
+const slider = document.getElementById('slider');
+const slides = slider.querySelectorAll('img');
+let currentIndex = 0;
+
+function showSlide(index) {
+    slides.forEach((slide, i) => {
+        slide.style.display = (i === index) ? 'block' : 'none';
+    });
+}
+
+// Initially show first slide
+showSlide(currentIndex);
+
+// Auto-slide every 3 seconds
+setInterval(() => {
+    currentIndex = (currentIndex + 1) % slides.length;
+    showSlide(currentIndex);
+}, 3000);
 // ===== Custom Alert =====
 function showAlert(type, message) {
   const overlay = document.getElementById("customAlert");
@@ -227,3 +248,4 @@ function hideelement() {
 function back() {
   document.querySelector(".nav-2").classList.remove("show");
 }
+
