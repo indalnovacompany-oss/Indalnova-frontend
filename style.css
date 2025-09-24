@@ -626,7 +626,7 @@ input {
   line-height: 2;
   font-size: 16px;
   margin-left: 40px;
-  font-family: 'Great Vibes', cursive;
+  font-family: 'Great Vibes', cursive !important;
 }
 
 .founder-img {
@@ -1004,4 +1004,5 @@ body>section:not(:last-child) {
   }
 
 }
+
 
