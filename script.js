@@ -278,9 +278,11 @@ submitBtn.addEventListener("click", () => {
   const phone = phoneInput.value.trim();
   const phoneRegex = /^[1-9]\d{9}$/;
   if (!phoneRegex.test(phone) || phone.startsWith("91")) {
-    showCustomAlert("Please enter a valid 10-digit phone number (not starting with 91 or 0).");
+    showCustomAlert("Please enter a valid 10-digit phone number.");
     return;
   }
   closePopup();
-  showCustomAlert("Thank you! You will now get all offers and discounts.");
+  showCustomAlert("Thank you!");
+    phoneInput.value = "";
 });
+
