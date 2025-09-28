@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indalnova | Contact Us</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="media.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chong+Modern&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: brown;
+            padding: 25px;
+        }
+
+        .con-details {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        p a {
+            color: brown;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        p a i {
+            margin-right: 6px;
+            color: #b22222;
+        }
+
+        p a:hover {
+            color: green;
+            text-decoration: underline;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-box {
+            background: rgb(247, 244, 239);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 350px;
+            width: 90%;
+            box-sizing: border-box;
+        }
+
+        .follow-det {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif
+        }
+
+        .follow-det h1 {
+            font-size: 18px;
+        }
+
+        .follow-det p {
+            font-size: 8px !important;
+        }
+
+        input {
+            width: 95%;
+            height: 40px;
+            border-radius: 5px;
+            border: 2px solid brown;
+            padding: 5px;
+            font-size: 15px;
+            margin: 0px;
+        }
+
+        .Buttons {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .Buttons button {
+            height: 40px;
+            width: 120px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .Buttons button:nth-child(1) {
+            background: white;
+        }
+
+        .Buttons button:nth-child(2) {
+            background: brown;
+            color: white;
+        }
+
+        @media screen and (max-width: 440px) {
+            p {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="heading1">
+            <h4 id="exploreProducts">Click here to Explore our Products.</h4>
+        </div>
+    </section>
+    <div class="popup-overlay" id="popup">
+        <div class="popup-box">
+            <div class="follow-det">
+                <h1>Follow Us for Offers & Updates</h1>
+                <input type="number" id="phone-number" placeholder="Enter Your Phone number" required>
+                <p>By entering your number, you agree to our <a href="trem&condition.html">Terms & Conditions</a>.</p>
+                <div class="Buttons">
+                    <button onclick="closePopup()">Cancel</button>
+                    <button type="button" id="submitPhoneBtn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section>
+        <div class="navbar">
+            <div class="logo">Indalnova</div>
+            <div class="nav-links">
+                <a href="skincare.html">Skine care</a>
+                <a href="perfume.html">Perfume</a>
+                <a href="Trackorder.html">Track order</a>
+                <a href="#">Offers*</a>
+            </div>
+            <div class="options">
+                <span id="Back" onclick="window.location.href='index.html'">
+                    <i class="fa-solid fa-left-long" style="color: brown;"></i>
+                </span>
+            </div>
+        </div>
+    </section>
+    <!-- Mobile / toggle nav -->
+    <section>
+        <div class="nav-2" aria-hidden="true">
+            <div class="skincare"><a href="skincare.html">Skine Care</a></div>
+            <div class="perfume"><a href="perfume.html">Perfume</a></div>
+            <div class="New"><a href="Newproduct.html">New products</a></div>
+            <div class="track"><a href="Trackorder.html">Track order</a></div>
+            <div class="return"><a href="Return.html">Return order</a></div>
+            <div class="backbtn"><button onclick="back()">Back</button></div>
+        </div>
+    </section>
+    <section>
+        <h2>Contact us</h2>
+        <div class="con-details">
+            <p>We’d love to hear from you! Whether you have a question about our products, your order, returns, or
+                anything else, our team is here to help.</p>
+            <p>Email: <strong>supportindalnova@gmail.com</strong></p>
+            <p>Address: 123h patel nagar ramadevi kanpur uttarpradesh . pin-208007</p>
+            <p>Our team usually responds within 24–48 hours on working days.</p>
+            <p>For faster help:</p>
+            <p><a href="Trackorder.html"><i class="fa-solid fa-truck"></i> Track your order here</a></p>
+            <p><a href="Return.html"><i class="fa-solid fa-rotate-left"></i> Return & Refund Policy</a></p>
+            <p><a href="bulkorder.html"><i class="fa-solid fa-boxes-stacked"></i> For bulk orders</a></p>
+            <p><strong>Website & Development:</strong> This website is designed and developed with ❤️ by <a
+                    href="https://shivamportfoliyo.netlify.app/" target="_blank">Shivam</a>.For inquiries regarding
+                collaborations, web development services, or feedback, feel free to reach out directly through his <a
+                    href="https://shivamportfoliyo.netlify.app/" target="_blank">portfolio.</a></p>
+        </div>
+    </section>
+    <section>
+        <footer>
+            <div class="footer">
+                <div class="Links">
+                    <div class="up">
+                        <div><a href="skincare.html">Skincare</a></div>
+                        <div><a href="perfume.html">Perfume</a></div>
+                        <div><a href="Newproduct.html">New Products</a></div>
+                    </div>
+                    <div class="down">
+                        <div><a href="trem&condition.html">Term and Conditions</a></div>
+                        <div><a href="Return.html">Refund rules</a></div>
+                        <div><a href="privacypolicy.html">Privacy Policy</a></div>
+                        <div><a href="aboutus.html">About Us</a></div>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <div class="icon">
+                        <i class="fa-brands fa-facebook"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="footer-legal">
+                        <p>&copy; <span id="year">2025</span> IndalNova. All Rights Reserved.</p>
+                    </div>
+                    <div class="developer">
+                        <p>Made with ❤️ by <a href="https://shivamportfoliyo.netlify.app/" target="_blank">Shivam</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <div id="customAlert" class="custom-alert" style="display:none;">
+            <div class="custom-alert-content"><i class="fa-solid alert-icon"></i>
+                <h2 class="alert-title">Alert</h2>
+                <p class="alert-message">This is a message</p><button class="alert-ok">OK</button>
+            </div>
+        </div>
+    </section>
+    <script>
+        const popup = document.getElementById("popup");
+        const openBtn = document.getElementById("exploreProducts"); // heading trigger
+        const phoneInput = document.getElementById("phone-number");
+        const submitBtn = document.getElementById("submitPhoneBtn");
+        const customAlert = document.getElementById("customAlert");
+        const alertMessage = customAlert.querySelector(".alert-message");
+        const alertOkBtn = customAlert.querySelector(".alert-ok");
+
+        // Open popup on heading click
+        openBtn.addEventListener("click", () => { popup.style.display = "flex"; });
+
+        // Close popup
+        function closePopup() { popup.style.display = "none"; }
+
+        // Close when clicking outside
+        window.addEventListener("click", (e) => { if (e.target === popup) { closePopup(); } });
+
+        // Show alert
+        function showCustomAlert(message, duration = 3000) {
+            alertMessage.textContent = message;
+            customAlert.style.display = "flex";
+            setTimeout(() => { customAlert.style.display = "none"; }, duration);
+        }
+        alertOkBtn.addEventListener("click", () => { customAlert.style.display = "none"; });
+
+        // Validate phone number & submit
+        submitBtn.addEventListener("click", async () => {
+            const phone = phoneInput.value.trim();
+            const phoneRegex = /^[1-9]\d{9}$/;
+
+            if (!phoneRegex.test(phone)) {
+                showCustomAlert("Please enter a valid 10-digit phone number.");
+                return;
+            }
+
+            try {
+
+
+
+                const res = await fetch("/api/subscribe", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phone })
+                });
+
+                const result = await res.json();
+
+
+
+
+                if (result.success) {
+                    showCustomAlert(result.message || "Thank you! Subscribed.");
+                    phoneInput.value = "";
+                    closePopup();
+                } else {
+                    showCustomAlert(result.message || "Something went wrong.");
+                }
+            } catch (err) {
+
+                console.error(err);
+                showCustomAlert("Error: could not subscribe.");
+            }
+        });
+
+    </script>
+</body>
+
+</html>

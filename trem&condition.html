@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indalnova | Term and Condition</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="media.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chong+Modern&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+        }
+
+        h2 {
+            font-size: 25px;
+            color: brown;
+            padding: 25px;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-box {
+            background: rgb(247, 244, 239);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 350px;
+            width: 90%;
+            box-sizing: border-box;
+        }
+
+        .follow-det {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif
+        }
+
+        .follow-det h1 {
+            font-size: 18px;
+        }
+
+        .follow-det p {
+            font-size: 8px;
+        }
+
+        input {
+            width: 95%;
+            height: 40px;
+            border-radius: 5px;
+            border: 2px solid brown;
+            padding: 5px;
+            font-size: 15px;
+            margin: 0px;
+        }
+
+        .Buttons {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .Buttons button {
+            height: 40px;
+            width: 120px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .Buttons button:nth-child(1) {
+            background: white;
+        }
+
+        .Buttons button:nth-child(2) {
+            background: brown;
+            color: white;
+        }
+
+        .terms {
+
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .terms h3 {
+            color: brown;
+            margin-top: 20px;
+        }
+
+        .terms ul {
+            margin-left: 20px;
+        }
+
+        .terms li {
+            margin-bottom: 8px;
+        }
+
+        @media screen and (max-width: 440px) {
+            p {
+                font-size: 15px;
+            }
+
+            .terms ul {
+                font-size: 15px;
+            }
+
+            .terms li {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="heading1">
+            <h4 id="exploreProducts">Click here for Offers & Updates.</h4>
+        </div>
+    </section>
+    <div class="popup-overlay" id="popup">
+        <div class="popup-box">
+            <div class="follow-det">
+                <h1>Follow Us for Offers & Updates</h1>
+                <input type="number" id="phone-number" placeholder="Enter Your Phone number" required>
+                <p>By entering your number, you agree to our <a href="trem&condition.html">Terms & Conditions</a>.</p>
+                <div class="Buttons">
+                    <button onclick="closePopup()">Cancel</button>
+                    <button type="button" id="submitPhoneBtn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section>
+        <div class="navbar">
+            <div class="logo">Indalnova</div>
+            <div class="nav-links">
+                <a href="skincare.html">Skine care</a>
+                <a href="perfume.html">Perfume</a>
+                <a href="Trackorder.html">Track order</a>
+                <a href="offers.html">Offers*</a>
+            </div>
+            <div class="options">
+                <span id="Back" onclick="window.location.href='index.html'">
+                    <i class="fa-solid fa-left-long" style="color: brown;"></i>
+            </div>
+
+        </div>
+        </div>
+    </section>
+    <section>
+        <h2>Term & Conditions</h2>
+
+        <div class="terms">
+            <p>Welcome to <strong>Indalnova</strong>. By using our website, browsing, or placing an order, you agree to
+                the following Terms & Conditions. Please read them carefully before making a purchase.</p>
+
+            <h3>1. Eligibility</h3>
+            <ul>
+                <li>You must be at least 18 years old to place an order on our website.</li>
+                <li>By ordering, you confirm that you are legally capable of entering into binding contracts under
+                    applicable laws.</li>
+            </ul>
+
+            <h3>2. Use of Website</h3>
+            <ul>
+                <li>You agree not to misuse the website for fraudulent activities, fake orders, hacking, or spreading
+                    harmful content.</li>
+                <li>You are responsible for maintaining the confidentiality of your account and password.</li>
+                <li>Any suspicious or abusive behavior may result in termination of your account.</li>
+            </ul>
+
+            <h3>3. Product Information</h3>
+            <ul>
+                <li>We strive to provide accurate product descriptions, but colors, sizes, or features may slightly vary
+                    due to photography or display settings.</li>
+                <li>We reserve the right to correct any errors in product descriptions, pricing, or availability without
+                    prior notice.</li>
+            </ul>
+
+            <h3>4. Pricing & Payments</h3>
+            <ul>
+                <li>All prices are listed in INR (Indian Rupees) and may change without notice.</li>
+                <li>We accept payments through secure payment gateways.</li>
+                <li>We are not responsible for delays or errors caused by banks, UPI apps, or third-party payment
+                    providers.</li>
+            </ul>
+
+            <h3>5. Order Acceptance & Cancellation</h3>
+            <ul>
+                <li>An order is considered confirmed only after payment is received and verified.</li>
+                <li>We reserve the right to cancel or reject any order suspected of fraud, incomplete details, or misuse
+                    of coupons/offers.</li>
+                <li>Customers can cancel orders before shipment only. Once shipped, our Return Policy will apply.</li>
+            </ul>
+
+            <h3>6. Shipping & Delivery</h3>
+            <ul>
+                <li>We aim to deliver products within the estimated timelines, but delays may occur due to courier
+                    companies, strikes, natural disasters, or unforeseen circumstances.</li>
+                <li>Indalnova will not be held liable for delivery delays beyond our control.</li>
+            </ul>
+
+            <h3>7. Returns & Refunds</h3>
+            <p>Returns and refunds are subject to our <a href="Return.html">Return & Refund Policy</a>.</p>
+
+            <h3>8. User Responsibilities</h3>
+            <ul>
+                <li>You must provide accurate personal details including name, address, and contact information.</li>
+                <li>Indalnova is not responsible for failed deliveries due to incorrect or incomplete addresses.</li>
+            </ul>
+
+            <h3>9. Intellectual Property</h3>
+            <ul>
+                <li>All website content including logos, text, images, graphics, and designs are the property of
+                    Indalnova.</li>
+                <li>You may not copy, reproduce, or distribute any material without prior written consent.</li>
+            </ul>
+
+            <h3>10. Limitation of Liability</h3>
+            <ul>
+                <li>We are not liable for delays or damages caused by courier companies.</li>
+                <li>We are not responsible for payment failures caused by banks or payment gateways.</li>
+                <li>We are not responsible for misuse, mishandling, or negligence of products by the customer.</li>
+            </ul>
+
+            <h3>11. Privacy & Data</h3>
+            <ul>
+                <li>Your personal information is collected and used as per our Privacy Policy.</li>
+                <li>We do not sell or misuse your personal data.</li>
+            </ul>
+
+            <h3>12. Legal Jurisdiction</h3>
+            <p>All disputes, claims, or controversies arising from purchases, products, shipping, returns, refunds, or
+                website usage will be subject to the exclusive jurisdiction of the courts in Uttar Pradesh (UP), India,
+                in accordance with Indian laws.</p>
+
+            <h3>13. Amendments</h3>
+            <p>Indalnova reserves the right to update or modify these Terms & Conditions at any time without prior
+                notice. Continued use of the website after changes means acceptance of the new terms.</p>
+        </div>
+    </section>
+    <div id="customAlert" class="custom-alert" style="display:none;">
+        <div class="custom-alert-content"><i class="fa-solid alert-icon"></i>
+            <h2 class="alert-title">Alert</h2>
+            <p class="alert-message">This is a message</p><button class="alert-ok">OK</button>
+        </div>
+    </div>
+    <section>
+        <footer>
+            <div class="footer">
+                <div class="Links">
+
+                    <div class="up">
+                        <div><a href="skincare.html">Skincare</a></div>
+                        <div><a href="perfume.html">Perfume</a></div>
+                        <div><a href="Newproduct.html">New Products</a></div>
+                    </div>
+                    <div class="mid">
+                        <div><a href="Return.html">Return Order</a></div>
+                        <div><a href="#">Order in Bulk</a></div>
+                        <div><a href="contactus.html">Contact us</a></div>
+                    </div>
+                    <div class="down">
+                        <div><a href="Return.html">Refund rules</a></div>
+                        <div><a href="privacypolicy.html">Privacy Policy</a></div>
+                        <div><a href="aboutus.html">About Us</a></div>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <div class="icon">
+                        <i class="fa-brands fa-facebook"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="footer-legal">
+                        <p>&copy; <span id="year">2025</span> IndalNova. All Rights Reserved.</p>
+                    </div>
+
+                    <div class="developer">
+                        <p>Made with ❤️ by <a href="https://shivamportfoliyo.netlify.app/" target="_blank">Shivam</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+    </section>
+    <script>
+        const popup = document.getElementById("popup");
+        const openBtn = document.getElementById("exploreProducts"); // heading trigger
+        const phoneInput = document.getElementById("phone-number");
+        const submitBtn = document.getElementById("submitPhoneBtn");
+        const customAlert = document.getElementById("customAlert");
+        const alertMessage = customAlert.querySelector(".alert-message");
+        const alertOkBtn = customAlert.querySelector(".alert-ok");
+
+        // Open popup on heading click
+        openBtn.addEventListener("click", () => { popup.style.display = "flex"; });
+
+        // Close popup
+        function closePopup() { popup.style.display = "none"; }
+
+        // Close when clicking outside
+        window.addEventListener("click", (e) => { if (e.target === popup) { closePopup(); } });
+
+        // Show alert
+        function showCustomAlert(message, duration = 3000) {
+            alertMessage.textContent = message;
+            customAlert.style.display = "flex";
+            setTimeout(() => { customAlert.style.display = "none"; }, duration);
+        }
+        alertOkBtn.addEventListener("click", () => { customAlert.style.display = "none"; });
+
+        // Validate phone number & submit
+        submitBtn.addEventListener("click", async () => {
+            const phone = phoneInput.value.trim();
+            const phoneRegex = /^[1-9]\d{9}$/;
+
+            if (!phoneRegex.test(phone)) {
+                showCustomAlert("Please enter a valid 10-digit phone number.");
+                return;
+            }
+
+            try {
+
+
+
+                const res = await fetch("/api/subscribe", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phone })
+                });
+
+                const result = await res.json();
+
+
+
+
+                if (result.success) {
+                    showCustomAlert(result.message || "Thank you! Subscribed.");
+                    phoneInput.value = "";
+                    closePopup();
+                } else {
+                    showCustomAlert(result.message || "Something went wrong.");
+                }
+            } catch (err) {
+
+                console.error(err);
+                showCustomAlert("Error: could not subscribe.");
+            }
+        });
+
+    </script>
+</body>
+
+</html>
