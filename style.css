@@ -23,10 +23,7 @@ body {
   flex-direction: column;
 }
 
-body>section {
-  flex: 1;
-  /* ensures sections push footer down */
-}
+
 
 /* ===== Top Heading ===== */
 .heading1 {
@@ -702,9 +699,6 @@ input {
   animation: scrollRight 30s linear infinite;
 }
 
-body>section:not(:last-child) {
-  flex: 1;
-}
 
 .footer {
   height: auto;
@@ -1006,6 +1000,7 @@ body>section:not(:last-child) {
   }
 
 }
+
 
 
 
