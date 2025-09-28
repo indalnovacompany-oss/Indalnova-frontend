@@ -284,6 +284,9 @@ submitBtn.addEventListener("click", async () => {
   }
 
   try {
+    // Show loader before starting the request
+    showLoader();
+
     const res = await fetch("/api/subscribe", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -291,6 +294,9 @@ submitBtn.addEventListener("click", async () => {
     });
 
     const result = await res.json();
+
+    // Hide loader after response
+    hideLoader();
 
     if (result.success) {
       showCustomAlert(result.message || "Thank you! Subscribed.");
@@ -300,10 +306,13 @@ submitBtn.addEventListener("click", async () => {
       showCustomAlert(result.message || "Something went wrong.");
     }
   } catch (err) {
+    hideLoader(); // Make sure to hide loader on error too
     console.error(err);
     showCustomAlert("Error: could not subscribe.");
   }
 });
+
+
 
 
 
