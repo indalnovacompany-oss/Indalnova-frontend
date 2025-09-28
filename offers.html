@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="media.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chong+Modern&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+    <title>Indalnova | Offers</title>
+    <style>
+       
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-box {
+            background: rgb(247, 244, 239);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 350px;
+            width: 90%;
+            box-sizing: border-box;
+        }
+
+        .follow-det {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif
+        }
+
+        .follow-det h1 {
+            font-size: 18px;
+        }
+
+        .follow-det p {
+            font-size: 8px;
+        }
+
+        input {
+            width: 95%;
+            height: 40px;
+            border-radius: 5px;
+            border: 2px solid brown;
+            padding: 5px;
+            font-size: 15px;
+            margin: 0px;
+        }
+
+        .Buttons {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .Buttons button {
+            height: 40px;
+            width: 120px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .Buttons button:nth-child(1) {
+            background: white;
+        }
+
+        .Buttons button:nth-child(2) {
+            background: brown;
+            color: white;
+        }
+    </style>
+</head>
+
+
+<body>
+    <section>
+        <div class="heading1">
+            <h4 id="exploreProducts">Click here for Offers & Updates.</h4>
+        </div>
+    </section>
+    <section>
+        <div class="navbar">
+            <div class="logo">Indalnova</div>
+            <div class="nav-links">
+                <a href="skincare.html">Skine care</a>
+                <a href="perfume.html">Perfume</a>
+                <a href="Trackorder.html">Track order</a>
+            </div>
+            <div class="options">
+                <!-- Login button -->
+
+                <!-- Cart icon -->
+                <span id="Cart" onclick="window.location.href='cart.html'">
+                    <i class="fa-solid fa-cart-shopping" style="color: brown;"></i>
+                </span>
+
+                <!-- Hamburger menu -->
+                <span id="Back" onclick="window.location.href='index.html'">
+                    <i class="fa-solid fa-left-long" style="color: brown;"></i>
+                </span>
+            </div>
+
+        </div>
+        </div>
+    </section>
+    <div class="popup-overlay" id="popup">
+        <div class="popup-box">
+            <div class="follow-det">
+                <h1>Follow Us for Offers & Updates</h1>
+                <input type="number" id="phone-number" placeholder="Enter Your Phone number" required>
+                <p>By entering your number, you agree to our <a href="trem&condition.html">Terms & Conditions</a>.</p>
+                <div class="Buttons">
+                    <button onclick="closePopup()">Cancel</button>
+                    <button type="button" id="submitPhoneBtn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section style="margin: auto;">
+        <span id="offer-img"><img src="Assets/offerbg-removebg-preview.png" height="300px" width="300px" alt=""></span>
+    </section>
+    <div id="customAlert" class="custom-alert" style="display:none;">
+        <div class="custom-alert-content"><i class="fa-solid alert-icon"></i>
+            <h2 class="alert-title">Alert</h2>
+            <p class="alert-message">This is a message</p><button class="alert-ok">OK</button>
+        </div>
+    </div>
+    <script>
+        const popup = document.getElementById("popup");
+        const openBtn = document.getElementById("exploreProducts"); // heading trigger
+        const phoneInput = document.getElementById("phone-number");
+        const submitBtn = document.getElementById("submitPhoneBtn");
+        const customAlert = document.getElementById("customAlert");
+        const alertMessage = customAlert.querySelector(".alert-message");
+        const alertOkBtn = customAlert.querySelector(".alert-ok");
+
+        // Open popup on heading click
+        openBtn.addEventListener("click", () => { popup.style.display = "flex"; });
+
+        // Close popup
+        function closePopup() { popup.style.display = "none"; }
+
+        // Close when clicking outside
+        window.addEventListener("click", (e) => { if (e.target === popup) { closePopup(); } });
+
+        // Show alert
+        function showCustomAlert(message, duration = 3000) {
+            alertMessage.textContent = message;
+            customAlert.style.display = "flex";
+            setTimeout(() => { customAlert.style.display = "none"; }, duration);
+        }
+        alertOkBtn.addEventListener("click", () => { customAlert.style.display = "none"; });
+
+        // Validate phone number & submit
+        submitBtn.addEventListener("click", async () => {
+            const phone = phoneInput.value.trim();
+            const phoneRegex = /^[1-9]\d{9}$/;
+
+            if (!phoneRegex.test(phone)) {
+                showCustomAlert("Please enter a valid 10-digit phone number.");
+                return;
+            }
+
+            try {
+
+               
+
+                const res = await fetch("/api/subscribe", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phone })
+                });
+
+                const result = await res.json();
+
+
+               
+
+                if (result.success) {
+                    showCustomAlert(result.message || "Thank you! Subscribed.");
+                    phoneInput.value = "";
+                    closePopup();
+                } else {
+                    showCustomAlert(result.message || "Something went wrong.");
+                }
+            } catch (err) {
+              
+                console.error(err);
+                showCustomAlert("Error: could not subscribe.");
+            }
+        });
+
+
+    </script>
+</body>
+
+</html>
