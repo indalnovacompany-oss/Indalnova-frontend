@@ -64,29 +64,20 @@
             margin: 0px;
         }
 
-        .Buttons {
-            display: flex;
-            justify-content: space-around;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
 
-        .Buttons button {
-            height: 40px;
-            width: 120px;
+        button {
+            height: 50px;
+            width: 150px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-        }
-
-        .Buttons button:nth-child(1) {
-            background: white;
-        }
-
-        .Buttons button:nth-child(2) {
-            background: brown;
+            margin-left: 50px;
+            font-family: 'Poppins', sans-serif;
             color: white;
+            background-color: brown;
+            border: none;
         }
+
 
         #trackorders {
             margin-top: 20px;
@@ -96,7 +87,7 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        
+
 
         .policy-intro {
             padding: 20px;
@@ -235,26 +226,9 @@
             <div class="helpline"><a href="contactus.html">Contact US</a></div>
             <div class="backbtn"><button onclick="back()">Back</button></div>
         </div>
-    </section>
 
-    <section>
         <h2 id="trackorders">Return Policy</h2>
     </section>
-
-    <!-- Inline Order ID + Upload + Submit -->
-    <section
-        style="margin:auto; display: flex; align-items: center; gap: 10px; font-family: 'Poppins', sans-serif; width: 50%;">
-        <input type="text" id="orderId" name="orderId" placeholder="Enter Order ID"
-            style="padding: 10px; font-size: 16px; flex:1; border:1px solid #ccc; border-radius:5px;" />
-        <input type="file" id="unboxingVideo" name="unboxingVideo" accept="video/*"
-            style="padding: 5px; font-size: 16px; width: 30%;" />
-        <button id="submitBtn"
-            style="padding: 10px 20px; font-size: 16px; background: brown; color: white; border:none; border-radius:5px; cursor:pointer;">
-            Submit
-        </button>
-    </section>
-
-    <p id="formMessage" style="margin-top:10px; color:brown; display: flex; justify-content: center;"></p>
 
     <!-- Custom Alert -->
     <div id="customAlert">
@@ -271,6 +245,16 @@
             <p>At <b>Indalnova</b>, we want to ensure our customers receive their products in perfect condition. Please
                 read our policy carefully before initiating a return or refund request.</p>
         </div>
+    </section>
+    <section>
+        <div class="buttons">
+            <button onclick="window.open('https://forms.gle/mKQbnJe5MhoCimGJ8', '_self')">
+                Request a Refund
+            </button>
+
+        </div>
+    </section>
+    <section>
         <div class="rules">
             <h2>1. Eligibility for Returns</h2>
             <p>Returns and refunds are only accepted for products that are defective, damaged, or incorrect.</p>
@@ -408,35 +392,7 @@
         }
 
         // ===== Video Submission Validation =====
-        const submitBtn = document.getElementById('submitBtn');
 
-        submitBtn.addEventListener('click', function () {
-            const orderId = document.getElementById('orderId').value.trim();
-            const videoFile = document.getElementById('unboxingVideo').files[0];
-
-            if (!orderId || !videoFile) {
-                showAlert("error", "Please enter your Order ID and upload your video.");
-                return;
-            }
-
-            const maxSize = 50 * 1024 * 1024; // 50MB
-            if (videoFile.size > maxSize) {
-                showAlert("error", "Video exceeds maximum size of 50MB.");
-                return;
-            }
-
-            const allowedTypes = ["video/mp4", "video/avi", "video/mov", "video/mkv"];
-            if (!allowedTypes.includes(videoFile.type)) {
-                showAlert("error", "Only MP4, AVI, MOV, or MKV videos are allowed.");
-                return;
-            }
-
-            showAlert("success", "Your video has been submitted successfully! Our team will review it shortly.");
-
-            // Reset input fields
-            document.getElementById('orderId').value = '';
-            document.getElementById('unboxingVideo').value = '';
-        });
 
         // ===== Back Button Function =====
         function back() {
