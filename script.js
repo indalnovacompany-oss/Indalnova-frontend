@@ -274,15 +274,36 @@ function showCustomAlert(message, duration = 3000) {
 alertOkBtn.addEventListener("click", () => { customAlert.style.display = "none"; });
 
 // Validate phone number & submit
-submitBtn.addEventListener("click", () => {
+submitBtn.addEventListener("click", async () => {
   const phone = phoneInput.value.trim();
   const phoneRegex = /^[1-9]\d{9}$/;
-  if (!phoneRegex.test(phone) || phone.startsWith("91")) {
+
+  if (!phoneRegex.test(phone)) {
     showCustomAlert("Please enter a valid 10-digit phone number.");
     return;
   }
-  closePopup();
-  showCustomAlert("Thank you!");
-    phoneInput.value = "";
+
+  try {
+    const res = await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone })
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      showCustomAlert(result.message || "Thank you! Subscribed.");
+      phoneInput.value = "";
+      closePopup();
+    } else {
+      showCustomAlert(result.message || "Something went wrong.");
+    }
+  } catch (err) {
+    console.error(err);
+    showCustomAlert("Error: could not subscribe.");
+  }
 });
+
+
 
