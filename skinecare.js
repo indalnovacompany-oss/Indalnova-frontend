@@ -52,17 +52,17 @@ function showAlert(type, message) {
 }
 
 // ===== Add to Cart =====
-function addToCart(newItem) {
-  let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
-  const existing = cart.find(p => p.id === newItem.id);
-  if (existing) {
-    existing.qty = (existing.qty || 0) + (newItem.qty || 1);
-  } else {
-    cart.push({ ...newItem, qty: newItem.qty || 1 });
-  }
-  localStorage.setItem(cartKey, JSON.stringify(cart));
-  showAlert("success", `${newItem.name} added to cart!`);
-}
+// function addToCart(newItem) {
+//   let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
+//   const existing = cart.find(p => p.id === newItem.id);
+//   if (existing) {
+//     existing.qty = (existing.qty || 0) + (newItem.qty || 1);
+//   } else {
+//     cart.push({ ...newItem, qty: newItem.qty || 1 });
+//   }
+//   localStorage.setItem(cartKey, JSON.stringify(cart));
+//   showAlert("success", `${newItem.name} added to cart!`);
+// }
 
 // ===== Load Products and Attach Add/Buy Events =====
 document.addEventListener("DOMContentLoaded", async () => {
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <span class="savings">${product.discount} OFF</span></p>
           <div class="atc">
             <button class="add-to-cart" data-id="${product.id}">Add to cart <i class="fa-solid fa-cart-shopping"></i></button>
-            <button class="buy-now" data-id="${product.id}">Buy Now</button>
+            <button class="buy-now" data-id="${product.id}">Buy Now on Messho</button>
           </div>
         </div>
       `;
@@ -107,18 +107,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.querySelectorAll(".buy-now").forEach(btn => {
       btn.addEventListener("click", () => {
-        const id = parseInt(btn.dataset.id);
-        const product = products.find(p => p.id === id);
-        addToCart(product);
+        window.open("https://www.meesho.com/INDALNOVA?ms=2", "_blank");
 
-        localStorage.setItem("checkoutData", JSON.stringify({
-          items: [product],
-          total: product.price,
-          timestamp: new Date().toISOString(),
-          user: currentUserRaw || "guest"
-        }));
+        // const id = parseInt(btn.dataset.id);
+        // const product = products.find(p => p.id === id);
+        // addToCart(product);
 
-        window.location.href = "cart.html";
+        // localStorage.setItem("checkoutData", JSON.stringify({
+        //   items: [product],
+        //   total: product.price,
+        //   timestamp: new Date().toISOString(),
+        //   user: currentUserRaw || "guest"
+        // }));
+
+        // window.location.href = "cart.html";
       });
     });
 
@@ -128,7 +130,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error(err);
   }
 
-  if (window.location.pathname.includes("cart.html")) {
-    hideLoader();
-  }
+  // if (window.location.pathname.includes("cart.html")) {
+  //   hideLoader();
+  // }
 });

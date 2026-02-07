@@ -115,17 +115,17 @@ let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
 const cartKey = currentUserEmail ? "cart_" + currentUserEmail : "cart_guest";
 
 // ===== Cart Functions =====
-function addToCart(newItem) {
-  let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
-  const existing = cart.find(p => p.id === newItem.id);
-  if (existing) {
-    existing.qty = (existing.qty || 0) + (newItem.qty || 1);
-  } else {
-    cart.push({ ...newItem, qty: newItem.qty || 1 });
-  }
-  localStorage.setItem(cartKey, JSON.stringify(cart));
-  showAlert("success", `${newItem.name} added to cart!`);
-}
+// function addToCart(newItem) {
+//   let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
+//   const existing = cart.find(p => p.id === newItem.id);
+//   if (existing) {
+//     existing.qty = (existing.qty || 0) + (newItem.qty || 1);
+//   } else {
+//     cart.push({ ...newItem, qty: newItem.qty || 1 });
+//   }
+//   localStorage.setItem(cartKey, JSON.stringify(cart));
+//   showAlert("success", `${newItem.name} added to cart!`);
+// }
 
 // ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <span class="savings">${product.discount} OFF</span></p>
           <div class="atc">
             <button class="add-to-cart" data-id="${product.id}">Add to cart <i class="fa-solid fa-cart-shopping"></i></button>
-            <button class="buy-now" data-id="${product.id}">Buy Now</button>
+            <button class="buy-now" data-id="${product.id}">Buy Now on Messho</button>
           </div>
         </div>
       `;
@@ -162,30 +162,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     hideLoader();
 
     // ===== Add to Cart Event =====
-    document.querySelectorAll(".add-to-cart").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = parseInt(btn.dataset.id);
-        const product = products.find(p => p.id === id);
-        addToCart(product);
-      });
-    });
+    // document.querySelectorAll(".add-to-cart").forEach(btn => {
+    //   btn.addEventListener("click", () => {
+    //     const id = parseInt(btn.dataset.id);
+    //     const product = products.find(p => p.id === id);
+    //     addToCart(product);
+    //   });
+    // });
 
     // ===== Buy Now Event =====
     document.querySelectorAll(".buy-now").forEach(btn => {
       btn.addEventListener("click", () => {
-        const id = parseInt(btn.dataset.id);
-        const product = products.find(p => p.id === id);
+        window.open("https://www.meesho.com/INDALNOVA?ms=2","_blank")
+        // const id = parseInt(btn.dataset.id);
+        // const product = products.find(p => p.id === id);
 
-        addToCart(product);
+        // addToCart(product);
 
-        localStorage.setItem("checkoutData", JSON.stringify({
-          items: [product],
-          total: product.price,
-          timestamp: new Date().toISOString(),
-          user: currentUserEmail || "guest"
-        }));
+        // localStorage.setItem("checkoutData", JSON.stringify({
+        //   items: [product],
+        //   total: product.price,
+        //   timestamp: new Date().toISOString(),
+        //   user: currentUserEmail || "guest"
+        // }));
 
-        window.location.href = "cart.html";
+        // window.location.href = "cart.html";
       });
     });
 
