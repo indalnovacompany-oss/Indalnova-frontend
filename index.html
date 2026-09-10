@@ -91,11 +91,136 @@
             background: brown;
             color: white;
         }
+
+        /* ===== Under Development Popup ===== */
+        .dev-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.35s ease;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .dev-popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dev-popup-box {
+            position: relative;
+            background: rgb(247, 244, 239);
+            border: 1px solid rgba(139, 69, 19, 0.25);
+            border-radius: 14px;
+            max-width: 420px;
+            width: 100%;
+            padding: 32px 26px 26px;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+            transform: translateY(-10px) scale(0.97);
+            transition: transform 0.35s ease;
+        }
+
+        .dev-popup-overlay.show .dev-popup-box {
+            transform: translateY(0) scale(1);
+        }
+
+        .dev-popup-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: transparent;
+            color: brown;
+            font-size: 20px;
+            cursor: pointer;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .dev-popup-close:hover {
+            background: rgba(139, 69, 19, 0.1);
+        }
+
+        .dev-popup-icon {
+            font-size: 30px;
+            color: brown;
+            margin-bottom: 10px;
+        }
+
+        .dev-popup-box h2 {
+            font-size: clamp(17px, 4.5vw, 21px);
+            color: #3a2a1a;
+            margin: 0 0 10px;
+        }
+
+        .dev-popup-box p {
+            font-size: clamp(12.5px, 3.4vw, 14.5px);
+            color: #5a4a3a;
+            line-height: 1.55;
+            margin: 0 0 14px;
+        }
+
+        .dev-popup-products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .dev-popup-products span {
+            background: brown;
+            color: #fff;
+            font-size: clamp(11px, 3vw, 12.5px);
+            padding: 6px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 480px) {
+            .dev-popup-box {
+                padding: 28px 18px 20px;
+            }
+        }
     </style>
     <title>Indalnova</title>
 </head>
 
 <body>
+
+    <!-- Under Development Popup -->
+    <div class="dev-popup-overlay" id="devPopup">
+        <div class="dev-popup-box">
+            <button class="dev-popup-close" id="devPopupClose" aria-label="Close">&times;</button>
+            <div class="dev-popup-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+            <h2>Website Under Development</h2>
+            <p>We're working behind the scenes to bring Indalnova back with something new. Launching soon with our
+                first products:</p>
+            <div class="dev-popup-products">
+                <span>Love Body Spray</span>
+                <span>Aura Unisex Body Spray</span>
+            </div>
+        </div>
+    </div>
+
     <section>
         <div class="heading1">
             <h4 id="exploreProducts">Click here for Offers & Updates.</h4>
@@ -272,113 +397,6 @@
             </div>
         </div>
     </section>
-    <!-- <section>
-        <div class="why-us">
-            <h1 id="why-us">Because Trust Matters <i class="fa-solid fa-handshake"></i></h1>
-            <div class="why-us-reason">
-                 <div class="reviews">
-                    <div class="image-customer"></div>
-                    <div class="message">
-                        <p>I ordered this product randomly on messho but after receiving the product I was totally
-                            surprised with its results.... You can order it don't worry it is good. It also smells good
-                            😊.</p>
-                    </div>
-                    <div class="name-customer">
-                        <p>Shivam,
-                            Bihar</p>
-                    </div>
-                </div>
-                <div class="reviews">
-                    <div class="image-customer"></div>
-                    <div class="message">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod cumque sequi distinctio
-                            sapiente in,
-                            beatae soluta. Eaque nam reiciendis suscipit voluptatum saepe excepturi,
-                            ut iure magnam qui neque sunt !</p>
-                    </div>
-                    <div class="name-customer">
-                        <p>Shivam,
-                            Bihar</p>
-                    </div>
-                </div>
-                <div class="reviews">
-                    <div class="image-customer"></div>
-                    <div class="message">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod cumque sequi distinctio
-                            sapiente in,
-                            beatae soluta. Eaque nam reiciendis suscipit voluptatum saepe excepturi,
-                            ut iure magnam qui neque sunt !</p>
-                    </div>
-                    <div class="name-customer">
-                        <p>Shivam,
-                            Bihar</p>
-                    </div>
-                </div>
-                <div class="reviews">
-                    <div class="image-customer"></div>
-                    <div class="message">
-                        <p></p>
-                    </div>
-                    <div class="name-customer">
-                        <p>Shivam,
-                            Bihar</p>
-                    </div>
-                </div>
-                <div class="reviews">
-                    <div class="image-customer"></div>
-                    <div class="message">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod cumque sequi distinctio
-                            sapiente in,
-                            beatae soluta. Eaque nam reiciendis suscipit voluptatum saepe excepturi,
-                            ut iure magnam qui neque sunt !</p>
-                    </div>
-                    <div class="name-customer">
-                        <p>Shivam,
-                            Bihar</p>
-                    </div>
-                </div>
-                <div class="reviews">
-                    <div class="image-customer"></div>
-                    <div class="message">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod cumque sequi distinctio
-                            sapiente in,
-                            beatae soluta. Eaque nam reiciendis suscipit voluptatum saepe excepturi,
-                            ut iure magnam qui neque sunt !</p>
-                    </div>
-                    <div class="name-customer">
-                        <p>Shivam,
-                            Bihar</p>
-                    </div>
-                </div>
-                <div class="reviews">
-                    <div class="image-customer"></div>
-                    <div class="message">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod cumque sequi distinctio
-                            sapiente in,
-                            beatae soluta. Eaque nam reiciendis suscipit voluptatum saepe excepturi,
-                            ut iure magnam qui neque sunt !</p>
-                    </div>
-                    <div class="name-customer">
-                        <p>Shivam,
-                            Bihar</p>
-                    </div>
-                </div>
-                <div class="reviews">
-                    <div class="image-customer"></div>
-                    <div class="message">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quod cumque sequi distinctio
-                            sapiente in,
-                            beatae soluta. Eaque nam reiciendis suscipit voluptatum saepe excepturi,
-                            ut iure magnam qui neque sunt !</p>
-                    </div>
-                    <div class="name-customer">
-                        <p>Shivam,
-                            Bihar</p>
-                    </div>
-                </div>
-            </div>
-        </div> 
-    </section> -->
     <section>
         <div class="other-reviews" style="background-image: url('Assets/bg.png')">
             <div class="reason-other">
@@ -521,7 +539,27 @@
         </div>
     </div>
     <script src="script.js"></script>
-</body>
+    <script>
+        // Under Development popup: show on load, auto-close after 4s, closable via cross button
+        (function () {
+            var devPopup = document.getElementById('devPopup');
+            var devPopupClose = document.getElementById('devPopupClose');
+            var autoCloseTimer;
 
+            function openDevPopup() {
+                devPopup.classList.add('show');
+                autoCloseTimer = setTimeout(closeDevPopup, 4000); // auto-hide after 4 seconds
+            }
+
+            function closeDevPopup() {
+                devPopup.classList.remove('show');
+                clearTimeout(autoCloseTimer);
+            }
+
+            window.addEventListener('load', openDevPopup);
+            devPopupClose.addEventListener('click', closeDevPopup);
+        })();
+    </script>
+</body>
 
 </html>
