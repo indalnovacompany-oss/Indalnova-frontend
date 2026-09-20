@@ -80,7 +80,7 @@
 
 @media screen and (max-width: 440px) {
   .hero-slider {
-    aspect-ratio: 16 / 7;
+    aspect-ratio: 3 / 4;
     margin-bottom: 0;
   }
 
