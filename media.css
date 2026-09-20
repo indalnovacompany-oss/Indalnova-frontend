@@ -1,3 +1,9 @@
+@media screen and (min-width: 821px) {
+  .product-container {
+    justify-content: center;
+  }
+}
+
 @media screen and (max-width: 1024px) {
   .nav-links {
     display: none;
@@ -53,11 +59,12 @@
   }
 
   .top-product {
-    width: 260px;
+    width: calc(100vw - 48px);
+    max-width: 360px;
   }
 
   .product-img {
-    height: 220px;
+    height: 240px;
   }
 }
 
@@ -85,6 +92,7 @@
 
   .options {
     width: auto;
+    gap: 14px;
   }
 
   .nav-2 {
@@ -137,18 +145,21 @@
   }
 
   .product-container {
-    padding: 16px 18px 26px;
+    padding: 0 18px;
     gap: 16px;
-    justify-content: flex-start;
+    justify-content: flex-start !important;
+    scroll-padding-left: 18px;
+    scroll-padding-right: 18px;
+    overflow-x: scroll;
   }
 
   .top-product {
-    width: 68vw;
-    max-width: 230px;
+    width: calc(100vw - 36px);
+    max-width: none;
   }
 
   .product-img {
-    height: 190px;
+    height: 220px;
   }
 
   .details p {
@@ -179,8 +190,10 @@
 
   .founder-img1 {
     display: flex;
+    width: 100%;
     justify-content: center;
     align-items: center;
+    align-self: center;
     margin-top: 30px;
   }
 
@@ -203,23 +216,43 @@
   .Links {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 18px;
     width: 100%;
     align-items: center;
     height: auto;
-    font-size: 11px;
-    margin-top: 30px;
+    font-size: 10px;
+    line-height: 1.3;
+    margin-top: 0;
+    padding: 24px 12px 0;
   }
 
   .up,
   .down,
   .mid {
-    gap: 20px;
+    width: 100%;
+    display: grid;
+    align-items: start;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .up {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mid,
+  .down {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .Links a {
+    overflow-wrap: anywhere;
   }
 
   .social-links {
-    padding: 20px;
-    margin-top: 10px;
+    height: auto;
+    padding: 22px 0 0;
+    margin-top: 0;
   }
 
   .bottom {
@@ -227,8 +260,11 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 22px;
+    padding: 0 12px 18px;
     height: auto;
+    width: 100%;
+    text-align: center;
   }
 
   .footer-legal p {

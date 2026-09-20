@@ -139,6 +139,7 @@
             <h4 id="exploreProducts">Click here to Explore our Products.</h4>
         </div>
     </section>
+    <div class="nav-overlay" id="navOverlay" onclick="back()"></div>
     <div class="popup-overlay" id="popup">
         <div class="popup-box">
             <div class="follow-det">
@@ -156,40 +157,59 @@
         <div class="navbar">
             <div class="logo">Indalnova</div>
             <div class="nav-links">
-                <a href="skincare.html">Skine care</a>
-                <a href="perfume.html">Perfume</a>
-                <a href="">Track order</a>
-                <a href="offers.html">Offers*</a>
+                <a href="#" onclick="comingSoon(event)">Perfume</a>
+                <a href="#" onclick="comingSoon(event)">Body Spray</a>
+                <a href="#" onclick="comingSoon(event)">Track order</a>
+                <a href="#" onclick="comingSoon(event)">Offers*</a>
             </div>
             <div class="options">
-                <span id="Back" onclick="window.location.href='index.html'">
-                    <i class="fa-solid fa-left-long" style="color: brown;"></i>
+                <span id="ham" onclick="hideelement()" role="button" aria-label="Open menu" tabindex="0">
+                    <i class="fa-solid fa-bars" style="color: brown;"></i>
                 </span>
             </div>
-
+        </div>
+    </section>
+    <section>
+        <div class="nav-2" aria-hidden="true">
+            <div class="nav-2-header">
+                <span class="nav-2-title">Menu</span>
+                <button class="nav-2-close" onclick="back()" aria-label="Close menu">&times;</button>
+            </div>
+            <div class="nav-2-links">
+                <a href="index.html"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-wine-bottle"></i> Perfume</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-spray-can-sparkles"></i> Body Spray</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-tags"></i> Offers*</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-truck-fast"></i> Track order</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-rotate-left"></i> Return order</a>
+            </div>
+            <div class="nav-2-divider"></div>
+            <div class="nav-2-links">
+                <a href="contactus.html"><i class="fa-solid fa-envelope"></i> Contact Us</a>
+            </div>
         </div>
     </section>
     <section>
         <h2>About Indalnova</h2>
         <section class="about-us">
             <p><strong>Our Journey:</strong> Indalnova was founded at just 16 by Aniket Singh Thakur, driven by a
-                passion to create skincare and luxury perfumes that are authentic, effective, and sophisticated. Tired
+                passion to create perfumes and body sprays that are authentic, memorable, and sophisticated. Tired
                 of shortcuts, false promises, and substandard products in the beauty industry, Aniket set out to craft
                 items that truly deliver results—honest, high-quality, and designed to elevate daily routines into
                 moments of indulgence.</p>
 
             <p><strong>Our Mission:</strong> At Indalnova, our mission is simple yet profound: to redefine luxury
-                self-care in India. We combine nature’s purity with scientific innovation to create bathwash, skincare,
-                and perfumes that nurture, refresh, and inspire confidence. Every product we make encourages a lifestyle
+                self-care in India. We combine thoughtful fragrance design with quality ingredients to create perfumes
+                and body sprays that refresh and inspire confidence. Every product we make encourages a lifestyle
                 of self-love, wellness, and elegance.</p>
 
             <p><strong>Our Vision:</strong> Our vision is to offer discerning customers premium quality, exceptional
-                fragrances, and skincare that truly cares. Indalnova aims to make indulgence accessible while upholding
+                fragrances and body sprays that feel personal and refined. Indalnova aims to make indulgence accessible while upholding
                 integrity, sustainability, and safety. We believe that luxury should never compromise authenticity.</p>
 
             <p><strong>Our Values:</strong></p>
             <ul>
-                <li><strong>Exquisite Quality:</strong> Every bathwash, perfume, and skincare product is meticulously
+                <li><strong>Exquisite Quality:</strong> Every perfume and body spray is meticulously
                     crafted using premium ingredients.</li>
                 <li><strong>Luxury Experience:</strong> Our products transform your daily routine into a sensory journey
                     of elegance and sophistication.</li>
@@ -201,19 +221,18 @@
                     ensure satisfaction.</li>
             </ul>
 
-            <p><strong>Crafted with Care:</strong> Every Indalnova product is plant-based, lightweight, and suitable for
-                all skin types, especially sensitive skin. Our bathwashes envelop you in luxurious textures and
-                captivating fragrances, while our perfumes are curated to leave a lasting impression. Created in small,
+            <p><strong>Crafted with Care:</strong> Every Indalnova product is created with carefully selected fragrance
+                notes and quality ingredients. Our perfumes and body sprays are curated to leave a lasting impression.
+                Created in small,
                 carefully controlled batches, each product embodies attention to detail, quality, and elegance.</p>
 
             <p><strong>The Indalnova Lifestyle:</strong> Indalnova is more than products—it’s a promise of indulgence,
-                confidence, and sophistication. We encourage customers to embrace self-care as a ritual, savoring each
-                moment of fragrance, touch, and glow. Whether it’s the gentle caress of our bathwash or the lingering
-                scent of our perfumes, Indalnova transforms everyday routines into premium experiences.</p>
+                confidence, and sophistication. We encourage customers to embrace fragrance as a daily ritual, enjoying
+                every moment and transforming everyday routines into premium experiences.</p>
 
             <p><strong>Founder’s Note:</strong> “Indalnova is my vision brought to life: a brand where authenticity
                 meets elegance, and every product tells a story of care, luxury, and refinement. We don’t just create
-                bathwash or perfumes—we craft experiences that inspire confidence and sophistication.”</p>
+                perfumes or body sprays—we craft experiences that inspire confidence and sophistication.”</p>
 
             <p>— <strong>Aniket Singh Thakur</strong>, Founder of Indalnova</p>
 
@@ -229,19 +248,19 @@
                 <div class="Links">
 
                     <div class="up">
-                        <div><a href="skincare.html">Skincare</a></div>
-                        <div><a href="perfume.html">Perfume</a></div>
-                        <div><a href="Newproduct.html">New Products</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Perfume</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Body Spray</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">New Products</a></div>
                     </div>
                     <div class="mid">
-                        <div><a href="">Track Order</a></div>
-                        <div><a href="">Return Order</a></div>
-                        <div><a href="">Order in Bulk</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Track Order</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Return Order</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Order in Bulk</a></div>
                         <div><a href="contactus.html">Contact us</a></div>
                     </div>
                     <div class="down">
-                        <div><a href="trem&condition.html">Term and Conditions</a></div>
-                        <div><a href="">Refund rules</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">T&amp;C</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Refund Rules</a></div>
                         <div><a href="privacypolicy.html">Privacy Policy</a></div>
                     </div>
                 </div>
@@ -277,6 +296,25 @@
         </div>
     </div>
     <script>
+        function hideelement() {
+            const nav2 = document.querySelector(".nav-2");
+            const overlay = document.getElementById("navOverlay");
+            if (nav2) nav2.classList.toggle("show");
+            if (overlay) overlay.classList.toggle("show");
+        }
+
+        function back() {
+            const nav2 = document.querySelector(".nav-2");
+            const overlay = document.getElementById("navOverlay");
+            if (nav2) nav2.classList.remove("show");
+            if (overlay) overlay.classList.remove("show");
+        }
+
+        function comingSoon(event) {
+            if (event && event.preventDefault) event.preventDefault();
+            showCustomAlert("This page is under development. We're launching online soon!");
+        }
+
         const popup = document.getElementById("popup");
         const openBtn = document.getElementById("exploreProducts"); // heading trigger
         const phoneInput = document.getElementById("phone-number");
@@ -344,5 +382,3 @@
 </body>
 
 </html>
-
-
