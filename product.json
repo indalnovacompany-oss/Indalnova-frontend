@@ -1,18 +1,18 @@
 [
   {
     "id": 1,
-    "name": "Neem Facewash for Men & Women",
-    "price":250,
-    "original":299,
-    "discount": "₹49", 
-    "image": ""
+    "name": "First Love Body Spray",
+    "image": "Assets/first-love.jpg",
+    "price": 199,
+    "original": 300,
+    "discount": "34%"
   },
   {
     "id": 2,
-    "name": "Ubtan Fashwash for Men & Women",
-    "price":250,
-    "original":299,
-    "discount": "₹49",
-    "image": ""
+    "name": "Aura Unisex Body Spray",
+    "image": "Assets/aura.jpg",
+    "price": 199,
+    "original": 300,
+    "discount": "34%"
   }
 ]

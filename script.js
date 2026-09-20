@@ -7,56 +7,23 @@ function hideLoader() {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) overlay.style.display = "none";
 }
-document.addEventListener("DOMContentLoaded", () => {
-  const features = document.querySelectorAll(".feature > div");
-  let index = 0;
-  let interval;
 
-  function showNextFeature() {
-    features.forEach(f => f.classList.remove("active"));
-    features[index].classList.add("active");
-    index = (index + 1) % features.length;
-  }
+// ===== Custom Alert =====
+const customAlert = document.getElementById("customAlert");
+const alertMessage = customAlert ? customAlert.querySelector(".alert-message") : null;
+const alertOkBtn = customAlert ? customAlert.querySelector(".alert-ok") : null;
 
-  function startSlider() {
-    if (window.innerWidth <= 440) {
-      showNextFeature(); // show first
-      interval = setInterval(showNextFeature, 3000); // change every 3s
-    } else {
-      features.forEach(f => f.classList.add("active")); // show all
-    }
-  }
-
-  startSlider();
-
-  window.addEventListener("resize", () => {
-    clearInterval(interval);
-    features.forEach(f => f.classList.remove("active"));
-    index = 0;
-    startSlider();
-  });
-});
-
-
-const slider = document.getElementById('slider');
-const slides = slider.querySelectorAll('img');
-let currentIndex = 0;
-
-function showSlide(index) {
-  slides.forEach((slide, i) => {
-    slide.style.display = (i === index) ? 'block' : 'none';
-  });
+function showCustomAlert(message, duration = 3500) {
+  if (!customAlert || !alertMessage) return;
+  alertMessage.textContent = message;
+  customAlert.style.display = "flex";
+  clearTimeout(showCustomAlert._t);
+  showCustomAlert._t = setTimeout(() => { customAlert.style.display = "none"; }, duration);
+}
+if (alertOkBtn) {
+  alertOkBtn.addEventListener("click", () => { customAlert.style.display = "none"; });
 }
 
-// Initially show first slide
-showSlide(currentIndex);
-
-// Auto-slide every 3 seconds
-setInterval(() => {
-  currentIndex = (currentIndex + 1) % slides.length;
-  showSlide(currentIndex);
-}, 5000);
-// ===== Custom Alert =====
 function showAlert(type, message) {
   const overlay = document.getElementById("customAlert");
   if (!overlay) return;
@@ -95,37 +62,70 @@ function showAlert(type, message) {
   okBtn.onclick = () => (overlay.style.display = "none");
 }
 
-// ===== Current User & Cart Key (UNIFIED!) =====
-function getCurrentUser() {
-  const email = localStorage.getItem("currentUser") || null;
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  return { email, isLoggedIn };
-}
-function setLoginSession(userEmail) {
-  localStorage.setItem("currentUser", userEmail);
-  localStorage.setItem("isLoggedIn", "true");
-}
-function clearLoginSession() {
-  localStorage.removeItem("currentUser");
-  localStorage.removeItem("isLoggedIn");
+// ===== Coming Soon (pages / features under development) =====
+function comingSoon(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  showCustomAlert("This page is under development. We're launching online soon!");
 }
 
-let { email: currentUserEmail, isLoggedIn } = getCurrentUser();
-// Unified Cart Key: guest = cart_guest, user = cart_email
-const cartKey = currentUserEmail ? "cart_" + currentUserEmail : "cart_guest";
+// ===== Feature strip mobile slider =====
+document.addEventListener("DOMContentLoaded", () => {
+  const features = document.querySelectorAll(".feature > div");
+  if (!features.length) return;
 
-// ===== Cart Functions =====
-// function addToCart(newItem) {
-//   let cart = JSON.parse(localStorage.getItem(cartKey) || "[]");
-//   const existing = cart.find(p => p.id === newItem.id);
-//   if (existing) {
-//     existing.qty = (existing.qty || 0) + (newItem.qty || 1);
-//   } else {
-//     cart.push({ ...newItem, qty: newItem.qty || 1 });
-//   }
-//   localStorage.setItem(cartKey, JSON.stringify(cart));
-//   showAlert("success", `${newItem.name} added to cart!`);
-// }
+  let index = 0;
+  let interval;
+
+  function showNextFeature() {
+    features.forEach(f => f.classList.remove("active"));
+    features[index].classList.add("active");
+    index = (index + 1) % features.length;
+  }
+
+  function startSlider() {
+    if (window.innerWidth <= 440) {
+      showNextFeature();
+      interval = setInterval(showNextFeature, 3000);
+    } else {
+      features.forEach(f => f.classList.add("active"));
+    }
+  }
+
+  startSlider();
+
+  window.addEventListener("resize", () => {
+    clearInterval(interval);
+    features.forEach(f => f.classList.remove("active"));
+    index = 0;
+    startSlider();
+  });
+});
+
+// ===== Hero slider =====
+const slider = document.getElementById('slider');
+const slides = slider ? slider.querySelectorAll('img') : [];
+let currentIndex = 0;
+
+function showSlide(index) {
+  slides.forEach((slide, i) => {
+    slide.style.display = (i === index) ? 'block' : 'none';
+  });
+}
+
+if (slides.length) {
+  showSlide(currentIndex);
+  setInterval(() => {
+    currentIndex = (currentIndex + 1) % slides.length;
+    showSlide(currentIndex);
+  }, 5000);
+}
+
+// ===== Helper: random rating (avg between 4.0-5.0, count under 30) =====
+function randomRating() {
+  const avg = (Math.random() * (5 - 4) + 4).toFixed(1);
+  const count = Math.floor(Math.random() * 29) + 1; // 1-29
+  return { avg, count };
+}
 
 // ===== Load Products =====
 document.addEventListener("DOMContentLoaded", async () => {
@@ -139,20 +139,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     const products = await res.json();
 
     products.forEach(product => {
+      const rating = randomRating();
       const div = document.createElement("div");
       div.classList.add("top-product");
       div.innerHTML = `
         <div class="product-img">
-          <img src="${product.image}" alt="">
+          <img src="${product.image}" alt="${product.name}">
         </div>
         <div class="details">
-          <div class="rating"><i class="fa-solid fa-star"></i> 4.7 | 67</div>
+          <div class="rating"><i class="fa-solid fa-star"></i> ${rating.avg} | ${rating.count}</div>
           <p>${product.name}</p>
-          <p>₹${product.price} <span class="dis">₹${product.original}</span>
+          <p>&#8377;${product.price} <span class="dis">&#8377;${product.original}</span>
           <span class="savings">${product.discount} OFF</span></p>
           <div class="atc">
-            <button class="add-to-cart" data-id="${product.id}">Add to cart <i class="fa-solid fa-cart-shopping"></i></button>
-            <button class="buy-now" data-id="${product.id}">Buy Now on Messho</button>
+            <button class="buy-now" data-id="${product.id}">Buy Now</button>
           </div>
         </div>
       `;
@@ -161,33 +161,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     hideLoader();
 
-    // ===== Add to Cart Event =====
-    // document.querySelectorAll(".add-to-cart").forEach(btn => {
-    //   btn.addEventListener("click", () => {
-    //     const id = parseInt(btn.dataset.id);
-    //     const product = products.find(p => p.id === id);
-    //     addToCart(product);
-    //   });
-    // });
-
-    // ===== Buy Now Event =====
     document.querySelectorAll(".buy-now").forEach(btn => {
-      btn.addEventListener("click", () => {
-        window.open("https://www.meesho.com/INDALNOVA?ms=2","_blank")
-        // const id = parseInt(btn.dataset.id);
-        // const product = products.find(p => p.id === id);
-
-        // addToCart(product);
-
-        // localStorage.setItem("checkoutData", JSON.stringify({
-        //   items: [product],
-        //   total: product.price,
-        //   timestamp: new Date().toISOString(),
-        //   user: currentUserEmail || "guest"
-        // }));
-
-        // window.location.href = "cart.html";
-      });
+      btn.addEventListener("click", () => comingSoon());
     });
 
   } catch (err) {
@@ -195,125 +170,45 @@ document.addEventListener("DOMContentLoaded", async () => {
     showAlert("error", "Failed to load products!");
     console.error(err);
   }
-
-  // ===== Login Button Toggle =====
-  const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn) {
-    loginBtn.style.display = "none"; // Hide by default
-
-    if (currentUserEmail && isLoggedIn) {
-      (async () => {
-        try {
-          const body = /^[0-9]{10}$/.test(currentUserEmail)
-            ? { phone: currentUserEmail }
-            : { email: currentUserEmail };
-
-          const res = await fetch("/api/checkuser", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body)
-          });
-
-          const data = await res.json();
-
-          if (data.exists) {
-            // User exists: keep hidden
-            loginBtn.style.display = "none";
-          } else {
-            // User does not exist: clear and show
-            clearLoginSession();
-            loginBtn.style.display = "inline-block";
-          }
-        } catch (err) {
-          // On error, clear session
-          clearLoginSession();
-          loginBtn.style.display = "inline-block";
-        }
-      })();
-    } else {
-      // No user: show login
-      loginBtn.style.display = "inline-block";
-    }
-  }
-
-  if (window.location.pathname.includes("cart.html")) {
-    hideLoader();
-  }
 });
 
 // ===== Nav Toggles =====
 function hideelement() {
-  document.querySelector(".nav-2").classList.toggle("show");
+  const nav2 = document.querySelector(".nav-2");
+  const overlay = document.getElementById("navOverlay");
+  if (nav2) nav2.classList.toggle("show");
+  if (overlay) overlay.classList.toggle("show");
 }
 function back() {
-  document.querySelector(".nav-2").classList.remove("show");
+  const nav2 = document.querySelector(".nav-2");
+  const overlay = document.getElementById("navOverlay");
+  if (nav2) nav2.classList.remove("show");
+  if (overlay) overlay.classList.remove("show");
 }
-//follow-popup//
-const popup = document.getElementById("popup");
-const openBtn = document.getElementById("exploreProducts"); // heading trigger
-const phoneInput = document.getElementById("phone-number");
-const submitBtn = document.getElementById("submitPhoneBtn");
-const customAlert = document.getElementById("customAlert");
-const alertMessage = customAlert.querySelector(".alert-message");
-const alertOkBtn = customAlert.querySelector(".alert-ok");
 
-// Open popup on heading click
-openBtn.addEventListener("click", () => { popup.style.display = "flex"; });
+// ===== Under Development / Coming Soon popup on load (home page only) =====
+(function () {
+  const devPopup = document.getElementById('devPopup');
+  if (!devPopup) return;
 
-// Close popup
-function closePopup() { popup.style.display = "none"; }
+  const devPopupClose = document.getElementById('devPopupClose');
+  const devPopupOk = document.getElementById('devPopupOk');
+  let autoCloseTimer;
 
-// Close when clicking outside
-window.addEventListener("click", (e) => { if (e.target === popup) { closePopup(); } });
-
-// Show alert
-function showCustomAlert(message, duration = 3000) {
-  alertMessage.textContent = message;
-  customAlert.style.display = "flex";
-  setTimeout(() => { customAlert.style.display = "none"; }, duration);
-}
-alertOkBtn.addEventListener("click", () => { customAlert.style.display = "none"; });
-
-// Validate phone number & submit
-submitBtn.addEventListener("click", async () => {
-  const phone = phoneInput.value.trim();
-  const phoneRegex = /^[1-9]\d{9}$/;
-
-  if (!phoneRegex.test(phone)) {
-    showCustomAlert("Please enter a valid 10-digit phone number.");
-    return;
+  function openDevPopup() {
+    devPopup.classList.add('show');
+    autoCloseTimer = setTimeout(closeDevPopup, 8000);
   }
 
-  try {
-    // Show loader before starting the request
-    showLoader();
-
-    const res = await fetch("/api/subscribe", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone })
-    });
-
-    const result = await res.json();
-
-    // Hide loader after response
-    hideLoader();
-
-    if (result.success) {
-      showCustomAlert(result.message || "Thank you! Subscribed.");
-      phoneInput.value = "";
-      closePopup();
-    } else {
-      showCustomAlert(result.message || "Something went wrong.");
-    }
-  } catch (err) {
-    hideLoader(); // Make sure to hide loader on error too
-    console.error(err);
-    showCustomAlert("Error: could not subscribe.");
+  function closeDevPopup() {
+    devPopup.classList.remove('show');
+    clearTimeout(autoCloseTimer);
   }
-});
 
-
-
-
-
+  window.addEventListener('load', openDevPopup);
+  if (devPopupClose) devPopupClose.addEventListener('click', closeDevPopup);
+  if (devPopupOk) devPopupOk.addEventListener('click', closeDevPopup);
+  devPopup.addEventListener('click', (e) => {
+    if (e.target === devPopup) closeDevPopup();
+  });
+})();

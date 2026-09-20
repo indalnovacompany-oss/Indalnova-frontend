@@ -5,316 +5,107 @@
     <meta charset="UTF-8">
     <meta name="fast2sms" content="UpbNJVyCmfK2DRHz4fkU8JmvigwQirhi">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Indalnova - Perfumes & Body Sprays. Launching online soon.">
+    <title>Indalnova | Perfumes &amp; Body Sprays</title>
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="media.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Chong+Modern&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-    <style>
-        body>section:not(:last-child) {
-            flex: 0 !important
-        }
-
-        body>section {
-            flex: 0 !important
-        }
-
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .popup-box {
-            background: rgb(247, 244, 239);
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 350px;
-            width: 90%;
-            box-sizing: border-box;
-        }
-
-        .follow-det {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            font-family: 'Poppins', sans-serif
-        }
-
-        .follow-det h1 {
-            font-size: 18px;
-        }
-
-        .follow-det p {
-            font-size: 8px;
-        }
-
-        input {
-            width: 95%;
-            height: 40px;
-            border-radius: 5px;
-            border: 2px solid brown;
-            padding: 5px;
-            font-size: 15px;
-            margin: 0px;
-        }
-
-        .Buttons {
-            display: flex;
-            justify-content: space-around;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .Buttons button {
-            height: 40px;
-            width: 120px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .Buttons button:nth-child(1) {
-            background: white;
-        }
-
-        .Buttons button:nth-child(2) {
-            background: brown;
-            color: white;
-        }
-
-        /* ===== Under Development Popup ===== */
-        .dev-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.55);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.35s ease;
-            padding: 16px;
-            box-sizing: border-box;
-        }
-
-        .dev-popup-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .dev-popup-box {
-            position: relative;
-            background: rgb(247, 244, 239);
-            border: 1px solid rgba(139, 69, 19, 0.25);
-            border-radius: 14px;
-            max-width: 420px;
-            width: 100%;
-            padding: 32px 26px 26px;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-            transform: translateY(-10px) scale(0.97);
-            transition: transform 0.35s ease;
-        }
-
-        .dev-popup-overlay.show .dev-popup-box {
-            transform: translateY(0) scale(1);
-        }
-
-        .dev-popup-close {
-            position: absolute;
-            top: 10px;
-            right: 12px;
-            width: 30px;
-            height: 30px;
-            border: none;
-            background: transparent;
-            color: brown;
-            font-size: 20px;
-            cursor: pointer;
-            line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.2s ease;
-        }
-
-        .dev-popup-close:hover {
-            background: rgba(139, 69, 19, 0.1);
-        }
-
-        .dev-popup-icon {
-            font-size: 30px;
-            color: brown;
-            margin-bottom: 10px;
-        }
-
-        .dev-popup-box h2 {
-            font-size: clamp(17px, 4.5vw, 21px);
-            color: #3a2a1a;
-            margin: 0 0 10px;
-        }
-
-        .dev-popup-box p {
-            font-size: clamp(12.5px, 3.4vw, 14.5px);
-            color: #5a4a3a;
-            line-height: 1.55;
-            margin: 0 0 14px;
-        }
-
-        .dev-popup-products {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-
-        .dev-popup-products span {
-            background: brown;
-            color: #fff;
-            font-size: clamp(11px, 3vw, 12.5px);
-            padding: 6px 12px;
-            border-radius: 20px;
-            white-space: nowrap;
-        }
-
-        @media (max-width: 480px) {
-            .dev-popup-box {
-                padding: 28px 18px 20px;
-            }
-        }
-    </style>
-    <title>Indalnova</title>
 </head>
 
 <body>
 
-    <!-- Under Development Popup -->
+    <!-- Under Development / Coming Soon Popup -->
     <div class="dev-popup-overlay" id="devPopup">
         <div class="dev-popup-box">
             <button class="dev-popup-close" id="devPopupClose" aria-label="Close">&times;</button>
-            <div class="dev-popup-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-            <h2>Website Under Development</h2>
-            <p>We're working behind the scenes to bring Indalnova back with something new. Launching soon with our
-                first products:</p>
+            <div class="dev-popup-icon"><i class="fa-solid fa-rocket"></i></div>
+            <span class="dev-popup-badge">Coming Soon</span>
+            <h2>We're Launching Online Soon!</h2>
+            <p>Our website is currently under development. Indalnova is getting ready to launch with:</p>
             <div class="dev-popup-products">
-                <span>Love Body Spray</span>
-                <span>Aura Unisex Body Spray</span>
+                <span><i class="fa-solid fa-spray-can-sparkles"></i> First Love</span>
+                <span><i class="fa-solid fa-spray-can-sparkles"></i> Aura</span>
             </div>
+            <button class="dev-popup-cta" id="devPopupOk">Got it</button>
         </div>
     </div>
 
     <section>
         <div class="heading1">
-            <h4 id="exploreProducts">Click here for Offers & Updates.</h4>
+            <h4 id="exploreProducts" onclick="comingSoon(event)">Click here for Offers &amp; Updates.</h4>
         </div>
     </section>
+
     <section>
         <div class="navbar">
             <div class="logo">Indalnova</div>
             <div class="nav-links">
-                <a href="skincare.html">Skine care</a>
-                <a href="perfume.html">Perfume</a>
-                <a href="">Track order</a>
-                <a href="offers.html">Offers*</a>
+                <a href="#" onclick="comingSoon(event)">Perfume</a>
+                <a href="#" onclick="comingSoon(event)">Body Spray</a>
+                <a href="#" onclick="comingSoon(event)">Track order</a>
+                <a href="#" onclick="comingSoon(event)">Offers*</a>
             </div>
             <div class="options">
-                <!-- Login button -->
-                <!-- <span id="loginBtn" onclick="window.location.href='login.html'">
-                    <i class="fa-solid fa-user" style="color: brown;"></i>
-                </span> -->
-                <!-- Cart icon -->
-                <!-- <span id="Cart" onclick="window.location.href='cart.html'">
-                    <i class="fa-solid fa-cart-shopping" style="color: brown;"></i>
-                </span> -->
-
-                <!-- Hamburger menu -->
-                <span id="ham" onclick="hideelement()">
+                <span id="ham" onclick="hideelement()" role="button" aria-label="Open menu" tabindex="0">
                     <i class="fa-solid fa-bars" style="color: brown;"></i>
                 </span>
             </div>
-
-        </div>
         </div>
     </section>
-    <div class="popup-overlay" id="popup">
-        <div class="popup-box">
-            <div class="follow-det">
-                <h1>Follow Us for Offers & Updates</h1>
-                <input type="number" id="phone-number" placeholder="Enter Your Phone number" required>
-                <p>By entering your number, you agree to our <a href="trem&condition.html">Terms & Conditions</a>.</p>
-                <div class="Buttons">
-                    <button onclick="closePopup()">Cancel</button>
-                    <button type="button" id="submitPhoneBtn">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <!-- Mobile / toggle nav -->
+    <div class="nav-overlay" id="navOverlay" onclick="back()"></div>
     <section>
         <div class="nav-2" aria-hidden="true">
-            <div class="skincare"><a href="skincare.html">Skine Care</a></div>
-            <div class="perfume"><a href="perfume.html">Perfume</a></div>
-            <div class="offers"><a href="offers.html">offers*</a></div>
-            <div class="New"><a href="Newproduct.html">New products</a></div>
-            <div class="track"><a href="">Track order</a></div>
-            <div class="return"><a href="">Return order</a></div>
-            <div class="helpline"><a href="contactus.html">Contact US</a></div>
-            <div class="us"><a href="aboutus.html">About Us</a></div>
-            <div class="backbtn"><button onclick="back()">Back</button></div>
+            <div class="nav-2-header">
+                <span class="nav-2-title">Menu</span>
+                <button class="nav-2-close" onclick="back()" aria-label="Close menu">&times;</button>
+            </div>
+            <div class="nav-2-links">
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-wine-bottle"></i> Perfume</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-spray-can-sparkles"></i> Body Spray</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-tags"></i> Offers*</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-truck-fast"></i> Track order</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-rotate-left"></i> Return order</a>
+            </div>
+            <div class="nav-2-divider"></div>
+            <div class="nav-2-links">
+                <a href="contactus.html"><i class="fa-solid fa-envelope"></i> Contact Us</a>
+                <a href="aboutus.html"><i class="fa-solid fa-circle-info"></i> About Us</a>
+            </div>
         </div>
     </section>
 
     <section>
         <div class="hero-slider">
             <div id="slider">
-                <img src="Assets/banner2q.jpeg" alt="">
-                <img src="Assets/salebanner.jpg" alt="">
-                <img src="Assets/banner2q.jpeg" alt="">
+                <img src="Assets/banner2q.jpeg" alt="Indalnova banner">
+                <img src="Assets/salebanner.jpg" alt="Indalnova sale banner">
+                <img src="Assets/banner2q.jpeg" alt="Indalnova banner">
             </div>
         </div>
     </section>
+
     <section>
         <div class="feature">
             <div class="cod">
-                <div class="img">
-                    <i class="fa-solid fa-sack-dollar"></i>
-                </div>
+                <div class="img"><i class="fa-solid fa-sack-dollar"></i></div>
                 <p>COD Available</p>
             </div>
             <div class="return">
-                <div class="img">
-                    <i class="fa-solid fa-recycle"></i>
-                </div>
+                <div class="img"><i class="fa-solid fa-recycle"></i></div>
                 <p>Easy Return</p>
             </div>
             <div class="delivery">
-                <div class="img">
-                    <i class="fa-solid fa-truck"></i>
-                </div>
+                <div class="img"><i class="fa-solid fa-truck"></i></div>
                 <p>Fast Delivery</p>
             </div>
             <div class="secure">
-                <div class="img">
-                    <i class="fa-solid fa-lock"></i>
-                </div>
+                <div class="img"><i class="fa-solid fa-lock"></i></div>
                 <p>Secure Payment</p>
             </div>
         </div>
@@ -323,37 +114,40 @@
     <section>
         <h1 id="pro-h1">Explore by Category</h1>
         <div class="product">
-            <div class="pro1" onclick="window.location.href='skincare.html'">
-                <div class="pro-img"></div>
-                <p>Skin care</p>
-            </div>
-            <div class="pro1" onclick="window.location.href='perfume.html'">
-                <div class="pro-img"></div>
+            <div class="pro1" onclick="comingSoon(event)">
+                <div class="pro-img">
+                    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="20" cy="10" r="6.5" fill="#b28c42" />
+                        <line x1="25.5" y1="14.5" x2="32" y2="21" stroke="#8b4513" stroke-width="2.5" stroke-linecap="round" />
+                        <rect x="25" y="19" width="15" height="9" rx="2" fill="#8b4513" />
+                        <path d="M21 28 H43 L45.5 55 A6 6 0 0 1 39.5 61 H24.5 A6 6 0 0 1 18.5 55 Z" fill="#f6ece0" stroke="#8b4513" stroke-width="2" />
+                        <rect x="24" y="38" width="16" height="15" rx="2" fill="#b28c42" opacity="0.35" />
+                    </svg>
+                </div>
                 <p>Perfumes</p>
+            </div>
+            <div class="pro1" onclick="comingSoon(event)">
+                <div class="pro-img">
+                    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M40 4 L48 -2 M42 9 L52 3 M40 13 L50 10" stroke="#b28c42" stroke-width="2.2" stroke-linecap="round" transform="translate(0,4)" />
+                        <ellipse cx="30" cy="14" rx="5" ry="2.2" fill="#8b4513" />
+                        <rect x="25" y="6" width="10" height="9" rx="2" fill="#8b4513" />
+                        <rect x="16" y="16" width="28" height="42" rx="7" fill="#f6ece0" stroke="#8b4513" stroke-width="2" />
+                        <rect x="16" y="29" width="28" height="7" fill="#b28c42" opacity="0.5" />
+                    </svg>
+                </div>
+                <p>Body Spray</p>
             </div>
         </div>
     </section>
+
     <section>
         <div class="our-products">
-            <h1 id="Explore-h1">Explore Our Best products</h1>
+            <h1 id="Explore-h1">Explore Our Best Products</h1>
             <div class="product-container"></div>
         </div>
     </section>
-    <!-- <section>
-        <div class="owner-viedo">
-            <div class="viedo-container">
-                <div class="viedo"></div>
-                <div class="viedo"></div>
-                <div class="viedo"></div>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div class="new-product" id="newproduct">
-            <div class="box1"></div>
-            <div class="box2"></div>
-        </div>
-    </section> -->
+
     <section>
         <h1 id="founder">Meet Our Founders</h1>
         <div class="founders">
@@ -361,154 +155,114 @@
                 <div class="image-founder1"></div>
             </div>
             <div class="content">
-                <p>I started Indalnova at just 16 because i was tired of shortcuts and false promises in skincare. I
-                    wanted to solve real skin problems with real ingredients—pure,
-                    honest,
-                    and effective.</p>
-                <p>Our mission is simple: to make skincare in India trustworthy,
-                    effective,
-                    and affordable for everyone. At Indalnova,
-                    we believe in harmonizing nature with science,
-                    so your skin feels confident every single day.</p>
-                <p>For us,
-                    it’s not just about products—it’s about creating a lifestyle of self-love and purity. That’s why we
-                    stay true to our core values: sustainability,
-                    quality,
-                    safety,
-                    and community. We responsibly source our ingredients,
-                    keep our formulations clean and toxin-free,
-                    and give back through wellness and empowerment initiatives.</p>
-                <p>Every drop of Indalnova is crafted with care—lightweight,
-                    plant-based,
-                    cruelty-free,
-                    and made for all skin types,
-                    especially sensitive skin. Our products are,
-                    created in small batches,
-                    and designed for glow,
-                    balance,
-                    and long-term skin health.</p>
-                <p>Indalnova is not just skincare—it’s our promise to nurture skin,
-                    naturally.</p>
-                <p><b>— Aniket Singh Thakur,
-                        Founders of Indalnova</b></p>
+                <p>I started Indalnova at just 16 because I was tired of shortcuts and false promises in skincare. I
+                    wanted to solve real skin problems with real ingredients — pure, honest, and effective.</p>
+                <p>Our mission is simple: to make skincare in India trustworthy, effective, and affordable for
+                    everyone. At Indalnova, we believe in harmonizing nature with science, so your skin feels
+                    confident every single day.</p>
+                <p>For us, it's not just about products — it's about creating a lifestyle of self-love and purity.
+                    That's why we stay true to our core values: sustainability, quality, safety, and community. We
+                    responsibly source our ingredients, keep our formulations clean and toxin-free, and give back
+                    through wellness and empowerment initiatives.</p>
+                <p>Every drop of Indalnova is crafted with care — lightweight, plant-based, cruelty-free, and made
+                    for all skin types, especially sensitive skin. Our products are created in small batches, and
+                    designed for glow, balance, and long-term skin health.</p>
+                <p>Indalnova is not just skincare — it's our promise to nurture skin, naturally.</p>
+                <p><b>— Aniket Singh Thakur, Founder of Indalnova</b></p>
             </div>
             <div class="founder-img">
                 <div class="image-founder"></div>
             </div>
         </div>
     </section>
+
     <section>
-        <div class="other-reviews" style="background-image: url('Assets/bg.png')">
+        <div class="other-reviews">
             <div class="reason-other">
                 <div class="reviews">
-                    <div class="image-customer"></div>
                     <div class="message">
                         <p>Very nice</p>
-                        <p>Acha h mana bhi use kiya is Ya acha Gamak raha h oe face bhi clean lag raha h smooth bhi lag
-                            raha h thank you Indalnova.</p>
+                        <p>Acha h mana bhi use kiya is Ya acha Gamak raha h oe face bhi clean lag raha h smooth bhi
+                            lag raha h thank you Indalnova.</p>
                     </div>
-                    <div class="name-customer">
-                        <p>messho user</p>
-                    </div>
+                    <div class="name-customer"><p>Meesho User</p></div>
                 </div>
                 <div class="reviews">
-                    <div class="image-customer"></div>
                     <div class="message">
-                        <p>Good for my face i think before purchase this is a new brand but it has a good product and is
-                            very useful 🙂.Love you Indalnova</p>
+                        <p>Good for my face, I think before purchase this is a new brand but it has a good product
+                            and is very useful 🙂. Love you Indalnova</p>
                     </div>
-                    <div class="name-customer">
-                        <p>Messo User</p>
-                    </div>
+                    <div class="name-customer"><p>Meesho User</p></div>
                 </div>
                 <div class="reviews">
-                    <div class="image-customer"></div>
                     <div class="message">
-                        <p>Indalnova truly understands skin. The products feel gentle yet effective,
-                            with visible results that bring out a natural glow. Love how they combine science with care
-                            to make skincare simple,
-                            nourishing,
-                            and trustworthy </p>
+                        <p>Indalnova truly understands skin. The products feel gentle yet effective, with visible
+                            results that bring out a natural glow. Love how they combine science with care to make
+                            skincare simple, nourishing, and trustworthy.</p>
                     </div>
-                    <div class="name-customer">
-                        <p>Prakhar Mishra</p>
-                    </div>
+                    <div class="name-customer"><p>Prakhar Mishra</p></div>
                 </div>
                 <div class="reviews">
-                    <div class="image-customer"></div>
                     <div class="message">
-                        <p>Bahut achcha hai nice Maine aur bhi neem and aloevera key face was use kiye Hain lekin iske
-                            jaisa ye face wash lekin bahut achcha hai maine 3 din Laga kar dekha to asar Kar Raha Hai
-                            bahut achcha face wash ha ya.</p>
+                        <p>Bahut achcha hai, nice. Maine aur bhi neem and aloevera key face wash use kiye hain lekin
+                            iske jaisa nahi. Maine 3 din laga kar dekha to asar kar raha hai, bahut achcha face wash
+                            hai ye.</p>
                     </div>
-                    <div class="name-customer">
-                        <p>Prabhat Singh</p>
-                    </div>
+                    <div class="name-customer"><p>Prabhat Singh</p></div>
                 </div>
                 <div class="reviews">
-                    <div class="image-customer"></div>
                     <div class="message">
-                        <p>I ordered this product randomly on messho but after receiving the product I was totally
-                            surprised with its results.... You can order it don't worry it is good. It also smells good
-                            😊.</p>
+                        <p>I ordered this product randomly on Meesho but after receiving the product I was totally
+                            surprised with its results. You can order it, don't worry it is good. It also smells
+                            good 😊.</p>
                     </div>
-                    <div class="name-customer">
-                        <p>Shivam</p>
-                    </div>
+                    <div class="name-customer"><p>Shivam</p></div>
                 </div>
                 <div class="reviews">
-                    <div class="image-customer"></div>
                     <div class="message">
                         <p>Very nice</p>
-                        <p>Acha h mana bhi use kiya is Ya acha Gamak raha h oe face bhi clean lag raha h smooth bhi lag
-                            raha h thank you Indalnova.</p>
+                        <p>Acha h mana bhi use kiya is Ya acha Gamak raha h oe face bhi clean lag raha h smooth bhi
+                            lag raha h thank you Indalnova.</p>
                     </div>
-                    <div class="name-customer">
-                        <p>messho user</p>
-                    </div>
+                    <div class="name-customer"><p>Meesho User</p></div>
                 </div>
                 <div class="reviews">
-                    <div class="image-customer"></div>
                     <div class="message">
-                        <p>Good for my face i think before purchase this is a new brand but it has a good product and is
-                            very useful 🙂.Love you Indalnova</p>
+                        <p>Good for my face, I think before purchase this is a new brand but it has a good product
+                            and is very useful 🙂. Love you Indalnova</p>
                     </div>
-                    <div class="name-customer">
-                        <p>Messo User</p>
-                    </div>
+                    <div class="name-customer"><p>Meesho User</p></div>
                 </div>
                 <div class="reviews">
-                    <div class="image-customer"></div>
                     <div class="message">
-                        <p>Bhai mana ubtan wala use kiya h kafi acha h .Full paisa Wasul bhai...... random hi kiya tha
-                            return k purpose s but bhai overall sb kuch mst. </p>
+                        <p>Bhai maine ubtan wala use kiya h kafi acha h. Full paisa wasul bhai... random hi kiya tha
+                            return ke purpose se but bhai overall sab kuch mast.</p>
                     </div>
-                    <div class="name-customer">
-                        <p>Niki</p>
-                    </div>
+                    <div class="name-customer"><p>Niki</p></div>
                 </div>
             </div>
         </div>
     </section>
+
     <section>
         <footer>
             <div class="footer">
                 <div class="Links">
                     <div class="up">
-                        <div><a href="skincare.html">Skincare</a></div>
-                        <div><a href="perfume.html">Perfume</a></div>
-                        <div><a href="Newproduct.html">New Products</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Perfume</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Body Spray</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">New Products</a></div>
                     </div>
                     <div class="mid">
-                        <div><a href="">Track Order</a></div>
-                        <div><a href="">Return Order</a></div>
-                        <div><a href="">Order in Bulk</a></div>
-                        <div><a href="contactus.html">Contact us</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Track Order</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Return Order</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Order in Bulk</a></div>
+                        <div><a href="contactus.html">Contact Us</a></div>
                     </div>
                     <div class="down">
-                        <div><a href="trem&condition.html">Term and Conditions</a></div>
-                        <div><a href="">Refund rules</a></div>
-                        <div><a href="privacypolicy.html">Privacy Policy</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Terms and Conditions</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Refund Rules</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Privacy Policy</a></div>
                         <div><a href="aboutus.html">About Us</a></div>
                     </div>
                 </div>
@@ -519,47 +273,30 @@
                 </div>
                 <div class="bottom">
                     <div class="footer-legal">
-                        <p>&copy;
-                            <span id="year">2025</span>IndalNova. All Rights Reserved.
-                        </p>
+                        <p>&copy; <span id="year">2025</span> IndalNova. All Rights Reserved.</p>
                     </div>
                     <div class="developer">
-                        <p>Made with ❤️ by <a href="https://shivamportfoliyo.netlify.app/" target="_blank">Shivam</a>
-                        </p>
+                        <p>Made with ❤️ by <a href="https://my-portfoliyo-nine.vercel.app/" target="_blank" rel="noopener">Shivam</a></p>
                     </div>
                 </div>
             </div>
         </footer>
     </section>
 
-    <div id="customAlert" class="custom-alert" style="display:none;">
-        <div class="custom-alert-content"><i class="fa-solid alert-icon"></i>
+    <div id="loadingOverlay">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size: 30px; color: brown;"></i>
+    </div>
+
+    <div id="customAlert" class="custom-alert">
+        <div class="custom-alert-content">
+            <i class="fa-solid alert-icon"></i>
             <h2 class="alert-title">Alert</h2>
-            <p class="alert-message">This is a message</p><button class="alert-ok">OK</button>
+            <p class="alert-message">This is a message</p>
+            <button class="alert-ok">OK</button>
         </div>
     </div>
+
     <script src="script.js"></script>
-    <script>
-        // Under Development popup: show on load, auto-close after 4s, closable via cross button
-        (function () {
-            var devPopup = document.getElementById('devPopup');
-            var devPopupClose = document.getElementById('devPopupClose');
-            var autoCloseTimer;
-
-            function openDevPopup() {
-                devPopup.classList.add('show');
-                autoCloseTimer = setTimeout(closeDevPopup, 10000); // auto-hide after 4 seconds
-            }
-
-            function closeDevPopup() {
-                devPopup.classList.remove('show');
-                clearTimeout(autoCloseTimer);
-            }
-
-            window.addEventListener('load', openDevPopup);
-            devPopupClose.addEventListener('click', closeDevPopup);
-        })();
-    </script>
 </body>
 
 </html>
