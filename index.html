@@ -42,7 +42,10 @@
 
     <section>
         <div class="navbar">
-            <div class="logo">Indalnova</div>
+            <div class="logo">
+                <img src="Assets/logo.png" alt="Indalnova logo">
+                <span>Indalnova</span>
+            </div>
             <div class="nav-links">
                 <a href="#" onclick="comingSoon(event)">Perfume</a>
                 <a href="#" onclick="comingSoon(event)">Body Spray</a>
@@ -83,9 +86,18 @@
     <section>
         <div class="hero-slider">
             <div id="slider">
-                <img src="Assets/banner2q.jpeg" alt="Indalnova banner">
-                <img src="Assets/salebanner.jpg" alt="Indalnova sale banner">
-                <img src="Assets/banner2q.jpeg" alt="Indalnova banner">
+                <picture>
+                    <source media="(max-width: 440px)" srcset="Assets/banner1-phone.png">
+                    <img src="Assets/banner1.png" alt="Indalnova First Love and Aura banner">
+                </picture>
+                <picture>
+                    <source media="(max-width: 440px)" srcset="Assets/banner2-phone.png">
+                    <img src="Assets/banner2.png" alt="Indalnova Aura fragrance banner">
+                </picture>
+                <picture>
+                    <source media="(max-width: 440px)" srcset="Assets/banner3-phone.png">
+                    <img src="Assets/banner3.png" alt="Indalnova coming soon banner">
+                </picture>
             </div>
         </div>
     </section>
@@ -116,25 +128,13 @@
         <div class="product">
             <div class="pro1" onclick="comingSoon(event)">
                 <div class="pro-img">
-                    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <circle cx="20" cy="10" r="6.5" fill="#b28c42" />
-                        <line x1="25.5" y1="14.5" x2="32" y2="21" stroke="#8b4513" stroke-width="2.5" stroke-linecap="round" />
-                        <rect x="25" y="19" width="15" height="9" rx="2" fill="#8b4513" />
-                        <path d="M21 28 H43 L45.5 55 A6 6 0 0 1 39.5 61 H24.5 A6 6 0 0 1 18.5 55 Z" fill="#f6ece0" stroke="#8b4513" stroke-width="2" />
-                        <rect x="24" y="38" width="16" height="15" rx="2" fill="#b28c42" opacity="0.35" />
-                    </svg>
+                    <img src="Assets/perfume-section.png" alt="Perfumes">
                 </div>
                 <p>Perfumes</p>
             </div>
             <div class="pro1" onclick="comingSoon(event)">
                 <div class="pro-img">
-                    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path d="M40 4 L48 -2 M42 9 L52 3 M40 13 L50 10" stroke="#b28c42" stroke-width="2.2" stroke-linecap="round" transform="translate(0,4)" />
-                        <ellipse cx="30" cy="14" rx="5" ry="2.2" fill="#8b4513" />
-                        <rect x="25" y="6" width="10" height="9" rx="2" fill="#8b4513" />
-                        <rect x="16" y="16" width="28" height="42" rx="7" fill="#f6ece0" stroke="#8b4513" stroke-width="2" />
-                        <rect x="16" y="29" width="28" height="7" fill="#b28c42" opacity="0.5" />
-                    </svg>
+                    <img src="Assets/bodyspray-section.png" alt="Body Spray">
                 </div>
                 <p>Body Spray</p>
             </div>
@@ -152,7 +152,9 @@
         <h1 id="founder">Meet Our Founders</h1>
         <div class="founders">
             <div class="founder-img1">
-                <div class="image-founder1"></div>
+                <div class="image-founder1">
+                    <img src="Assets/owner.jpeg" alt="Aniket Singh Thakur, Founder of Indalnova">
+                </div>
             </div>
             <div class="content">
                 <p>I started Indalnova at just 16 because I wanted to create fragrances that feel personal, memorable,
@@ -169,7 +171,9 @@
                 <p><b>— Aniket Singh Thakur, Founder of Indalnova</b></p>
             </div>
             <div class="founder-img">
-                <div class="image-founder"></div>
+                <div class="image-founder">
+                    <img src="Assets/owner.jpeg" alt="Aniket Singh Thakur, Founder of Indalnova">
+                </div>
             </div>
         </div>
     </section>
@@ -183,14 +187,14 @@
                         <p>First Love Body Spray ki fragrance bahut achchi hai aur kaafi der tak rehti hai. Thank you
                             Indalnova.</p>
                     </div>
-                    <div class="name-customer"><p>Meesho User</p></div>
+                    <div class="name-customer"><p>Ananya Sharma</p></div>
                 </div>
                 <div class="reviews">
                     <div class="message">
                         <p>Aura Unisex Body Spray is a really good product with a lovely fragrance. Love you Indalnova
                             🙂</p>
                     </div>
-                    <div class="name-customer"><p>Meesho User</p></div>
+                    <div class="name-customer"><p>Rahul Verma</p></div>
                 </div>
                 <div class="reviews">
                     <div class="message">
@@ -219,14 +223,14 @@
                         <p>First Love Body Spray ki fragrance bahut achchi hai aur kaafi der tak rehti hai. Thank you
                             Indalnova.</p>
                     </div>
-                    <div class="name-customer"><p>Meesho User</p></div>
+                    <div class="name-customer"><p>Neha Kapoor</p></div>
                 </div>
                 <div class="reviews">
                     <div class="message">
                         <p>Aura Unisex Body Spray is a really good product with a lovely fragrance. Love you Indalnova
                             🙂</p>
                     </div>
-                    <div class="name-customer"><p>Meesho User</p></div>
+                    <div class="name-customer"><p>Arjun Mehta</p></div>
                 </div>
                 <div class="reviews">
                     <div class="message">

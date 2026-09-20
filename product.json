@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "First Love Body Spray",
-    "image": "Assets/first-love.jpg",
+    "image": "Assets/Firstlove.png",
     "price": 199,
     "original": 300,
     "discount": "34%"
@@ -10,7 +10,7 @@
   {
     "id": 2,
     "name": "Aura Unisex Body Spray",
-    "image": "Assets/aura.jpg",
+    "image": "Assets/Aura.png",
     "price": 199,
     "original": 300,
     "discount": "34%"
@@ -18,7 +18,7 @@
   {
     "id": 3,
     "name": "First Love + Aura Body Spray Combo",
-    "image": "Assets/combo.jpg",
+    "image": "Assets/combo.png",
     "price": 349,
     "original": 600,
     "discount": "42%"

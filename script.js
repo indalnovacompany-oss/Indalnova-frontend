@@ -68,13 +68,13 @@ function comingSoon(e) {
   showCustomAlert("This page is under development. We're launching online soon!");
 }
 
-// ===== Feature strip mobile slider =====
+// ===== Feature strip mobile auto-slider =====
 document.addEventListener("DOMContentLoaded", () => {
   const features = document.querySelectorAll(".feature > div");
   if (!features.length) return;
 
   let index = 0;
-  let interval;
+  let interval = null;
 
   function showNextFeature() {
     features.forEach(f => f.classList.remove("active"));
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startSlider();
 
   window.addEventListener("resize", () => {
-    clearInterval(interval);
+    if (interval) clearInterval(interval);
     features.forEach(f => f.classList.remove("active"));
     index = 0;
     startSlider();
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ===== Hero slider =====
 const slider = document.getElementById('slider');
-const slides = slider ? slider.querySelectorAll('img') : [];
+const slides = slider ? slider.querySelectorAll('picture') : [];
 let currentIndex = 0;
 
 function showSlide(index) {
@@ -117,7 +117,7 @@ if (slides.length) {
   setInterval(() => {
     currentIndex = (currentIndex + 1) % slides.length;
     showSlide(currentIndex);
-  }, 5000);
+  }, 7000);
 }
 
 // ===== Helper: random rating (avg between 4.0-5.0, count under 30) =====

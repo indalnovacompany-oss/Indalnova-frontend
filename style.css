@@ -80,6 +80,16 @@ body > section {
   color: brown;
 }
 
+.logo img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.logo span {
+  margin-left: 8px;
+}
+
 .nav-links {
   height: 100px;
   display: flex;
@@ -393,7 +403,7 @@ body > section {
   width: 100%;
   height: auto;
   margin: auto;
-  margin-bottom: 28px;
+  margin-bottom: 0;
   position: relative;
   overflow: hidden;
   aspect-ratio: 16/6;
@@ -403,6 +413,12 @@ body > section {
   display: flex;
   width: 100%;
   height: 100%;
+}
+
+#slider picture {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 #slider img {
@@ -467,15 +483,15 @@ body > section {
   .feature > div {
     position: absolute;
     opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+    transform: translateX(12px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
     width: 100%;
     justify-content: center;
   }
 
   .feature > div.active {
     opacity: 1;
-    position: relative;
-    display: flex;
+    transform: translateX(0);
   }
 }
 
@@ -486,8 +502,8 @@ body > section {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 64px;
-  margin: 24px auto 42px;
+  gap: clamp(48px, 9vw, 150px);
+  margin: 34px auto 52px;
   padding: 0 24px;
 }
 
@@ -505,15 +521,15 @@ body > section {
 
 .pro1 {
   height: auto;
-  width: 150px;
+  width: 320px;
   text-align: center;
   cursor: pointer;
 }
 
 .pro-img {
-  height: 140px;
-  width: 140px;
-  border: 2px solid #dcdcdc;
+  height: 300px;
+  width: 300px;
+  border: 0;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -529,17 +545,32 @@ body > section {
   height: 56%;
 }
 
+.pro-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
+.pro1:first-child .pro-img svg {
+  transform: translateX(8%);
+}
+
 .pro1:hover .pro-img {
   box-shadow: 0 10px 25px rgba(139, 69, 19, 0.2);
   transform: translateY(-4px);
 }
 
 .pro1 p {
-  font-size: 20px;
-  margin-top: 15px;
+  width: 210px;
+  margin: 28px auto 0;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: #efd3a9;
+  font-size: 24px;
   font-family: 'Poppins', sans-serif;
-  color: brown;
-  font-weight: 550;
+  color: #704017;
+  font-weight: 600;
 }
 
 /* ===== Product Container Scroll ===== */
@@ -587,6 +618,8 @@ body > section {
   height: auto;
   width: 300px;
   flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
   scroll-snap-align: start;
   border-radius: 12px;
   background-color: white;
@@ -598,18 +631,21 @@ body > section {
 .product-img {
   height: 280px;
   width: 100%;
-  background-color: #f2eee6;
+  background-color: #fff;
   overflow: hidden;
 }
 
 .product-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  padding: 12px;
   display: block;
 }
 
 .details {
+  flex: 1;
   height: auto;
   padding: 18px;
   display: flex;
@@ -662,6 +698,7 @@ body > section {
 }
 
 .atc {
+  margin-top: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -779,24 +816,13 @@ body > section {
   position: relative;
 }
 
-.image-founder::before,
-.image-founder1::before {
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  content: "\f007";
-  font-size: 64px;
-  opacity: 0.55;
-}
-
-.image-founder::after,
-.image-founder1::after {
-  content: "Founder photo coming soon";
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  color: #8a6a3a;
-  opacity: 0.75;
-  letter-spacing: 0.02em;
+.image-founder img,
+.image-founder1 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .image-founder {
