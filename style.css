@@ -644,6 +644,18 @@ body > section {
   display: block;
 }
 
+.product-img img[src*="Firstlove.png"] {
+  transform: scale(1.08);
+}
+
+.product-img img[src*="Aura.png"] {
+  transform: scale(1.22);
+}
+
+.product-img img[src*="combo.png"] {
+  transform: scale(1.12);
+}
+
 .details {
   flex: 1;
   height: auto;
