@@ -4,7 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indalnova | About Us</title>
+    <meta name="description"
+        content="Learn about Indalnova, an Indian fragrance brand creating expressive perfumes and body sprays for everyday confidence, gifting, and personal style.">
+    <meta name="author" content="Indalnova">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#6b2f1a">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="About Indalnova | Indian Perfume &amp; Body Spray Brand">
+    <meta property="og:description"
+        content="Discover the story behind Indalnova and our expressive perfumes and body sprays for everyday confidence and personal style.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="About Indalnova | Indian Perfume &amp; Body Spray Brand">
+    <meta name="twitter:description"
+        content="Discover the story behind Indalnova and our expressive perfumes and body sprays for everyday confidence and personal style.">
+    <title>About Indalnova | Indian Perfume &amp; Body Spray Brand</title>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "name": "About Indalnova",
+            "description": "The story, mission, and values behind Indalnova, an Indian fragrance brand focused on perfumes and body sprays.",
+            "mainEntity": {
+                "@type": "Organization",
+                "name": "Indalnova",
+                "founder": {
+                    "@type": "Person",
+                    "name": "Aniket Singh Thakur"
+                },
+                "description": "Indian fragrance brand creating expressive perfumes and body sprays for everyday confidence and personal style.",
+                "email": "supportindalnova@gmail.com",
+                "contactPoint": {
+                    "@type": "ContactPoint",
+                    "contactType": "customer support",
+                    "email": "supportindalnova@gmail.com"
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="media.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
@@ -14,6 +50,10 @@
     <style>
         body {
             font-family: "Poppins", sans-serif;
+        }
+
+        .navbar {
+            box-shadow: none;
         }
 
         .popup-overlay {
@@ -93,8 +133,15 @@
             padding: 25px;
         }
 
+        .about-us h1 {
+            color: brown;
+            font-size: clamp(26px, 5vw, 38px);
+            line-height: 1.25;
+            margin: 0 0 22px;
+        }
+
         .about-us {
-            padding: 20px;
+            padding: 20px 20px 20px;
             line-height: 1.6;
         }
 
@@ -125,9 +172,45 @@
             color: brown;
         }
 
+        .founder-note {
+            margin: 26px 0 18px;
+            padding: 18px 20px;
+            border-left: 4px solid #b28a3c;
+            border-radius: 0 12px 12px 0;
+            background: linear-gradient(135deg, rgba(178, 138, 60, 0.14), rgba(255, 255, 255, 0.55));
+            font-style: italic;
+            box-shadow: 0 6px 18px rgba(85, 33, 33, 0.08);
+        }
+
+        .founder-name {
+            color: #8d2f2f !important;
+            font-style: normal;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .email-link {
+            color: #8d2f2f;
+            text-decoration: underline;
+            text-decoration-color: #b28a3c;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 4px;
+            transition: color 0.2s ease, text-decoration-color 0.2s ease;
+        }
+
+        .email-link:hover,
+        .email-link:focus-visible {
+            color: #b28a3c;
+            text-decoration-color: #8d2f2f;
+        }
+
         @media screen and (max-width: 440px) {
             p {
                 font-size: 15px;
+            }
+
+            .about-us h1 {
+                font-size: 26px;
             }
         }
     </style>
@@ -136,7 +219,7 @@
 <body>
     <section>
         <div class="heading1">
-            <h4 id="exploreProducts">Click here to Explore our Products.</h4>
+            <h4 id="exploreProducts" onclick="comingSoon(event)">Click here to Explore our Products.</h4>
         </div>
     </section>
     <div class="nav-overlay" id="navOverlay" onclick="back()"></div>
@@ -153,9 +236,27 @@
             </div>
         </div>
     </div>
+    <div class="dev-popup-overlay" id="devPopup">
+        <div class="dev-popup-box">
+            <button class="dev-popup-close" id="devPopupClose" aria-label="Close">&times;</button>
+            <div class="dev-popup-icon"><i class="fa-solid fa-rocket"></i></div>
+            <span class="dev-popup-badge">Coming Soon</span>
+            <h2>We're Launching Online Soon!</h2>
+            <p>Indalnova is getting ready to launch expressive perfumes and body sprays for your everyday fragrance
+                routine.</p>
+            <div class="dev-popup-products">
+                <span><i class="fa-solid fa-spray-can-sparkles"></i> First Love</span>
+                <span><i class="fa-solid fa-spray-can-sparkles"></i> Aura</span>
+            </div>
+            <button class="dev-popup-cta" id="devPopupOk">Got it</button>
+        </div>
+    </div>
     <section>
         <div class="navbar">
-            <div class="logo">Indalnova</div>
+            <div class="logo">
+                <img src="Assets/logo.png" alt="Indalnova logo">
+                <span>Indalnova</span>
+            </div>
             <div class="nav-links">
                 <a href="#" onclick="comingSoon(event)">Perfume</a>
                 <a href="#" onclick="comingSoon(event)">Body Spray</a>
@@ -189,59 +290,59 @@
             </div>
         </div>
     </section>
-    <section>
-        <h2>About Indalnova</h2>
-        <section class="about-us">
-            <p><strong>Our Journey:</strong> Indalnova was founded at just 16 by Aniket Singh Thakur, driven by a
-                passion to create perfumes and body sprays that are authentic, memorable, and sophisticated. Tired
-                of shortcuts, false promises, and substandard products in the beauty industry, Aniket set out to craft
-                items that truly deliver results—honest, high-quality, and designed to elevate daily routines into
-                moments of indulgence.</p>
+    <main>
+        <section class="about-us" aria-labelledby="about-title">
+            <p>Indalnova is an Indian fragrance brand focused on perfumes and body sprays that help you express your
+                mood, personality, and everyday style. We make fragrance easy to explore, wear, and share—whether you
+                are getting ready for work, meeting friends, celebrating a special occasion, or choosing a thoughtful
+                gift.</p>
 
-            <p><strong>Our Mission:</strong> At Indalnova, our mission is simple yet profound: to redefine luxury
-                self-care in India. We combine thoughtful fragrance design with quality ingredients to create perfumes
-                and body sprays that refresh and inspire confidence. Every product we make encourages a lifestyle
-                of self-love, wellness, and elegance.</p>
+            <h2>Our Fragrance Journey</h2>
+            <p>Indalnova was founded by Aniket Singh Thakur with a clear idea: fragrance should feel personal,
+                approachable, and memorable. Our collections are inspired by the way scent becomes part of everyday
+                moments. From an easy-to-wear body spray to a more refined perfume, each fragrance is selected to help
+                you find a scent that feels like you.</p>
 
-            <p><strong>Our Vision:</strong> Our vision is to offer discerning customers premium quality, exceptional
-                fragrances and body sprays that feel personal and refined. Indalnova aims to make indulgence accessible while upholding
-                integrity, sustainability, and safety. We believe that luxury should never compromise authenticity.</p>
+            <h2>Our Mission</h2>
+            <p>Our mission is to offer thoughtfully designed perfumes and body sprays for people who want to feel fresh,
+                confident, and distinctive. We focus on expressive fragrance profiles, dependable product quality, and
+                a simple online experience so that discovering your next everyday scent feels effortless.</p>
 
-            <p><strong>Our Values:</strong></p>
+            <h2>What Makes Indalnova Different</h2>
             <ul>
-                <li><strong>Exquisite Quality:</strong> Every perfume and body spray is meticulously
-                    crafted using premium ingredients.</li>
-                <li><strong>Luxury Experience:</strong> Our products transform your daily routine into a sensory journey
-                    of elegance and sophistication.</li>
-                <li><strong>Sustainability & Responsibility:</strong> From sourcing to packaging, we are eco-conscious
-                    and minimize environmental impact.</li>
-                <li><strong>Transparency & Trust:</strong> Every formula is clean, cruelty-free, and honest—no
-                    shortcuts, no compromises.</li>
-                <li><strong>Customer Delight:</strong> We strive to exceed expectations and continuously innovate to
-                    ensure satisfaction.</li>
+                <li><strong>Fragrance for every routine:</strong> Explore perfumes and body sprays for daily wear,
+                    occasions, and gifting.</li>
+                <li><strong>Memorable scent profiles:</strong> We look for balanced fragrance experiences that are
+                    pleasant, wearable, and easy to make your own.</li>
+                <li><strong>Quality-led selection:</strong> We pay attention to fragrance character, packaging, and
+                    the details that shape your experience.</li>
+                <li><strong>Honest communication:</strong> We share clear product information and continue improving
+                    through customer feedback.</li>
+                <li><strong>Personal expression:</strong> Your fragrance is part of your style, so our range is made
+                    for different moods, personalities, and moments.</li>
             </ul>
 
-            <p><strong>Crafted with Care:</strong> Every Indalnova product is created with carefully selected fragrance
-                notes and quality ingredients. Our perfumes and body sprays are curated to leave a lasting impression.
-                Created in small,
-                carefully controlled batches, each product embodies attention to detail, quality, and elegance.</p>
+            <h2>Perfume and Body Spray for Every Moment</h2>
+            <p>Choose a perfume when you want a more polished signature scent, or reach for a body spray when you want
+                a light, refreshing fragrance for everyday use. Indalnova brings both options together so you can
+                build a simple fragrance wardrobe for mornings, evenings, travel, celebrations, and thoughtful gifts.</p>
 
-            <p><strong>The Indalnova Lifestyle:</strong> Indalnova is more than products—it’s a promise of indulgence,
-                confidence, and sophistication. We encourage customers to embrace fragrance as a daily ritual, enjoying
-                every moment and transforming everyday routines into premium experiences.</p>
+            <h2>Our Promise</h2>
+            <p>We are building Indalnova with care, curiosity, and respect for the people who wear our fragrances. We
+                aim to create perfume and body spray experiences that feel modern, accessible, and worth returning to,
+                while continuing to learn from our customers.</p>
 
-            <p><strong>Founder’s Note:</strong> “Indalnova is my vision brought to life: a brand where authenticity
-                meets elegance, and every product tells a story of care, luxury, and refinement. We don’t just create
-                perfumes or body sprays—we craft experiences that inspire confidence and sophistication.”</p>
+            <h2>A Note from Our Founder</h2>
+            <p class="founder-note">“Indalnova is my vision for a fragrance brand where every perfume and body spray helps people feel more
+                confident and comfortable in their own style. We are here to make choosing a signature scent feel
+                exciting, personal, and easy.”</p>
+            <p>— <strong class="founder-name">Aniket Singh Thakur, Founder of Indalnova</strong></p>
 
-            <p>— <strong>Aniket Singh Thakur</strong>, Founder of Indalnova</p>
-
-            <p><strong>Connect With Us:</strong> For inquiries, collaborations, or feedback, reach out at
-                <strong>supportindalnova@gmail.com</strong>.
-            </p>
+            <h2>Connect with Indalnova</h2>
+            <p>Have a question about our perfumes, body sprays, upcoming launches, or collaborations? Contact us at
+                <a class="email-link" href="mailto:supportindalnova@gmail.com"><strong>supportindalnova@gmail.com</strong></a>.</p>
         </section>
-
-    </section>
+    </main>
     <section>
         <footer>
             <div class="footer">
@@ -277,7 +378,7 @@
                 </div>
                 <div class="bottom">
                     <div class="footer-legal">
-                        <p>&copy; <span id="year">2025</span> IndalNova. All Rights Reserved.</p>
+                        <p>&copy; <span id="year">2026</span> Indalnova. All Rights Reserved.</p>
                     </div>
 
                     <div class="developer">
@@ -316,29 +417,14 @@
         }
 
         const popup = document.getElementById("popup");
-        const openBtn = document.getElementById("exploreProducts"); // heading trigger
         const phoneInput = document.getElementById("phone-number");
         const submitBtn = document.getElementById("submitPhoneBtn");
-        const customAlert = document.getElementById("customAlert");
-        const alertMessage = customAlert.querySelector(".alert-message");
-        const alertOkBtn = customAlert.querySelector(".alert-ok");
-
-        // Open popup on heading click
-        openBtn.addEventListener("click", () => { popup.style.display = "flex"; });
 
         // Close popup
         function closePopup() { popup.style.display = "none"; }
 
         // Close when clicking outside
         window.addEventListener("click", (e) => { if (e.target === popup) { closePopup(); } });
-
-        // Show alert
-        function showCustomAlert(message, duration = 3000) {
-            alertMessage.textContent = message;
-            customAlert.style.display = "flex";
-            setTimeout(() => { customAlert.style.display = "none"; }, duration);
-        }
-        alertOkBtn.addEventListener("click", () => { customAlert.style.display = "none"; });
 
         // Validate phone number & submit
         submitBtn.addEventListener("click", async () => {
@@ -379,6 +465,7 @@
             }
         });
     </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
