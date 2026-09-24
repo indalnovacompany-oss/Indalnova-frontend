@@ -104,21 +104,126 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===== Hero slider =====
 const slider = document.getElementById('slider');
 const slides = slider ? slider.querySelectorAll('picture') : [];
+const heroIndicators = document.querySelectorAll('.hero-indicator');
+const heroPrev = document.getElementById('heroPrev');
+const heroNext = document.getElementById('heroNext');
 let currentIndex = 0;
+let heroInterval;
+
+function updateHeroAspectRatio() {
+  const activeImage = slides[currentIndex]?.querySelector('img');
+  if (!activeImage || !activeImage.naturalWidth || !activeImage.naturalHeight) return;
+
+  const hero = slider.closest('.hero-slider');
+  if (hero) {
+    hero.style.aspectRatio = `${activeImage.naturalWidth} / ${activeImage.naturalHeight}`;
+  }
+}
 
 function showSlide(index) {
+  if (!slides.length) return;
+  currentIndex = (index + slides.length) % slides.length;
   slides.forEach((slide, i) => {
-    slide.style.display = (i === index) ? 'block' : 'none';
+    slide.style.display = (i === currentIndex) ? 'block' : 'none';
   });
+  heroIndicators.forEach((indicator, i) => {
+    indicator.classList.toggle('active', i === currentIndex);
+    indicator.setAttribute('aria-current', i === currentIndex ? 'true' : 'false');
+  });
+  updateHeroAspectRatio();
 }
 
 if (slides.length) {
+  slides.forEach(slide => {
+    slide.querySelector('img')?.addEventListener('load', updateHeroAspectRatio);
+  });
   showSlide(currentIndex);
-  setInterval(() => {
-    currentIndex = (currentIndex + 1) % slides.length;
-    showSlide(currentIndex);
+  heroInterval = setInterval(() => {
+    showSlide(currentIndex + 1);
   }, 7000);
+
+  heroIndicators.forEach((indicator, index) => {
+    indicator.addEventListener('click', () => {
+      showSlide(index);
+      clearInterval(heroInterval);
+      heroInterval = setInterval(() => showSlide(currentIndex + 1), 7000);
+    });
+  });
+
+  const restartHeroInterval = () => {
+    clearInterval(heroInterval);
+    heroInterval = setInterval(() => showSlide(currentIndex + 1), 7000);
+  };
+
+  heroPrev?.addEventListener('click', () => {
+    showSlide(currentIndex - 1);
+    restartHeroInterval();
+  });
+
+  heroNext?.addEventListener('click', () => {
+    showSlide(currentIndex + 1);
+    restartHeroInterval();
+  });
 }
+
+const faqChatToggle = document.getElementById('faqChatToggle');
+const faqChatPanel = document.getElementById('faqChatPanel');
+const faqChatClose = document.getElementById('faqChatClose');
+const faqChatMessages = document.getElementById('faqChatMessages');
+const faqChatComposer = document.getElementById('faqChatComposer');
+const faqChatInput = document.getElementById('faqChatInput');
+
+function setFaqChatOpen(isOpen) {
+  if (!faqChatToggle || !faqChatPanel) return;
+  faqChatPanel.hidden = !isOpen;
+  faqChatToggle.setAttribute('aria-expanded', String(isOpen));
+}
+
+faqChatToggle?.addEventListener('click', () => {
+  setFaqChatOpen(faqChatPanel.hidden);
+});
+
+faqChatClose?.addEventListener('click', () => setFaqChatOpen(false));
+
+document.querySelectorAll('.faq-chat-questions button').forEach(question => {
+  question.addEventListener('click', () => {
+    addFaqChatExchange(question.textContent, question.dataset.answer || '');
+  });
+});
+
+function addFaqChatMessage(className, text) {
+  if (!faqChatMessages || !text) return;
+
+  const message = document.createElement('p');
+  message.className = className;
+  message.textContent = text;
+  faqChatMessages.appendChild(message);
+  message.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function addFaqChatExchange(question, answer) {
+  if (!question || !answer) return;
+  addFaqChatMessage('faq-chat-user', question);
+  addFaqChatMessage('faq-chat-answer', answer);
+}
+
+faqChatComposer?.addEventListener('submit', event => {
+  event.preventDefault();
+
+  const question = faqChatInput?.value.trim() || '';
+  if (!question) return;
+
+  const normalizedQuestion = question.toLowerCase();
+  const answer = normalizedQuestion.includes('contact')
+    || normalizedQuestion.includes('email')
+    || normalizedQuestion.includes('phone')
+    || normalizedQuestion.includes('call')
+    ? 'I’d be happy to help! You can email us at supportindalnova@gmail.com or call us on +91 884 039 3051. Our team will get back to you as soon as possible.'
+    : 'We’re getting everything ready for you! Indalnova is launching online soon. Right now, we’re operating offline, but we’ll be online with our fragrances shortly.';
+
+  addFaqChatMessage('faq-chat-answer', answer);
+  if (faqChatInput) faqChatInput.value = '';
+});
 
 // ===== Helper: random rating (avg between 4.0-5.0, count under 30) =====
 function randomRating() {

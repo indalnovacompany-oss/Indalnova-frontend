@@ -111,14 +111,13 @@
     <div class="dev-popup-overlay" id="devPopup">
         <div class="dev-popup-box">
             <button class="dev-popup-close" id="devPopupClose" aria-label="Close">&times;</button>
-            <div class="dev-popup-icon"><i class="fa-solid fa-rocket"></i></div>
+            <div class="dev-popup-icon" aria-hidden="true">
+                <span class="dev-popup-orbit"></span>
+                <span class="dev-popup-spark">✦</span>
+            </div>
             <span class="dev-popup-badge">Coming Soon</span>
             <h2>We're Launching Online Soon!</h2>
-            <p>Our website is currently under development. Indalnova is getting ready to launch with:</p>
-            <div class="dev-popup-products">
-                <span><i class="fa-solid fa-spray-can-sparkles"></i> First Love</span>
-                <span><i class="fa-solid fa-spray-can-sparkles"></i> Aura</span>
-            </div>
+            <p>Our website is currently under development. Indalnova is getting ready to launch online soon.</p>
             <button class="dev-popup-cta" id="devPopupOk">Got it</button>
         </div>
     </div>
@@ -138,7 +137,7 @@
             </div>
             <div class="nav-links">
                 <a href="#" onclick="comingSoon(event)">Perfume</a>
-                <a href="#" onclick="comingSoon(event)">Body Spray</a>
+                <a href="bodyspray.html">Body Spray</a>
                 <a href="#" onclick="comingSoon(event)">Track order</a>
                 <a href="#" onclick="comingSoon(event)">Offers*</a>
             </div>
@@ -160,7 +159,7 @@
             </div>
             <div class="nav-2-links">
                 <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-wine-bottle"></i> Perfume</a>
-                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-spray-can-sparkles"></i> Body Spray</a>
+                <a href="bodyspray.html"><i class="fa-solid fa-spray-can-sparkles"></i> Body Spray</a>
                 <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-tags"></i> Offers*</a>
                 <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-truck-fast"></i> Track order</a>
                 <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-rotate-left"></i> Return order</a>
@@ -192,6 +191,19 @@
                         width="1200" height="500" loading="lazy">
                 </picture>
             </div>
+            <div class="hero-indicators" aria-label="Banner slides">
+                <button class="hero-indicator" type="button" aria-label="Show banner 1"></button>
+                <button class="hero-indicator" type="button" aria-label="Show banner 2"></button>
+                <button class="hero-indicator" type="button" aria-label="Show banner 3"></button>
+            </div>
+            <button class="hero-control hero-control-prev" id="heroPrev" type="button"
+                aria-label="Show previous banner">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button class="hero-control hero-control-next" id="heroNext" type="button"
+                aria-label="Show next banner">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
         </div>
     </section>
 
@@ -225,7 +237,8 @@
                 </div>
                 <p>Perfumes</p>
             </div>
-            <div class="pro1" onclick="comingSoon(event)">
+            <div class="pro1" onclick="window.location.href='bodyspray.html'" role="link" tabindex="0"
+                onkeydown="if (event.key === 'Enter' || event.key === ' ') window.location.href='bodyspray.html'">
                 <div class="pro-img">
                     <img src="Assets/bodyspray-section.png" alt="Shop Indalnova body sprays online" loading="lazy">
                 </div>
@@ -359,7 +372,7 @@
                 <div class="Links">
                     <div class="up">
                         <div><a href="#" onclick="comingSoon(event)">Perfume</a></div>
-                        <div><a href="#" onclick="comingSoon(event)">Body Spray</a></div>
+                        <div><a href="bodyspray.html">Body Spray</a></div>
                         <div><a href="#" onclick="comingSoon(event)">New Products</a></div>
                     </div>
                     <div class="mid">
@@ -406,6 +419,36 @@
             <h2 class="alert-title">Alert</h2>
             <p class="alert-message">This is a message</p>
             <button class="alert-ok">OK</button>
+        </div>
+    </div>
+
+    <div class="faq-chat" id="faqChat">
+        <button class="faq-chat-toggle" id="faqChatToggle" type="button" aria-expanded="false"
+            aria-controls="faqChatPanel" aria-label="Open frequently asked questions">
+            <i class="fa-solid fa-comments" aria-hidden="true"></i>
+        </button>
+        <div class="faq-chat-panel" id="faqChatPanel" hidden>
+            <div class="faq-chat-header">
+                <div class="faq-chat-agent">
+                    <span class="faq-chat-avatar"><i class="fa-solid fa-headset" aria-hidden="true"></i></span>
+                    <span><strong>Indalnova Support</strong><small>Usually replies instantly</small></span>
+                </div>
+                <button id="faqChatClose" type="button" aria-label="Close quick help">&times;</button>
+            </div>
+            <div class="faq-chat-welcome">Hi! I’m here to help. What would you like to know?</div>
+            <div class="faq-chat-questions">
+                <button type="button" data-answer="We’re getting everything ready for you! Indalnova is launching online soon. Right now, we’re operating offline, but we’ll be online with our fragrances shortly.">When are you launching?</button>
+                <button type="button" data-answer="I’d be happy to help! You can email us at supportindalnova@gmail.com or call us on +91 884 039 3051. Our team will get back to you as soon as possible.">How can I contact you?</button>
+            </div>
+            <div class="faq-chat-messages" id="faqChatMessages" aria-live="polite">
+            </div>
+            <form class="faq-chat-composer" id="faqChatComposer">
+                <label class="sr-only" for="faqChatInput">Type your question</label>
+                <input id="faqChatInput" type="text" placeholder="Ask me anything..." autocomplete="off">
+                <button type="submit" aria-label="Send message">
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </button>
+            </form>
         </div>
     </div>
 

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Indalnova | Buy Body Sprays Online in India</title>
+    <meta name="description"
+        content="Shop Indalnova body sprays online - First Love, Aura and combo packs. Long-lasting, toxin-free fragrances with COD, easy returns & fast delivery.">
+    <link rel="canonical" href="https://www.indalnova.com/bodyspray.html">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="media.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        /* Page-specific styles for the subscribe popup and product grid.
+           Move these into style.css / media.css whenever convenient. */
+
+        footer,
+        .footer {
+            background: #4a1414;
+        }
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-box {
+            background: rgb(247, 244, 239);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 350px;
+            width: 90%;
+            box-sizing: border-box;
+        }
+
+        .follow-det {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .follow-det h1 {
+            font-size: 18px;
+        }
+
+        .follow-det p {
+            font-size: 10px;
+        }
+
+        .follow-det input {
+            width: 95%;
+            height: 40px;
+            border-radius: 5px;
+            border: 2px solid brown;
+            padding: 5px;
+            font-size: 15px;
+        }
+
+        .Buttons {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .Buttons button {
+            height: 40px;
+            width: 120px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .Buttons button:nth-child(1) {
+            background: white;
+        }
+
+        .Buttons button:nth-child(2) {
+            background: brown;
+            color: white;
+        }
+
+        /* Strip any boxed/background styling around the back + menu icons
+           so they sit flat on the page like the rest of the navbar. */
+        .options,
+        .options span,
+        #Back,
+        #ham {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        .our-products {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+            background: transparent !important;
+        }
+
+        #Explore-h1 {
+            background: transparent !important;
+            color: #4a1414;
+        }
+
+        .product-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 24px;
+            padding: 20px 0 40px;
+        }
+
+        .product-card {
+            width: 100%;
+            min-width: 0;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .product-card .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: brown;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .product-card img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            background: #fff;
+            display: block;
+        }
+
+        .product-card .info {
+            padding: 10px 12px 14px;
+        }
+
+        .product-card .info p.name {
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0 0 6px;
+        }
+
+        .product-card .price-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .product-card .price-row .price {
+            font-weight: 700;
+            color: brown;
+        }
+
+        .product-card .price-row .original {
+            text-decoration: line-through;
+            color: #888;
+            font-size: 13px;
+        }
+
+        @media screen and (max-width: 600px) {
+            #Back {
+                display: none !important;
+            }
+
+            .body-spray-page .top-product {
+                width: 100%;
+            }
+
+            .body-spray-page .top-product .product-img {
+                height: 320px;
+            }
+
+            .body-spray-page .top-product .product-img img {
+                padding: 28px 18px 18px;
+            }
+
+            .our-products {
+                width: 100%;
+                padding: 0 12px;
+            }
+
+            .product-container {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 16px;
+                padding: 12px 0 28px;
+                overflow: visible;
+            }
+
+            .product-card .info {
+                padding: 9px 10px 12px;
+            }
+
+            .product-card img {
+                height: 430px;
+                aspect-ratio: auto;
+            }
+
+            .product-card .info p.name {
+                font-size: 12px;
+            }
+
+            .product-card .price-row {
+                gap: 5px;
+                flex-wrap: wrap;
+            }
+
+            .product-card .price-row .price {
+                font-size: 13px;
+            }
+
+            .product-card .price-row .original {
+                font-size: 11px;
+            }
+
+            .product-card .discount-badge {
+                top: 7px;
+                left: 7px;
+                font-size: 10px;
+                padding: 2px 5px;
+            }
+        }
+    </style>
+</head>
+
+<body class="body-spray-page">
+
+    <section>
+        <div class="heading1">
+            <h4 id="exploreProducts">Click here for Offers &amp; Updates.</h4>
+        </div>
+    </section>
+
+    <!-- Subscribe popup -->
+    <div class="popup-overlay" id="popup">
+        <div class="popup-box">
+            <div class="follow-det">
+                <h1>Follow Us for Offers &amp; Updates</h1>
+                <input type="number" id="phone-number" placeholder="Enter Your Phone number" required>
+                <p>By entering your number, you agree to our <a href="trem&condition.html">Terms &amp; Conditions</a>.
+                </p>
+                <div class="Buttons">
+                    <button type="button" onclick="closePopup()">Cancel</button>
+                    <button type="button" id="submitPhoneBtn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <div class="navbar">
+            <div class="logo">
+                <img src="Assets/logo.png" alt="Indalnova logo" width="48" height="48">
+                <span>Indalnova</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="#" onclick="comingSoon(event)">Perfume</a>
+                <a href="#" onclick="comingSoon(event)">Track order</a>
+                <a href="#" onclick="comingSoon(event)">Offers*</a>
+            </div>
+            <div class="options">
+                <span id="ham" onclick="hideelement()" role="button" aria-label="Open menu" tabindex="0">
+                    <i class="fa-solid fa-bars" style="color: brown;"></i>
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <div class="nav-overlay" id="navOverlay" onclick="back()"></div>
+    <section>
+        <div class="nav-2" aria-hidden="true">
+            <div class="nav-2-header">
+                <span class="nav-2-title">Menu</span>
+                <button class="nav-2-close" onclick="back()" aria-label="Close menu">&times;</button>
+            </div>
+            <div class="nav-2-links">
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-wine-bottle"></i> Perfume</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-tags"></i> Offers*</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-truck-fast"></i> Track order</a>
+                <a href="#" onclick="comingSoon(event)"><i class="fa-solid fa-rotate-left"></i> Return order</a>
+            </div>
+            <div class="nav-2-divider"></div>
+            <div class="nav-2-links">
+                <a href="contactus.html"><i class="fa-solid fa-envelope"></i> Contact Us</a>
+                <a href="aboutus.html"><i class="fa-solid fa-circle-info"></i> About Us</a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="our-products">
+            <h1 id="Explore-h1"></h1>
+            <div class="product-container" id="productContainer">
+                <!-- Product cards are injected here by JS, fetched from product.json -->
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <footer>
+            <div class="footer">
+                <div class="Links">
+                    <div class="up">
+                        <div><a href="#" onclick="comingSoon(event)">Perfume</a></div>
+                        <div><a href="index.html">Home</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">New Products</a></div>
+                    </div>
+                    <div class="mid">
+                        <div><a href="#" onclick="comingSoon(event)">Track Order</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Return Order</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Order in Bulk</a></div>
+                        <div><a href="contactus.html">Contact Us</a></div>
+                    </div>
+                    <div class="down">
+                        <div><a href="#" onclick="comingSoon(event)">T&amp;C</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Refund Rules</a></div>
+                        <div><a href="#" onclick="comingSoon(event)">Privacy Policy</a></div>
+                        <div><a href="aboutus.html">About Us</a></div>
+                    </div>
+                </div>
+                <div class="social-links home-social-links">
+                    <div class="icon"><a href="https://www.facebook.com/indalnova" target="_blank" rel="noopener"
+                            aria-label="Indalnova on Facebook"><i class="fa-brands fa-facebook"></i></a></div>
+                    <div class="icon"><a href="https://www.instagram.com/indalnova" target="_blank" rel="noopener"
+                            aria-label="Indalnova on Instagram"><i class="fa-brands fa-instagram"></i></a></div>
+                    <div class="icon"><a href="mailto:support@indalnova.com" aria-label="Email Indalnova"><i
+                                class="fa-solid fa-envelope"></i></a></div>
+                </div>
+                <div class="bottom">
+                    <div class="footer-legal">
+                        <p>&copy; <span id="year">2026</span> Indalnova. All Rights Reserved.</p>
+                    </div>
+                    <div class="developer">
+                        <p>Made with ❤️ by <a href="https://my-portfoliyo-nine.vercel.app/" target="_blank"
+                                rel="noopener">Shivam</a></p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </section>
+
+    <div id="loadingOverlay">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size: 30px; color: brown;"></i>
+    </div>
+
+    <div id="customAlert" class="custom-alert">
+        <div class="custom-alert-content">
+            <i class="fa-solid alert-icon"></i>
+            <h2 class="alert-title">Alert</h2>
+            <p class="alert-message">This is a message</p>
+            <button class="alert-ok">OK</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // ---- Elements that this page needs on top of script.js ----
+        const popup = document.getElementById("popup");
+        const openBtn = document.getElementById("exploreProducts");
+        const phoneInput = document.getElementById("phone-number");
+        const submitBtn = document.getElementById("submitPhoneBtn");
+        const customAlert = document.getElementById("customAlert");
+        const alertMessage = customAlert.querySelector(".alert-message");
+        const alertOkBtn = customAlert.querySelector(".alert-ok");
+
+        openBtn.addEventListener("click", () => { popup.style.display = "flex"; });
+        function closePopup() { popup.style.display = "none"; }
+        window.addEventListener("click", (e) => { if (e.target === popup) closePopup(); });
+
+        function showCustomAlert(message, duration = 3000) {
+            alertMessage.textContent = message;
+            customAlert.style.display = "flex";
+            setTimeout(() => { customAlert.style.display = "none"; }, duration);
+        }
+        alertOkBtn.addEventListener("click", () => { customAlert.style.display = "none"; });
+
+        submitBtn.addEventListener("click", async () => {
+            const phone = phoneInput.value.trim();
+            const phoneRegex = /^[1-9]\d{9}$/;
+            if (!phoneRegex.test(phone)) {
+                showCustomAlert("Please enter a valid 10-digit phone number.");
+                return;
+            }
+            try {
+                const res = await fetch("/api/subscribe", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phone })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showCustomAlert(result.message || "Thank you! Subscribed.");
+                    phoneInput.value = "";
+                    closePopup();
+                } else {
+                    showCustomAlert(result.message || "Something went wrong.");
+                }
+            } catch (err) {
+                console.error(err);
+                showCustomAlert("Error: could not subscribe.");
+            }
+        });
+
+        // ---- Fallbacks, in case script.js doesn't define these yet ----
+        if (typeof hideelement !== "function") {
+            window.hideelement = function () {
+                document.querySelector(".nav-2")?.classList.add("show");
+                document.getElementById("navOverlay")?.classList.add("show");
+            };
+        }
+        if (typeof back !== "function") {
+            window.back = function () {
+                document.querySelector(".nav-2")?.classList.remove("show");
+                document.getElementById("navOverlay")?.classList.remove("show");
+            };
+        }
+        if (typeof comingSoon !== "function") {
+            window.comingSoon = function (event) {
+                event?.preventDefault();
+                showCustomAlert("Coming soon! We're launching online shortly.");
+            };
+        }
+
+        // ---- Fetch products from product.json and render cards ----
+        async function loadProducts() {
+            const container = document.getElementById("productContainer");
+            try {
+                const res = await fetch("product.json");
+                if (!res.ok) throw new Error("Failed to load product.json");
+                const products = await res.json();
+
+                container.innerHTML = products.map(p => `
+                    <div class="product-card" onclick="comingSoon(event)">
+                        ${p.discount ? `<span class="discount-badge">${p.discount} OFF</span>` : ""}
+                        <img src="${p.image}" alt="${p.name}" loading="lazy">
+                        <div class="info">
+                            <p class="name">${p.name}</p>
+                            <div class="price-row">
+                                <span class="price">₹${p.price}</span>
+                                ${p.original ? `<span class="original">₹${p.original}</span>` : ""}
+                            </div>
+                        </div>
+                    </div>
+                `).join("");
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = "<p>Couldn't load products right now. Please try again later.</p>";
+            }
+        }
+        loadProducts();
+    </script>
+</body>
+
+</html>
