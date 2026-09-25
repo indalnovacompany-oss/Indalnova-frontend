@@ -107,14 +107,10 @@
 
 <body>
 
-    <!-- Under Development / Coming Soon Popup -->
+    <!-- Under Development message -->
     <div class="dev-popup-overlay" id="devPopup">
         <div class="dev-popup-box">
             <button class="dev-popup-close" id="devPopupClose" aria-label="Close">&times;</button>
-            <div class="dev-popup-icon" aria-hidden="true">
-                <span class="dev-popup-orbit"></span>
-                <span class="dev-popup-spark">✦</span>
-            </div>
             <span class="dev-popup-badge">Coming Soon</span>
             <h2>We're Launching Online Soon!</h2>
             <p>Our website is currently under development. Indalnova is getting ready to launch online soon.</p>
@@ -176,9 +172,9 @@
         <div class="hero-slider">
             <div id="slider">
                 <picture>
-                    <source media="(max-width: 440px)" srcset="Assets/banner1-phone.png">
-                    <img src="Assets/banner1.png" alt="Indalnova First Love and Aura perfume banner" width="1200"
-                        height="500" fetchpriority="high">
+                    <source media="(max-width: 440px)" srcset="Assets/banner3-phone.png">
+                    <img src="Assets/banner3.png" alt="Indalnova perfumes and body sprays coming soon banner"
+                        width="1200" height="500" fetchpriority="high">
                 </picture>
                 <picture>
                     <source media="(max-width: 440px)" srcset="Assets/banner2-phone.png">
@@ -186,15 +182,27 @@
                         height="500" loading="lazy">
                 </picture>
                 <picture>
-                    <source media="(max-width: 440px)" srcset="Assets/banner3-phone.png">
-                    <img src="Assets/banner3.png" alt="Indalnova perfumes and body sprays coming soon banner"
-                        width="1200" height="500" loading="lazy">
+                    <source media="(max-width: 440px)" srcset="Assets/banner1-phone.png">
+                    <img src="Assets/banner1.png" alt="Indalnova First Love and Aura perfume banner" width="1200"
+                        height="500" loading="lazy">
+                </picture>
+                <picture>
+                    <source media="(max-width: 440px)" srcset="Assets/banner4-phone.png">
+                    <img src="Assets/banner4.png" alt="Indalnova Aura and First Love body spray banner"
+                        width="1940" height="768" loading="lazy">
+                </picture>
+                <picture>
+                    <source media="(max-width: 440px)" srcset="Assets/banner5-phone.png">
+                    <img src="Assets/banner5.png" alt="Indalnova fragrance banner" width="1942" height="809"
+                        loading="lazy">
                 </picture>
             </div>
             <div class="hero-indicators" aria-label="Banner slides">
                 <button class="hero-indicator" type="button" aria-label="Show banner 1"></button>
                 <button class="hero-indicator" type="button" aria-label="Show banner 2"></button>
                 <button class="hero-indicator" type="button" aria-label="Show banner 3"></button>
+                <button class="hero-indicator" type="button" aria-label="Show banner 4"></button>
+                <button class="hero-indicator" type="button" aria-label="Show banner 5"></button>
             </div>
             <button class="hero-control hero-control-prev" id="heroPrev" type="button"
                 aria-label="Show previous banner">
@@ -442,13 +450,6 @@
             </div>
             <div class="faq-chat-messages" id="faqChatMessages" aria-live="polite">
             </div>
-            <form class="faq-chat-composer" id="faqChatComposer">
-                <label class="sr-only" for="faqChatInput">Type your question</label>
-                <input id="faqChatInput" type="text" placeholder="Ask me anything..." autocomplete="off">
-                <button type="submit" aria-label="Send message">
-                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                </button>
-            </form>
         </div>
     </div>
 

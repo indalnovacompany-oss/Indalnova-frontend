@@ -170,8 +170,6 @@ const faqChatToggle = document.getElementById('faqChatToggle');
 const faqChatPanel = document.getElementById('faqChatPanel');
 const faqChatClose = document.getElementById('faqChatClose');
 const faqChatMessages = document.getElementById('faqChatMessages');
-const faqChatComposer = document.getElementById('faqChatComposer');
-const faqChatInput = document.getElementById('faqChatInput');
 
 function setFaqChatOpen(isOpen) {
   if (!faqChatToggle || !faqChatPanel) return;
@@ -206,24 +204,6 @@ function addFaqChatExchange(question, answer) {
   addFaqChatMessage('faq-chat-user', question);
   addFaqChatMessage('faq-chat-answer', answer);
 }
-
-faqChatComposer?.addEventListener('submit', event => {
-  event.preventDefault();
-
-  const question = faqChatInput?.value.trim() || '';
-  if (!question) return;
-
-  const normalizedQuestion = question.toLowerCase();
-  const answer = normalizedQuestion.includes('contact')
-    || normalizedQuestion.includes('email')
-    || normalizedQuestion.includes('phone')
-    || normalizedQuestion.includes('call')
-    ? 'I’d be happy to help! You can email us at supportindalnova@gmail.com or call us on +91 884 039 3051. Our team will get back to you as soon as possible.'
-    : 'We’re getting everything ready for you! Indalnova is launching online soon. Right now, we’re operating offline, but we’ll be online with our fragrances shortly.';
-
-  addFaqChatMessage('faq-chat-answer', answer);
-  if (faqChatInput) faqChatInput.value = '';
-});
 
 // ===== Helper: random rating (avg between 4.0-5.0, count under 30) =====
 function randomRating() {
@@ -298,16 +278,12 @@ function back() {
 
   const devPopupClose = document.getElementById('devPopupClose');
   const devPopupOk = document.getElementById('devPopupOk');
-  let autoCloseTimer;
-
   function openDevPopup() {
     devPopup.classList.add('show');
-    autoCloseTimer = setTimeout(closeDevPopup, 8000);
   }
 
   function closeDevPopup() {
     devPopup.classList.remove('show');
-    clearTimeout(autoCloseTimer);
   }
 
   window.addEventListener('load', openDevPopup);
